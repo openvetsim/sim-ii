@@ -32,6 +32,7 @@
 				profile.init();
 				
 				chart.init();
+				
 				controls.heartRate.init();
 				controls.awRR.init();
 				controls.SpO2.init();

@@ -6,14 +6,17 @@
 			slideBar: '',
 			increment: 1,
 			
-			beatInterval: 0,
+			beatITimeout: 0,
 			audio: new Audio('./audio/ekg.mp3'),
 			
 			modalUnitsLabel: 'BPM',
 			
 			init: function() {
-				clearInterval(controls.heartRate.beatInterval);
-				controls.heartRate.beatInterval = setInterval(controls.heartRate.setSynch, Math.round((60 / controls.heartRate.value) * 1000));	
+				if ( ! ( isLocalDisplay() ) )
+				{
+					clearTimeout(controls.heartRate.beatTimeout);
+					controls.heartRate.beatTimeout = setTimeout(controls.heartRate.setSynch, Math.round((60 / controls.heartRate.value) * 1000));
+				}
 				controls.heartRate.displayValue();
 			},
 			
@@ -24,13 +27,20 @@
 				// set controls and update new value
 				controls.heartRate.slideBar.slider("value", controls.heartRate.value);
 				
-				clearInterval(controls.heartRate.beatInterval);
-				controls.heartRate.beatInterval = setInterval(controls.heartRate.setSynch, Math.round((60 / controls.heartRate.value) * 1000));
+				if ( ! ( isLocalDisplay() ) )
+				{
+					clearTimeout(controls.heartRate.beatTimeout);
+					controls.heartRate.beatTimeout = setTimeout(controls.heartRate.setSynch, Math.round((60 / controls.heartRate.value) * 1000));
+				}
 				controls.heartRate.displayValue();
 			},
 			
 			setSynch: function() {
 				chart.status.cardiac.synch = true;
+				if ( ! ( isLocalDisplay() ) )
+				{
+					controls.heartRate.beatTimeout = setTimeout(controls.heartRate.setSynch, Math.round((60 / controls.heartRate.value) * 1000));
+				}
 			},
 			
 			validateNewValue: function() {
@@ -53,14 +63,17 @@
 			minValue: 1,
 			maxValue: 60,
 			slideBar: '',
-			beatInterval: 0,
+			beatTimeout: 0,
 			increment: 1,
 			
 			modalUnitsLabel: 'BPM',
 			
 			init: function() {
-				clearInterval(controls.awRR.beatInterval);
-				controls.awRR.beatInterval = setInterval(controls.awRR.setSynch, Math.round((60 / controls.awRR.value) * 1000));
+				if ( ! ( isLocalDisplay() ) )
+				{
+					clearTimeout(controls.awRR.beatTimeout);
+					controls.awRR.beatTimeout = setTimeout(controls.awRR.setSynch, Math.round((60 / controls.awRR.value) * 1000));
+				}
 				controls.awRR.displayValue();							
 			},
 			
@@ -76,13 +89,20 @@
 				// set controls and update new value
 				controls.awRR.slideBar.slider("value", controls.awRR.value);
 				
-				clearInterval(controls.awRR.beatInterval);
-				controls.awRR.beatInterval = setInterval(controls.awRR.setSynch, Math.round((60 / controls.awRR.value) * 1000));
+				if ( ! ( isLocalDisplay() ) )
+				{
+					clearTimeout(controls.awRR.beatTimeout);
+					controls.awRR.beatTimeout = setTimeout(controls.awRR.setSynch, Math.round((60 / controls.awRR.value) * 1000));
+				}
 				controls.awRR.displayValue();											
 			},
 			
 			setSynch: function() {
 				chart.status.resp.synch = true;
+				if ( ! ( isLocalDisplay() ) )
+				{
+					controls.awRR.beatTimeout = setTimeout(controls.awRR.setSynch, Math.round((60 / controls.awRR.value) * 1000));
+				}
 			},
 			
 			validateNewValue: function() {
