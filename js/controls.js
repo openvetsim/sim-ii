@@ -2,7 +2,7 @@
 		heartRate: {
 			value: 75,
 			minValue: 1,
-			maxValue: 150,
+			maxValue: 300,
 			slideBar: '',
 			increment: 1,
 			
@@ -61,7 +61,7 @@
 		awRR: {
 			value: 30,
 			minValue: 1,
-			maxValue: 60,
+			maxValue: 120,
 			slideBar: '',
 			beatTimeout: 0,
 			increment: 1,
