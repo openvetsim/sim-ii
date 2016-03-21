@@ -85,11 +85,7 @@
 			];
 			*/
 			chart.ekg.rhythm[0] = [
-			3, 7, 1, 3, 35, 64, -5, 4, 11, 17, 4, 1 // Up to 300
-			//4, 3, 7, 4, 1, 3, 35, 64, -5, -2, 4, 6, 11, 15, 17, 10, 4, 1 // Up to 230
-			//4, 3, 6, 7, 4, 2, 1, 2, 3, 17, 64, 26, -5, -2, 0, 2, 4, 5, 6,  10, 11, 15, 16, 17, 16, 10, 4, 1, 0, 1 // Up to 140
-			//4, 3, 4, 6, 7, 7, 6, 4, 2, 1, 1, 1, 2, 2, 2, 3, 17, 52, 64, 26, -3, -5, -2, 0, 1, 2, 3, 4, 4, 5, 6, 7, 8, 10, 11, 13, 15, 16, 17, 17, 16, 14, 10, 7, 4, 2, 1, 0, 0, 1, 1 // Up to 75
-			//4, 3, 5, 7, 7, 4, 2, 1, 1, 2, 2, 4, 33, 65, 16, -6, -2, 0, 2, 3, 4, 5, 6, 8, 10, 12, 15, 17, 17, 16, 13, 8, 4, 1, 0, 0, 1
+			0, 0, 0, 0, 0, 0, 0		// Flatline
 			];
 			chart.ekg.rhythm[1] = [
 			7, 7, 8, 8, 8, 7, 7, 6, 6, 6, 7, 7, 7, 8, 7, 7, 7
@@ -97,8 +93,18 @@
 			chart.ekg.rhythm[2] = [
 			7, 7, 8, 8, 8, 7, 7, 6, 6, 6, 7, 7, 7, 8, 7, 7, 7
 			];
-
-			
+			chart.ekg.rhythm[3] = [
+			4, 3, 4, 6, 7, 7, 6, 4, 2, 1, 1, 1, 2, 2, 2, 3, 17, 52, 64, 26, -3, -5, -2, 0, 1, 2, 3, 4, 4, 5, 6, 7, 8, 10, 11, 13, 15, 16, 17, 17, 16, 14, 10, 7, 4, 2, 1, 0, 0, 1, 1 // Up to 75
+			];
+			chart.ekg.rhythm[4] = [
+			4, 3, 6, 7, 4, 2, 1, 2, 3, 17, 64, 26, -5, -2, 0, 2, 4, 5, 6,  10, 11, 15, 16, 17, 16, 10, 4, 1, 0, 1 // Up to 140
+			];
+			chart.ekg.rhythm[5] = [
+			4, 3, 7, 4, 1, 3, 35, 64, -5, -2, 4, 6, 11, 15, 17, 10, 4, 1 // Up to 230
+			];
+			chart.ekg.rhythm[6] = [
+			3, 7, 1, 3, 35, 64, -5, 4, 11, 17, 4, 1 // Up to 300
+			]
 			// setup pattern length
 			chart.ekg.length = chart.ekg.rhythm[chart.ekg.rhythmIndex].length
 			
@@ -141,6 +147,37 @@
 			chart.resp.interval = setInterval(chart.drawRespPixel, chart.resp.drawInterval, "resp");
 		},
 		
+		// Passed the cardiac data from simmgr status
+		updateCardiac: function( cardiac) {
+			if ( cardiac.rate <= 0 )
+			{
+				chart.ekg.rhythmIndex = 0;	// Flatline
+			}
+			else if ( cardiac.rate <= 75 )
+			{
+				chart.ekg.rhythmIndex = 3;
+			}
+			else if ( cardiac.rate <= 140 )
+			{
+				chart.ekg.rhythmIndex = 4;
+			}
+			else if ( cardiac.rate <= 230 )
+			{
+				chart.ekg.rhythmIndex = 5;
+			}
+			else
+			{
+				chart.ekg.rhythmIndex = 6;
+			}
+			chart.ekg.length = chart.ekg.rhythm[chart.ekg.rhythmIndex].length;
+			if(chart.ekg.patternIndex >= chart.ekg.length) {
+				chart.ekg.patternIndex = 0;
+			}
+			
+			chart.heartRate = cardiac.rate;
+			controls.heartRate.value = cardiac.rate;
+			console.log(cardiac );
+		},
 		initStrip: function(stripType) {
 			chart[stripType].canvas = document.getElementById(chart[stripType].id);
 			chart[stripType].ctx = chart[stripType].canvas.getContext("2d");

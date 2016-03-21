@@ -20,19 +20,19 @@
 				controls.heartRate.displayValue();
 			},
 			
+			setHeartRateValue: function(rate, time ) {
+				controls.heartRate.value = rate;
+				controls.heartRate.displayValue();
+			},
+			
 			setHeartRate: function() {
-				// get latest value from modal
-				controls.heartRate.value = $('.strip-value.new').val();
-				
-				// set controls and update new value
+				// get latest value from modal and send to the SimMgr
+				rate = $('.strip-value.new').val();
+				time = $('.transfer-time').val();
+				controls.heartRate.setHeartRateValue(rate );
 				controls.heartRate.slideBar.slider("value", controls.heartRate.value);
 				
-				if ( ! ( isLocalDisplay() ) )
-				{
-					clearTimeout(controls.heartRate.beatTimeout);
-					controls.heartRate.beatTimeout = setTimeout(controls.heartRate.setSynch, Math.round((60 / controls.heartRate.value) * 1000));
-				}
-				controls.heartRate.displayValue();
+				simmgr.sendChange( { 'set:cardiac:rate' : rate, 'set:cardiac:transfer_time' : time } );
 			},
 			
 			setSynch: function() {

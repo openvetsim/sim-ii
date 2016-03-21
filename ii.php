@@ -85,9 +85,17 @@
 					chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex].length
 				});
 				*/
-				
+				simmgr.init();
 			});
 		</script>
+		<style>
+			#startStopButton
+			{
+				position: absolute;
+				bottom: 0px;
+				right: 0px;
+			}
+		</style>
 	</head>
 	<body>
 		<div id="sitewrapper">
@@ -201,7 +209,7 @@
 						<a id="display-nbp-hr" class="alt-control-rate color-red" href="javascript: void(0)" onclick="modal.nbp(); return false;"><span style="font-size: 24px;">PR</span> <span id="displayed-reportedHR">75</span></a>
 					</div>
 				</div>
-				
+				<button id="startStopButton">Stop Status Updates</button>
 				<!-- <div class="float-left ii-border button demo-button">
 					<button id="switch-ekg-now">Switch EKG Patterns!</button>
 					<button id="ekg-sound" class="pause">Turn EKG Sound Off!</button>
@@ -265,7 +273,6 @@
 			</div>
 
 			<div class="clearer"></div>
-			
 		</div> <!-- sitewrapper -->
 		
 		<!-- Modal -->

@@ -25,7 +25,7 @@ var simmgr = {
 		}
 		else
 		{
-			simmgr.interval = 100;
+			simmgr.interval = 500;
 		}
 		simmgr.timer = setTimeout(function() { simmgr.getStatus(); }, simmgr.interval );
 		simmgr.running = 1;
@@ -36,13 +36,13 @@ var simmgr = {
 			{
 				simmgr.running = 1;
 				simmgr.timer = setTimeout(function() { simmgr.getStatus(); }, simmgr.interval );
-				$(this).text("Stop");
+				$(this).text("Stop Status Updates");
 			}
 			else
 			{
 				simmgr.running = 0;
 				clearTimeout(simmgr.timer );
-				$(this).text("Start");
+				$(this).text("Start  Status Updates");
 			}
 		});
 	},
@@ -54,23 +54,31 @@ var simmgr = {
 			dataType: 'json',
 			data: { status: 1 },
 			success: function(response,  textStatus, jqXHR ) {
-				//console.log("success: "+textStatus );
-				//console.log(response);
-				if ( response.respiration.breathCount != simmgr.breathCount )
+				if ( isLocalDisplay() )
 				{
-					simmgr.breathCount  = response.respiration.breathCount;
-					controls.awRR.setSynch();
+					if ( response.respiration.breathCount != simmgr.breathCount )
+					{
+						simmgr.breathCount  = response.respiration.breathCount;
+						controls.awRR.setSynch();
+					}
+					if ( response.cardiac.pulseCount != simmgr.pulseCount )
+					{
+						simmgr.pulseCount = response.cardiac.pulseCount;
+						controls.heartRate.setSynch();
+					}
 				}
-				if ( response.cardiac.pulseCount != simmgr.pulseCount )
+				if ( typeof(response.cardiac) != undefined )
 				{
-					simmgr.pulseCount = response.cardiac.pulseCount;
-					controls.heartRate.setSynch();
+					if ( ( typeof(response.cardiac.rate) != undefined ) && ( response.cardiac.rate != controls.heartRate.value ) )
+					{
+						controls.heartRate.setHeartRateValue(response.cardiac.rate );
+						chart.updateCardiac(response.cardiac );
+					}
 				}
-				
-				},
+			},
 			error: function( jqXHR,  textStatus,  errorThrown){
 				console.log("error: "+textStatus+" : "+errorThrown );
-				},
+			},
 			complete: function(jqXHR,  textStatus ){
 				if ( simmgr.running == 1 )
 				{
@@ -78,5 +86,22 @@ var simmgr = {
 				}
 			}
 		});			
-	}
+	},
+	
+	// Generic routine to change Instructor parameters. 'data' is and array of parameters and values
+	sendChange : function (data ) {
+		$.ajax({
+			url: BROWSER_CGI + 'simstatus.cgi',
+			type: 'get',
+			dataType: 'json',
+			data: data,
+			success: function(response,  textStatus, jqXHR ) {
+				
+			},
+			error: function( jqXHR,  textStatus,  errorThrown){
+				console.log("error: "+textStatus+" : "+errorThrown );
+			}
+		});			
+	},
+	
 }
