@@ -75,6 +75,15 @@ var simmgr = {
 						chart.updateCardiac(response.cardiac );
 					}
 				}
+				if ( ( typeof(response.general) != undefined ) && ( typeof(response.general.temperature) != undefined ) )
+				{
+					temperature = response.general.temperature / 10;
+					if ( temperature != controls.Tperi.value )
+					{
+						console.log("Set Temp "+temperature );
+						controls.Tperi.setValue(temperature );
+					}
+				}
 			},
 			error: function( jqXHR,  textStatus,  errorThrown){
 				console.log("error: "+textStatus+" : "+errorThrown );

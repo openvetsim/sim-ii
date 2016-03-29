@@ -210,6 +210,17 @@
 				controls.Tperi.displayValue();
 			},
 			
+			setValue: function(newValue) {
+				console.log(newValue);
+				if(newValue < controls.Tperi.minValue || isNaN(newValue) == true) {
+					controls.Tperi.value = controls.Tperi.minValue;			
+				} else if(newValue > controls.Tperi.maxValue) {
+					controls.Tperi.value = controls.Tperi.maxValue;
+				} else {
+					controls.Tperi.value = newValue;
+				}
+				controls.Tperi.displayValue();
+			},
 			validateNewValue: function() {
 				var newValue = parseFloat($('.strip-value.new').val());
 				if(newValue < controls.Tperi.minValue || isNaN(newValue) == true) {
