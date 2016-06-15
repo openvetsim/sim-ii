@@ -125,12 +125,15 @@
 				44,43,42,41,40,35,31,30,28,24,16,8,4,2,1,
 				0,
 			];
-			chart.resp.rhythm[0] = [ 
+			chart.resp.rhythm[2] = [ 
 				0,1,2,4,8,16,24,28,30,31,32,32,32,32,32,32,32,
 				32,32,32,32,32,
 				32,32,32,32,32,
 				32,32,32,32,32,
 				32,32,32,32,32,31,25,15,8,0,0,0,0,0
+			];
+			chart.resp.rhythm[0] = [ 
+				0,1,2,4,8,16,24,28,30,31,32,32,31,25,15,8,0,0
 			];
 			
 			// beep indicator
@@ -176,7 +179,7 @@
 			
 			chart.heartRate = cardiac.rate;
 			controls.heartRate.value = cardiac.rate;
-			console.log(cardiac );
+//console.log(cardiac );
 		},
 		initStrip: function(stripType) {
 			chart[stripType].canvas = document.getElementById(chart[stripType].id);

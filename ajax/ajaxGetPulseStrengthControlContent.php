@@ -24,16 +24,16 @@
 			<p class="modal-section-title pulse-strength-label">Weak</p>
 			<p class="modal-section-title pulse-strength-label">Medium</p>
 			<p class="modal-section-title pulse-strength-label">Strong</p>
-			<input type="radio" name="pulse-strength" class="modal-radio pulse-strength clearer" value="None">
-			<input type="radio" name="pulse-strength" class="modal-radio pulse-strength" value="Weak">
-			<input type="radio" name="pulse-strength" class="modal-radio pulse-strength" value="Medium">
-			<input type="radio" name="pulse-strength" class="modal-radio pulse-strength" value="Strong">
+			<input type="radio" name="pulse-strength" class="modal-radio pulse-strength clearer" value="none">
+			<input type="radio" name="pulse-strength" class="modal-radio pulse-strength" value="weak">
+			<input type="radio" name="pulse-strength" class="modal-radio pulse-strength" value="medium">
+			<input type="radio" name="pulse-strength" class="modal-radio pulse-strength" value="strong">
 		</div>
-		<hr / class="modal-divider">
+		<!-- <hr / class="modal-divider">
 		<div class="control-modal-div">
 			<button class="red-button modal-button apply">Apply</button>
 			<button class="red-button modal-button cancel">Cancel</button>
-		</div>
+		</div> -->
 	';
 
 

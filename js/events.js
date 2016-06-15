@@ -5,7 +5,7 @@
 				type: 'post',
 				async: false,
 				dataType: 'json',
-				data: {profileINI: profile.profileINI},
+				data: {events: JSON.stringify(scenario.scenarioEvents)},
 				success: function(response) {
 					if(response.status == AJAX_STATUS_OK) {
 						$('#event-library').html(response.html).hide();

@@ -15,20 +15,15 @@
 		$side = 'left';
 	}
 	
-	$soundID = dbClass::valuesFromPost('soundID');
-	if(dbClass::isInt($soundID) === FALSE) {
-		$soundID = 1;
-	}
+	$fileName = dbClass::valuesFromPost('fileName');
 	
 	$lungSoundArray = array(
-		"Normal",
-		"Course Crackles",
-		"Fine Crackles",
-		"Pleural Rib",
-		"Pneumonia",
-		"Rhonchi",
-		"Stridor",
-		"Wheezes"
+		"Normal" => "normal",
+		"Coarse Crackles" => "coarse_crackles",
+		"Fine Crackles" => "fine_crackles",
+		"Wheezes" => "wheezes",
+		"Stridor" => "stridor",
+		"Stertor" => "stertor"
 	);
 	
 	// lung sound options
@@ -36,17 +31,17 @@
 		<select id="sound-select" class="modal-select">
 	';
 	foreach($lungSoundArray as $index => $value) {
-		$select = ($soundID == $index) ? ' selected="selected" ' : '';
+		$select = ($fileName == $value) ? ' selected="selected" ' : '';
 		$lungSoundOption .= '
-			<option value="' . $index . '"' . $select . '>' . $value . '</option>
+			<option value="' . $value . '"' . $select . '>' . $index . '</option>
 		';
 	}
 	
 	// add in extra option for left lung
 	if($side == 'left') {
-		$select = ($soundID == "10") ? ' selected="selected" ' : '';
+		$select = ($fileName == "same_as_right") ? ' selected="selected" ' : '';
 		$lungSoundOption .= '
-			<option value="10"' . $select . '>Same as Right Lung</option>
+			<option value="same_as_right"' . $select . '>Same as Right Lung</option>
 		';	
 	}
 	$lungSoundOption .= '
@@ -54,7 +49,7 @@
 	';
 	
 	$content = '
-		<h1 id="modal-title">Lung Sound Control</h1>
+		<h1 id="modal-title">' . ucfirst($side) . ' Lung Sound Control</h1>
 		<hr / class="modal-divider">
 		<h2 class="modal-section-title">' . ucfirst($side) . ' Lung Sound Control</h2>
 		<div class="control-modal-div">

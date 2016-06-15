@@ -51,21 +51,23 @@
 	#vs-right-col {
 		position: relative;
 		float: left;
+		margin: 10px 0 0 0px;
 	}
 	
 		.vs-controls {
-			float: left;
-			margin: 25px 0 50px 0;
+			margin: 0px 0 10px 0;
 			width: 70px;
 		}
 			.vs-controls .display-rate {
 				font-size: 50px;
 				float: left;
 				margin: 0;
-				width: 130px;
+				width: 150px;
 			}
 				#vs-heartRhythm {
 					color: green;
+					margin-bottom: 45px;
+					height: 30px;
 				}
 				#vs-awRR {
 					color: white;
@@ -77,7 +79,7 @@
 				
 .alt-control {
 	float: left;
-	margin: 0px 10px 10px 10px;
+	margin: 0px 0px 10px 10px;
 	text-align: left;
 	width: 110px;
 }
@@ -92,19 +94,25 @@
 	}
 	.alt-control p, .alt-control a{
 		float: left;
-		font-size: 50px;
+		font-size: 45px;
 	}
 		.alt-control.with-sub p, .alt-control.with-sub a {
 			margin-bottom: -2px;
 		}
 		.alt-control.control-Tperi {
-			width: 160px;
+			width: 154px;
 		}
 		.alt-control.awRR {
-			width: 130px;
+			width: 140px;
+			position: absolute;
+			top: 215px;
+			right: 8px;
 		}
 		.alt-control.SpO2 {
-			width: 110px;
+			width: 120px;
+			position: absolute;
+			top: 290px;
+			right: 29px;
 		}
 		
 .wide-col {
@@ -135,22 +143,22 @@ button.nvs-button {
 }
 	#vs-nbp {
 		margin: 10px 0 0 0;
-		width: 200px;
+		width: 320px;
 	}
 		#vs-nbp a.alt-control-title {
-			margin: 0 0 0px 0;
+			margin: 0px 0 0px 0;
 		}
 		#vs-nbp a.alt-control-rate {
-			font-size: 26px;
-			width: 150px;
+			font-size: 45px;
+			width: 320px;
 			float: left;
-			margin: 5px 0 0 0;
+			margin: 15px 0 0 0;
 		}
 			#vs-nbp a.alt-control-rate#display-nbp-hr {
-				margin-top: 9px;
+				margin-top: 15px;
 			}
 			#vs-nbp a.alt-control-rate.nbip {
-				width: 250px;
+				width: 355px;
 			}
 		
 	#nbp-control-coupled-title {
@@ -191,7 +199,7 @@ button.nvs-button {
 	color: red;
 }
 .color-blue {
-	color: blue;
+	color: #0066FF;
 }
 
 .vs-upper-label {

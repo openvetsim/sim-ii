@@ -26,7 +26,7 @@ a:hover {
 #sitewrapper { 
 	padding: 0 20px 30px 20px;
 	margin: -10px auto 0px;
-	width: 1400px;
+	width: 1180px;
 	position: relative;
 }
 	
@@ -106,7 +106,7 @@ a:hover {
 			
 	/* Main nav */
 	#admin-nav {
-		width: 1205px;
+		width: 1155px;
 		height: 50px;
 		background-color: #B31B1B;
 		color: #FFFFFF;
@@ -206,6 +206,9 @@ a:hover {
 		margin: 0px 0 0 10px;
 		width: 120px;
 	}
+	#scenario-terminate-button{
+		margin: 0px 0 0 10px;
+	}
 	#scenario-video-label{
 		margin: 5px 0 ;
 		float: left;
@@ -215,8 +218,15 @@ a:hover {
 		float: left;
 		margin: 8px 0 0 7px;
 	}
+	#scenario-run-time {
+		width: auto;
+	}
 
 /* Media Select Control */
+#media-col {
+	float: left;
+}
+
 #media-select {
 	padding: 5px 5px 10px 5px;
 	margin-top: 10px
@@ -246,7 +256,7 @@ a:hover {
 #vsm {
 	background: #000000;
 	height: 400px;
-	width: 700px;
+	width: 650px;
 	margin: 0 0 0 10px;
 	position: relative;
 }
@@ -285,14 +295,17 @@ a:hover {
 	
 /* events */
 #event-monitor {
-	height: 88px;
-	width: 500px;
-	margin-top: 10px;
-	overflow: hidden;
+	height: 150px;
+	width: 775px;
+	margin: 10px 7px 0 0;
 	cursor: pointer;
+	padding-left: 5px;
+	overflow: hidden;
 }
 	#event-monitor table {
 		width: 100%;
+		overflow: scroll;
+		
 	}
 		#event-monitor tr, #event-monitor td{
 			max-height: 20px;

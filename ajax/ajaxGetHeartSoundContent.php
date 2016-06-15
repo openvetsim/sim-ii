@@ -10,20 +10,21 @@
 		exit();
 	}
 	
-	$soundID = dbClass::valuesFromPost('soundID');
+	$soundName = dbClass::valuesFromPost('soundName');
 	if(dbClass::isInt($soundID) === FALSE) {
 		$soundID = 1;
 	}
 	
 	$heartSoundArray = array(
-		"Normal",
-		"Aortic Stenosis",
-		"Austin Flint Murmur",
-		"Friction Rub",
-		"Mitral Valve Prolapse",
-		"Systolic Murmur",
-		"Diastolic Murmur",
-		"OS70 (Opening snap of Mitral Stenosis)"
+		"none" => "None",
+		"normal" => "Normal",
+		"aortic_stenosis" => "Aortic Stenosis",
+		"austin_flint_murmur" => "Austin Flint Murmur",
+		"friction_rub" => "Friction Rub",
+		"mitral_valve_prolapse" => "Mitral Valve Prolapse",
+		"systolic_murmur" => "Systolic Murmur",
+		"diastolic_murmur" => "Diastolic Murmur",
+		"os70" => "OS70 (Opening snap of Mitral Stenosis)"
 	);
 	
 	// lung sound options
@@ -31,7 +32,7 @@
 		<select id="sound-select" class="modal-select">
 	';
 	foreach($heartSoundArray as $index => $value) {
-		$select = ($soundID == $index) ? ' selected="selected" ' : '';
+		$select = ($soundName == $index) ? ' selected="selected" ' : '';
 		$heartSoundOption .= '
 			<option value="' . $index . '"' . $select . '>' . $value . '</option>
 		';

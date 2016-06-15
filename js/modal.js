@@ -81,6 +81,78 @@
 				}
 			});
 		},
+		
+		heartRhythm: function() {
+			$.ajax({
+				url: BROWSER_AJAX + 'ajaxGetHeartRhythmContent.php',
+				type: 'post',
+				async: false,
+				data: {
+						currentECG: controls.heartRhythm.currentRhythm, 
+						currentAmplitude: controls.heartRhythm.vfibAmplitude, 
+						currentPulse: controls.heartRhythm.vpc, 
+						currentPulseFrequency: controls.heartRhythm.vpcFrequency, 
+						PEA: controls.heartRhythm.pea},
+				dataType: 'json',
+				success: function(response) {
+					if(response.status == AJAX_STATUS_OK) {
+						modal.showModal(response);
+						modal.bindCloseModal();
+						
+						// heart rhythm controls
+						controls.heartRhythm.setHeartRhythmModal();
+						
+						// bind controls
+						controls.heartRate.slideBar = $(".control-slider-1").slider({
+							value: controls.heartRate.value,
+							min: controls.heartRate.minValue,
+							max: controls.heartRate.maxValue,
+							step: 1,
+							slide: function(event, ui) {
+								$('.strip-value.new').val(ui.value);
+							}
+						});
+						$('.strip-value').val(controls.heartRate.value);
+						
+						// bind apply button
+						$('.modal-button.apply').click(function() {
+							controls.heartRate.setHeartRate();
+							
+							// send values to sim mgr
+							simmgr.sendChange({
+												'set:cardiac:rhythm': $('select.ecg-select option:selected').val(),
+												'set:cardiac:vpc': $('select.pulse-select option:selected').val(),
+												'set:cardiac:pea': ($('input#PEA').is(':checked') == true) ? 1 : 0,
+												'set:cardiac:vpc_freq': $('select.frequency-select option:selected').val(),
+												'set:cardiac:vfib_amplitude': $('select.amplitude-select option:selected').val(),
+												'set:cardiac:rate': $('.strip-value.new').val()												
+											});
+							
+							modal.closeModal();
+						});
+						
+						// bind change in new value
+						$('.strip-value.new').change(controls.heartRate.validateNewValue);
+						
+						// bind increment and decrement
+						$('.control-incr-decr-rate.decr-rate').click(function() {
+							$('.strip-value.new').val(parseInt($('.strip-value.new').val()) - 1);
+							controls.heartRate.validateNewValue();
+						});
+						$('.control-incr-decr-rate.incr-rate').click(function() {
+							$('.strip-value.new').val(parseInt($('.strip-value.new').val()) + 1);
+							controls.heartRate.validateNewValue();
+						});
+						
+						// bind ecg rhythm select
+						$('select.ecg-select').change(function() {
+							controls.heartRhythm.setHeartRhythmModal();
+						});						
+						
+					}
+				}
+			});
+		},
 
 		awRR: function() {
 			$.ajax({
@@ -155,8 +227,10 @@
 						
 						// bind apply button
 						$('.modal-button.apply').click(function() {
-							controls.SpO2.value = $('.strip-value.new').val();
-							controls.SpO2.displayValue();
+							rate = $('.strip-value.new').val();
+							time = $('.transfer-time').val();
+
+							simmgr.sendChange( { 'set:respiration:spo2' : rate, 'set:respiration:transfer_time' : time } );
 							modal.closeModal();
 						});
 						
@@ -203,8 +277,10 @@
 						
 						// bind apply button
 						$('.modal-button.apply').click(function() {
-							controls.etCO2.value = $('.strip-value.new').val();
-							controls.etCO2.displayValue();
+							rate = $('.strip-value.new').val();
+							time = $('.transfer-time').val();
+
+							simmgr.sendChange( { 'set:respiration:etco2' : rate, 'set:respiration:transfer_time' : time } );
 							modal.closeModal();
 						});
 						
@@ -251,8 +327,9 @@
 						
 						// bind apply button
 						$('.modal-button.apply').click(function() {
-							controls.Tperi.value = parseFloat($('.strip-value.new').val());
-							controls.Tperi.displayValue();
+//							controls.Tperi.value = parseFloat($('.strip-value.new').val());
+//							controls.Tperi.displayValue();
+							simmgr.sendChange( { 'set:general:temperature' : parseFloat($('.strip-value.new').val()) * 10, 'set:general:transfer_time' : $('.transfer-time option:selected').val() } );
 							modal.closeModal();
 						});
 						
@@ -278,7 +355,7 @@
 				url: BROWSER_AJAX + 'ajaxGetChestRiseControlContent.php',
 				type: 'post',
 				async: false,
-				data: {ModalTitle: 'Control Chest Rise', ControlTitle: "Chest Rise", ChestRise: controls.chestRise.active},
+				data: {ModalTitle: 'Control Chest Movement', ControlTitle: "Chest Movement", ChestRise: controls.chestRise.active},
 				dataType: 'json',
 				success: function(response) {
 					if(response.status == AJAX_STATUS_OK) {
@@ -286,9 +363,15 @@
 						modal.bindCloseModal();
 						
 						// bind change in control
-						$('.modal-button.apply').click(function() {
-							controls.chestRise.active = $('select.chest-rise option:selected').val()
-							modal.closeModal();
+//						$('.modal-button.apply').click(function() {
+//							controls.chestRise.active = $('select.chest-rise option:selected').val()
+//							modal.closeModal();
+//						});
+
+						// bind change in checst movement
+						$('select.chest-rise').change(function() {
+							var chestMovement = ($(this).children('option:selected').val() == 'true') ? 1 : 0;
+							simmgr.sendChange({'set:respiration:chest_movement': chestMovement});
 						});
 					
 					}
@@ -301,7 +384,7 @@
 				url: BROWSER_AJAX + 'ajaxGetPulseStrengthControlContent.php',
 				type: 'post',
 				async: false,
-				data: {ModalTitle: 'Control Pulse Strength', ControlTitle: "Pulse Strength", ChestRise: controls.chestRise.active},
+				data: {ModalTitle: 'Control Pulse Strength', ControlTitle: "Pulse Strength", PulseStrength: controls.pulseStrength.value},
 				dataType: 'json',
 				success: function(response) {
 					if(response.status == AJAX_STATUS_OK) {
@@ -312,12 +395,10 @@
 						$('input.pulse-strength').prop('checked', false);
 						$('input.pulse-strength[value=' + controls.pulseStrength.value + ']').prop('checked', true);
 						
-						// bind change in control
-						$('.modal-button.apply').click(function() {
-							controls.pulseStrength.value = $('input.pulse-strength:checked').val();
-							modal.closeModal();
+						// bind change
+						$('input.pulse-strength').change(function() {
+							simmgr.sendChange({'set:cardiac:pulse_strength': $(this).val()});
 						});
-					
 					}
 				}
 			});
@@ -443,8 +524,8 @@
 												
 						// bind change in control
 						$('.modal-button.apply').click(function() {
-							controls.nbp.systolicValue = $('.strip-value.new.systolic').val();
-							controls.nbp.diastolicValue = $('.strip-value.new.diastolic').val();
+							//controls.nbp.systolicValue = $('.strip-value.new.systolic').val();
+							//controls.nbp.diastolicValue = $('.strip-value.new.diastolic').val();
 							
 							// if hr controls are not linked, save reported value as previous.
 							if(controls.nbp.linkedHR == true) {
@@ -453,11 +534,18 @@
 							
 							}
 							
-							controls.nbp.reportedHRValue = $('.strip-value.new.linked-hr').val();
+							//controls.nbp.reportedHRValue = $('.strip-value.new.linked-hr').val();
 							
 							// update displayed values for NBP
-							controls.nbp.updateDisplayedNBP();
-
+							//controls.nbp.updateDisplayedNBP();
+							
+							// report dis, sys, and linked HR
+							simmgr.sendChange({
+												'set:cardiac:bps_dia': $('.strip-value.new.diastolic').val(), 
+												'set:cardiac:bps_sys': $('.strip-value.new.systolic').val(),
+											    'set:cardiac:nibp_rate': $('.strip-value.new.linked-hr').val(),
+												'set:cardiac:transfer_time': $('.transfer-time option:selected').val()
+											});
 							modal.closeModal();
 						});
 					}
@@ -471,16 +559,16 @@
 				type: 'post',
 				async: false,
 				dataType: 'json',
-				data: {'profileINI': profile.profileINI},
+				data: {'vocals': JSON.stringify(scenario.scenarioVocals)},
 				success: function(response) {
 					if(response.status == AJAX_STATUS_OK) {
 						modal.showModal(response);
 						
 						// highlight previous vocal file
 						$('#vocal-list li a span').each(function() {
-							if($(this).html() == controls.vocals.fileName) {
+							if($(this).parent().attr('data-filename') == controls.vocals.fileName) {
 								$(this).addClass('selected');
-								controls.vocals.audio.src = BROWSER_VOCALS + controls.vocals.fileName;
+								controls.vocals.audio.src = BROWSER_SCENARIOS_VOCALS + controls.vocals.fileName;
 								controls.vocals.audio.loop = false;
 							}
 						});
@@ -493,25 +581,35 @@
 						
 						// bind filename click
 						$('#vocal-list li a').click(function() {
-							controls.vocals.fileName = $(this).children('span').html();
+							controls.vocals.fileName = $(this).attr('data-filename');
 							$('#vocal-list li a span').removeClass('selected');
 							$(this).children('span').addClass('selected');
-							controls.vocals.audio.src = BROWSER_VOCALS + controls.vocals.fileName;
+							controls.vocals.audio.src = BROWSER_SCENARIOS_VOCALS + controls.vocals.fileName;
+							simmgr.sendChange({
+								'set:vocals:filename': controls.vocals.fileName
+							});
+
 						});
 						$('#vocal-list li a').dblclick(function() {
-							controls.vocals.fileName = $(this).children('span').html();
+							controls.vocals.fileName = $(this).attr('data-filename');
 							$('#vocal-list li a span').removeClass('selected');
 							$(this).children('span').addClass('selected');
-							controls.vocals.audio.src = BROWSER_VOCALS + controls.vocals.fileName;
+							controls.vocals.audio.src = BROWSER_SCENARIOS_VOCALS + controls.vocals.fileName;
 							controls.vocals.audio.load();
 							controls.vocals.audio.play();
+							simmgr.sendChange({
+								'set:vocals:filename': controls.vocals.fileName,
+								'set:vocals:play': 1
+							});
+
 						});
 						
 						// play button
 						$('#audio-control-play').click(function() {
-							if(controls.vocals.fileName != '') {
+							if(controls.vocals.fileName != '' && controls.vocals.mute != true) {
 								controls.vocals.audio.load();
-								controls.vocals.audio.play();							
+								controls.vocals.audio.play();
+								simmgr.sendChange({'set:vocals:play': 1});								
 							}
 						});
 						
@@ -522,6 +620,7 @@
 								controls.vocals.repeat = false;
 								$('#audio-control-repeat img').removeClass('selected');							
 								controls.vocals.audio.loop = false;
+								simmgr.sendChange({'set:vocals:play': 0});
 							}
 						});
 						
@@ -529,13 +628,16 @@
 						$('#audio-control-repeat').click(function() {
 							if(controls.vocals.repeat == false) {
 								controls.vocals.repeat = true;
-								$(this).children('img').addClass('selected');
-								controls.vocals.audio.loop = true;
+								
+								// set repeat bit
+								simmgr.sendChange({'set:vocals:repeat': 1});
 							} else {
 								controls.vocals.repeat = false;
-								$(this).children('img').removeClass('selected');							
-								controls.vocals.audio.loop = false;
+								
+								// clear repeat bit
+								simmgr.sendChange({'set:vocals:repeat': 0});
 							}
+							controls.vocals.displayRepeat();
 						});
 						
 						// volume control
@@ -545,7 +647,12 @@
 							max: controls.vocals.maxValue,
 							step: controls.vocals.increment,
 							slide: function(event, ui) {
-								controls.vocals.value = ui.value;
+//								controls.vocals.value = ui.value;
+
+								// set volume control
+								simmgr.sendChange({'set:vocals:volume': ui.value});
+								// set volume as percentage
+								controls.vocals.audio.volume = ui.value / 10;
 							}
 						});
 						
@@ -556,15 +663,27 @@
 						$('#mute-volume').change(function() {
 							if($(this).prop('checked') == true) {
 								controls.vocals.mute = true;
+
+								// set mute
+								simmgr.sendChange({'set:vocals:mute': 1});
+								// mute
+								controls.vocals.audio.mute = true;
+								
 							} else {
-								controls.vocals.mute = false;							
+								controls.vocals.mute = false;
+					
+								// clear mute
+								simmgr.sendChange({'set:vocals:mute': 0});								
+								// mute
+								controls.vocals.audio.mute = false;
 							}
 							$('#mute-volume').prop('checked', controls.vocals.mute);
 							controls.vocals.displayMute();							
+							controls.vocals.slideBar.slider("option", "disabled", controls.vocals.mute);
 						});
 						
 						// init mute display
-						controls.vocals.displayMute();							
+						controls.vocals.slideBar.slider("option", "disabled", controls.vocals.mute);
 						
 						// bind close of modal to stop sound
 						$('a.close_modal, button.cancel').click(function() {
@@ -587,7 +706,7 @@
 				type: 'post',
 				async: false,
 				dataType: 'json',
-				data: {'side': 'left', 'soundID': controls.leftLung.soundID},
+				data: {'side': 'left', 'fileName': controls.leftLung.fileName},
 				success: function(response) {
 					if(response.status == AJAX_STATUS_OK) {
 						modal.showModal(response);
@@ -605,7 +724,7 @@
 							max: controls.leftLung.maxValue,
 							step: controls.leftLung.increment,
 							slide: function(event, ui) {
-								controls.leftLung.value = ui.value;
+								simmgr.sendChange({'set:respiration:left_lung_sound_volume': ui.value});
 							}
 						});
 						
@@ -624,11 +743,13 @@
 							}
 							$('#mute-volume').prop('checked', controls.leftLung.mute);
 							controls.leftLung.displayMute();							
+							simmgr.sendChange({'set:respiration:left_lung_sound_mute': (controls.leftLung.mute == true) ? 1 : 0});						
 						});
 						
 						// change of sound select
 						$('#sound-select').change(function() {
-							controls.leftLung.soundID = $(this).children('option:selected').val();
+							controls.leftLung.fileName = $(this).children('option:selected').val();
+							simmgr.sendChange({'set:respiration:left_lung_sound': controls.leftLung.fileName});						
 						});
 						
 						modal.bindCloseModal();
@@ -643,7 +764,7 @@
 				type: 'post',
 				async: false,
 				dataType: 'json',
-				data: {'side': 'right', 'soundID': controls.rightLung.soundID},
+				data: {'side': 'right', 'fileName': controls.rightLung.fileName},
 				success: function(response) {
 					if(response.status == AJAX_STATUS_OK) {
 						modal.showModal(response);
@@ -661,7 +782,7 @@
 							max: controls.rightLung.maxValue,
 							step: controls.rightLung.increment,
 							slide: function(event, ui) {
-								controls.rightLung.value = ui.value;
+								simmgr.sendChange({'set:respiration:right_lung_sound_volume': ui.value});
 							}
 						});
 						
@@ -680,11 +801,13 @@
 							}
 							$('#mute-volume').prop('checked', controls.rightLung.mute);
 							controls.rightLung.displayMute();							
+							simmgr.sendChange({'set:respiration:right_lung_sound_mute': (controls.rightLung.mute == true) ? 1 : 0});						
 						});
 						
 						// change of sound select
 						$('#sound-select').change(function() {
-							controls.rightLung.soundID = $(this).children('option:selected').val();
+							controls.rightLung.fileName = $(this).children('option:selected').val();
+							simmgr.sendChange({'set:respiration:right_lung_sound': controls.rightLung.fileName});						
 						});
 						
 						modal.bindCloseModal();
@@ -699,7 +822,7 @@
 				type: 'post',
 				async: false,
 				dataType: 'json',
-				data: {'soundID': controls.heartSound.soundID},
+				data: {'soundName': controls.heartSound.soundName},
 				success: function(response) {
 					if(response.status == AJAX_STATUS_OK) {
 						modal.showModal(response);
@@ -717,7 +840,7 @@
 							max: controls.heartSound.maxValue,
 							step: controls.heartSound.increment,
 							slide: function(event, ui) {
-								controls.heartSound.value = ui.value;
+								simmgr.sendChange({'set:cardiac:heart_sound_volume': ui.value});
 							}
 						});
 						
@@ -735,12 +858,14 @@
 								controls.heartSound.mute = false;							
 							}
 							$('#mute-volume').prop('checked', controls.heartSound.mute);
-							controls.heartSound.displayMute();							
+							simmgr.sendChange({'set:cardiac:heart_sound_mute': (controls.heartSound.mute == true) ? 1 : 0});
+							controls.heartSound.displayMute();
+							
 						});
 						
 						// change of sound select
 						$('#sound-select').change(function() {
-							controls.heartSound.soundID = $(this).children('option:selected').val();
+							simmgr.sendChange({'set:cardiac:heart_sound': $(this).children('option:selected').val()});
 						});
 						
 						modal.bindCloseModal();

@@ -67,6 +67,29 @@
 		.control-modal-div.pulse-strength {
 			width: 315px;
 		}
+		.control-modal-div.heart-rhythm {
+			float: left;
+			height: 70px;
+		}
+			.control-modal-div.heart-rhythm.ecg {
+				width: 200px;
+			}
+			.control-modal-div.heart-rhythm.pulses {
+				width: 125px;
+			}
+			.control-modal-div.heart-rhythm.frequency {
+				width: 125px;
+			}
+			.control-modal-div.heart-rhythm.amplitude {
+				width: 125px;
+			}
+			.control-modal-div.heart-rhythm.pea {
+				width: 50px;
+				margin: 0;
+			}
+			.control-modal-div.heart-rhythm.pea input {
+				margin-top: 8px;
+			}
 	
 	.modal-input-label {
 		clear: both;

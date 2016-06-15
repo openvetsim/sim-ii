@@ -12,7 +12,7 @@
 			modalUnitsLabel: 'BPM',
 			
 			init: function() {
-				if ( ! ( isLocalDisplay() ) )
+				if ( ! ( simmgr.isLocalDisplay() ) )
 				{
 					clearTimeout(controls.heartRate.beatTimeout);
 					controls.heartRate.beatTimeout = setTimeout(controls.heartRate.setSynch, Math.round((60 / controls.heartRate.value) * 1000));
@@ -37,7 +37,7 @@
 			
 			setSynch: function() {
 				chart.status.cardiac.synch = true;
-				if ( ! ( isLocalDisplay() ) )
+				if ( ! ( simmgr.isLocalDisplay() ) )
 				{
 					controls.heartRate.beatTimeout = setTimeout(controls.heartRate.setSynch, Math.round((60 / controls.heartRate.value) * 1000));
 				}
@@ -58,6 +58,37 @@
 			}
 		},
 		
+		heartRhythm: {
+			currentRhythm: 'sinus',
+			pea: false,
+			vpc: 'none',
+			vpcFrequency: 10,
+			vfibAmplitude: 'low',
+			
+			setHeartRhythmModal: function() {
+				var newECG = $('.ecg-select').children('option:selected').val();
+				var newECGType = $('.ecg-select').children('option:selected').attr('data-type');
+				
+				// hide all options
+				$('.control-modal-div.pea, .control-modal-div.amplitude, .control-modal-div.pulses, .control-modal-div.frequency').hide();
+				
+				// if pulse ECG then show PEA
+				if(newECGType == 'pulse') {
+					$('.control-modal-div.pea').show();							
+				}
+				
+				// sinus - pulses
+				if(newECG == 'sinus') {
+					$('.control-modal-div.pulses, .control-modal-div.frequency').show();											
+				}
+
+				// vfib - pulses
+				if(newECG == 'vfib') {
+					$('.control-modal-div.amplitude').show();											
+				}
+			}
+		},
+		
 		awRR: {
 			value: 30,
 			minValue: 1,
@@ -69,7 +100,7 @@
 			modalUnitsLabel: 'BPM',
 			
 			init: function() {
-				if ( ! ( isLocalDisplay() ) )
+				if ( ! ( simmgr.isLocalDisplay() ) )
 				{
 					clearTimeout(controls.awRR.beatTimeout);
 					controls.awRR.beatTimeout = setTimeout(controls.awRR.setSynch, Math.round((60 / controls.awRR.value) * 1000));
@@ -78,28 +109,31 @@
 			},
 			
 			displayValue: function() {
+				if ( ! ( simmgr.isLocalDisplay() ) )
+				{
+// we do not want to reset the timer for awRR if a trend is occurring...
+// at a scan rate of 500 msec the timer will just keep on getting reset.
+// no waveform appears until the trend is completed.
+//					clearTimeout(controls.awRR.beatTimeout);
+//					controls.awRR.beatTimeout = setTimeout(controls.awRR.setSynch, Math.round((60 / controls.awRR.value) * 1000));
+				}
 				$('.awRR a.alt-control-rate').html(controls.awRR.value + '<span class="vs-lower-label"> bpm</span>');							
 			},
 			
 			setRespRate: function() {
 				// get latest value from modal
-				controls.awRR.value = $('.strip-value.new').val();
-				$('#display-awRR').html(controls.awRR.value);							
+				$('#display-awRR').html(controls.awRR.value);						
+				rate = $('.strip-value.new').val();
+				time = $('.transfer-time').val();
 				
 				// set controls and update new value
 				controls.awRR.slideBar.slider("value", controls.awRR.value);
-				
-				if ( ! ( isLocalDisplay() ) )
-				{
-					clearTimeout(controls.awRR.beatTimeout);
-					controls.awRR.beatTimeout = setTimeout(controls.awRR.setSynch, Math.round((60 / controls.awRR.value) * 1000));
-				}
-				controls.awRR.displayValue();											
+				simmgr.sendChange( { 'set:respiration:rate' : rate, 'set:respiration:transfer_time' : time } );
 			},
 			
 			setSynch: function() {
 				chart.status.resp.synch = true;
-				if ( ! ( isLocalDisplay() ) )
+				if ( ! ( simmgr.isLocalDisplay() ) )
 				{
 					controls.awRR.beatTimeout = setTimeout(controls.awRR.setSynch, Math.round((60 / controls.awRR.value) * 1000));
 				}
@@ -121,8 +155,7 @@
 		},
 		
 		pulseStrength: {
-			strength: ["None", "Weak", "Medium", "Strong"],
-			value: "Medium"
+			value: "medium"
 		},
 		
 		ekg: {
@@ -200,10 +233,6 @@
 			slideBar: '',
 			increment: 0.1,
 			
-			leadsConnected: false,
-			connectHTML: 'Disconnect SpO2 Sensor',
-			disconnectHTML: "Connect SpO2 Sensor",
-			
 			modalUnitsLabel: '&deg;F',
 			
 			init: function() {
@@ -211,7 +240,7 @@
 			},
 			
 			setValue: function(newValue) {
-				console.log(newValue);
+//console.log(newValue);
 				if(newValue < controls.Tperi.minValue || isNaN(newValue) == true) {
 					controls.Tperi.value = controls.Tperi.minValue;			
 				} else if(newValue > controls.Tperi.maxValue) {
@@ -219,7 +248,7 @@
 				} else {
 					controls.Tperi.value = newValue;
 				}
-				controls.Tperi.displayValue();
+//				controls.Tperi.displayValue();
 			},
 			validateNewValue: function() {
 				var newValue = parseFloat($('.strip-value.new').val());
@@ -260,10 +289,18 @@
 			displayMute: function() {
 				if(controls.vocals.mute == true) {
 					$('#vocals-mute').show();
-					controls.vocals.slideBar.slider("option", "disabled", true);
 				} else {
 					$('#vocals-mute').hide();				
-					controls.vocals.slideBar.slider("option", "disabled", false);
+				}
+			},
+			
+			displayRepeat: function() {
+				if(controls.vocals.repeat == true) {
+					$('#audio-control-repeat').children('img').addClass('selected');
+					controls.vocals.audio.loop = true;
+				} else {
+					$('#audio-control-repeat').children('img').removeClass('selected');
+					controls.vocals.audio.loop = false;				
 				}
 			}
 		},
@@ -409,7 +446,7 @@
 		},
 		
 		leftLung: {
-			soundID: 0,
+			fileName: '',
 			slideBar: '',
 			minValue: 1,
 			maxValue: 10,
@@ -424,16 +461,15 @@
 			displayMute: function() {
 				if(controls.leftLung.mute == true) {
 					$('#left-lung-mute').show();
-					controls.leftLung.slideBar.slider("option", "disabled", true);
 				} else {
 					$('#left-lung-mute').hide();				
-					controls.leftLung.slideBar.slider("option", "disabled", false);
 				}
+				controls.leftLung.slideBar.slider("option", "disabled", controls.leftLung.mute);
 			}
 		},
 		
 		rightLung: {
-			soundID: 0,
+			fileName: '',
 			slideBar: '',
 			minValue: 1,
 			maxValue: 10,
@@ -448,16 +484,15 @@
 			displayMute: function() {
 				if(controls.rightLung.mute == true) {
 					$('#right-lung-mute').show();
-					controls.rightLung.slideBar.slider("option", "disabled", true);
 				} else {
 					$('#right-lung-mute').hide();				
-					controls.rightLung.slideBar.slider("option", "disabled", false);
 				}
+				controls.rightLung.slideBar.slider("option", "disabled", controls.rightLung.mute);
 			}
 		},
 		
 		heartSound: {
-			soundID: 0,
+			soundName: 'normal',
 			slideBar: '',
 			minValue: 1,
 			maxValue: 10,
@@ -474,8 +509,6 @@
 					controls.heartSound.slideBar.slider("option", "disabled", false);
 				}
 			}
-		},
-		
-		
+		}
 
 	}

@@ -12,15 +12,15 @@
 	}
 	
 	// get profile info
-	$profileINI = $_POST['profileINI'];
-	
+	$vocalsArray = json_decode(str_replace("\\", "", dbClass::valuesFromPost('vocals')), TRUE);
 	$fileList = '
 		<ul id="vocal-list">
 	';
-	foreach($profileINI['vocalsLib']['vocalsSound'] as $vocalFileName) {
+
+	foreach($vocalsArray['file'] as $vocalArray) {
 		$fileList .= '
 			<li>
-				<a href="javascript: void(2);"><img class="vocal-list-image" src="' . BROWSER_IMAGES . 'sound.png"><span class="vocal-list-name">' . $vocalFileName . '</span></a>
+				<a data-filename="' . $vocalArray['filename'] . '" href="javascript: void(2);"><img class="vocal-list-image" src="' . BROWSER_IMAGES . 'sound.png"><span class="vocal-list-name">' . $vocalArray['title'] . '</span></a>
 			</li>
 		';
 	}

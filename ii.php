@@ -10,12 +10,21 @@
 	$userRow = adminClass::getUserRowFromSession();
 	$userName = $userRow['UserFirstName'] . " " . $userRow['UserLastName'];
 	
-	// get profile ini
-	$profileURL = parse_ini_file(SERVER_PROFILES . "profile.ini", TRUE);
-	$profileURL = SERVER_PROFILES . $profileURL['settings']['defaultProfile'];
-	$profileINI = json_encode(parse_ini_file($profileURL, TRUE));
-
-	$profileINI_Decoded = json_decode($profileINI, TRUE);
+	// get scenario list
+	$scenarioList = scandir(SERVER_SCENARIOS);
+	$scenarioContent = '';
+	foreach($scenarioList as $key => $scenario) {
+		if(is_dir(SERVER_SCENARIOS . $scenario) === TRUE) {
+			continue;
+		}
+		
+		// open file, create scenario dropdown
+		$scenarioFileArray = pathinfo(SERVER_SCENARIOS . $scenario);
+		$scenarioHeader = scenarioXML::getScenarioHeaderArray($scenarioFileArray['filename']);
+		$scenarioContent .= '
+			<option value="' . $scenario . '">' . $scenarioHeader['title']['name'] . '</option>
+		';
+	}
 ?>
 <!DOCTYPE html>
 <html>
@@ -28,7 +37,7 @@
 				menu.init();
 				
 				// init profile data
-				profile.profileINI = <?= $profileINI; ?>;
+				scenario.loadScenario();
 				profile.init();
 				
 				chart.init();
@@ -104,7 +113,6 @@
 				<h1 class="welcome-title">Welcome <?= $userName; ?></h1>
 				<div class="profile-display scenario">
 					Scenario: <span id="scenario-name-display">Default Scenario: Frame 1</span>
-					<img src="<?= BROWSER_IMAGES; ?>ajax_loader.gif">
 				</div>
 				<ul id="main-nav">
 					<li class="with-sub-nav">
@@ -129,10 +137,13 @@
 						<a href="javascript:void(2);" onclick="modal.showUsers();">Users</a>
 					</li>
 					<li >
-						<a href="javascript:void(2);" onclick="modal.showEvents(); return false;">Inject Events</a>
+						<a href="javascript:void(2);" onclick="modal.showEvents(); return false;">Events</a>
 					</li>
 					<li class="logout">
 						<a href="index.php">Logout</a>						
+					</li>
+					<li class="logout">
+						Version: <?= VERSION_MAJOR . '.' . VERSION_MINOR; ?>						
 					</li>
 				</ul>
 			</div>
@@ -184,7 +195,7 @@
 						<a href="javascript: void(0)" onclick="modal.heartRate(); return false;" class="display-rate color-green">70</a>
 					</div>
 					<div class="vs-controls clearer">
-						<a href="javascript: void(0)" class="strip-label color-white">etCO<sub>2</sub></a>
+						<a href="javascript: void(0)" onclick="modal.etCO2(); return false;" class="strip-label color-white">ETCO<sub>2</sub></a>
 					</div>
 					<div id="vs-etCO2" class="vs-controls">
 						<a href="javascript: void(0)" onclick="modal.etCO2(); return false;" class="display-rate color-white">75</a>
@@ -206,7 +217,7 @@
 					<div id="vs-nbp" class="alt-control">
 						<a class="alt-control-title color-red" href="javascript: void(0)" onclick="modal.nbp(); return false;">NIBP</a>
 						<a id="display-nbp" class="alt-control-rate nbip color-red" href="javascript: void(0)" onclick="modal.nbp(); return false;"><span id="displayed-systolic">140</span>/<span id="displayed-diastolic">75</span> (<span id="displayed-meanNBP">80</span>) <span class="nbip-label">mmHg</span></a>
-						<a id="display-nbp-hr" class="alt-control-rate color-red" href="javascript: void(0)" onclick="modal.nbp(); return false;"><span style="font-size: 24px;">PR</span> <span id="displayed-reportedHR">75</span></a>
+						<a id="display-nbp-hr" class="alt-control-rate color-red" href="javascript: void(0)" onclick="modal.nbp(); return false;"><span style="font-size: 18px;">PR</span> <span id="displayed-reportedHR">75</span></a>
 					</div>
 				</div>
 				<button id="startStopButton">Stop Status Updates</button>
@@ -217,7 +228,26 @@
 				</div> -->
 			</div>
 			
-			<div id="event-monitor" class="clearer float-left ii-border">
+			<div id="media-col">
+				<div id="scenario-select" class="float-left clearer ii-border">
+					<h2 class="float-left clearer">Scenario Select:</h2>
+					<select class=" clearer float-left">
+						<?= $scenarioContent; ?>
+					</select>
+					<button id="scenario-button" class="scenario-button float-left">Start Scenario</button>
+					<h2 id="scenario-video-label">Start Video With Scenario</h2>
+					<input type="checkbox" id="start-video" class="float-left">
+					<p id="scenario-run-time" class="clearer float-left">Scenario Running time: <span id="scenario-running-time">01:01</span></p>
+					<button id="scenario-terminate-button" class="scenario-button float-left">Terminate Scenario</button>
+				</div>
+				<div id="media-select" class="float-left clearer ii-border">
+					<h2 class="float-left clearer">Media Select:</h2>
+					<select class="clearer float-left">
+					</select>
+					<button id="media-button" class="scenario-button float-left">Show Media</button>
+				</div>
+			</div>
+			<div id="event-monitor" class="float-right ii-border">
 				<table>
 					<tr>
 						<td class="time-stamp">00:00:00</td>
@@ -245,32 +275,8 @@
 					</tr>
 				</table>
 			</div>
+
 			<div id="event-library" class="float-left"></div>
-			<div id="scenario-select" class="float-left clearer ii-border">
-				<h2 class="float-left clearer">Scenario Select:</h2>
-				<select class=" clearer float-left">
-					<option value="1">Default Scenario</option>
-					<option value="1">Dog - 10kg</option>
-					<option value="1">Dog - 20kg</option>
-					<option value="1">Dog - 30kg</option>
-					<option value="1">Dog - 40kg</option>
-					<option value="1">A Very Long Scenario Name</option>
-				</select>
-				<button id="scenario-button" class="scenario-button float-left">Start Scenario</button>
-				<h2 id="scenario-video-label">Start Video With Scenario</h2>
-				<input type="checkbox" id="start-video" class="float-left">
-				<p id="scenario-run-time" class="clearer float: left;">Scenario Running time: <span id="scenario-run-minutes">01</span>:<span id="scenario-run-seconds">01</span></p>
-			</div>
-			<div id="media-select" class="float-left ii-border">
-				<h2 class="float-left clearer">Media Select:</h2>
-				<select class=" clearer float-left">
-					<option value="1">MRI</option>
-					<option value="1">Dog Information</option>
-					<option value="1">More Information</option>
-					<option value="1">More Informationore Information</option>
-				</select>
-				<button id="media-button" class="scenario-button float-left">Show Media</button>
-			</div>
 
 			<div class="clearer"></div>
 		</div> <!-- sitewrapper -->

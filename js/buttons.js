@@ -33,11 +33,18 @@
 		},
 		
 		bindVSButton: function(buttonType) {
-				if(controls[buttonType].leadsConnected == true) {
-					controls[buttonType].leadsConnected = false;
-				} else {
-					controls[buttonType].leadsConnected = true
+				var value = 0;
+				if(controls[buttonType].leadsConnected == false) {
+					value = 1;
 				}
-				buttons.setVSButton(buttonType);
+				
+				// send command based on button type
+				if(buttonType == 'ekg') {
+					simmgr.sendChange({'set:cardiac:ecg_indicator': value});
+				} else if(buttonType == 'SpO2') {
+					simmgr.sendChange({'set:respiration:spo2_indicator': value});					
+				} else if(buttonType == 'CO2') {
+					simmgr.sendChange({'set:respiration:etco2_indicator': value});										
+				}
 		}
 	}
