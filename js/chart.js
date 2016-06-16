@@ -199,42 +199,47 @@
 			chart.drawCursor('ekg');
 	
 //console.log(chart.ekg.patternIndex)
-			
-			// see if we need to draw waveform or if we are in background
-			if(chart.ekg.stopFlag == true) {
-				y = 0;
-				controls.heartRate.audio.pause();
-			} else if(chart.ekg.rhythmIndex == 2) {
-				// generate random noise between range
-				y = (Math.floor((Math.random() * chart.ekg.yOffset)) * -1) + (chart.ekg.yOffset / 2);
+			if ( ( isVitalsMonitor == 0 ) || ( controls.ekg.leadsConnected == true ) ) {
+				// see if we need to draw waveform or if we are in background
+				if(chart.ekg.stopFlag == true) {
+					y = 0;
+					controls.heartRate.audio.pause();
+				} else if(chart.ekg.rhythmIndex == 2) {
+					// generate random noise between range
+					y = (Math.floor((Math.random() * chart.ekg.yOffset)) * -1) + (chart.ekg.yOffset / 2);
 
-			} else if(chart.status.cardiac.synch == false && chart.ekg.patternIndex == 0) {
-				// generate random noise between range
-				y = Math.floor((Math.random() * chart.ekg.noiseMax));
-				if(y > (chart.ekg.noiseMax / 2)) {
-					y -= (chart.ekg.noiseMax / 2);
+				} else if(chart.status.cardiac.synch == false && chart.ekg.patternIndex == 0) {
+					// generate random noise between range
+					y = Math.floor((Math.random() * chart.ekg.noiseMax));
+					if(y > (chart.ekg.noiseMax / 2)) {
+						y -= (chart.ekg.noiseMax / 2);
+					}
+				} else if(chart.status.cardiac.synch == true || chart.ekg.patternIndex > 0) {
+					y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.patternIndex] * -1;
+					
+					// beep?
+					if(y == chart.ekg.beepValue && chart.ekg.beepFlag == true && chart.ekg.stopFlag == false) {
+						// controls.heartRate.audio.load();  // Don't do this!!
+						controls.heartRate.audio.play();
+					}
+					
+					// increment pointers
+					chart.ekg.patternIndex++;
 				}
-			} else if(chart.status.cardiac.synch == true || chart.ekg.patternIndex > 0) {
-				y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.patternIndex] * -1;
 				
-				// beep?
-				if(y == chart.ekg.beepValue && chart.ekg.beepFlag == true && chart.ekg.stopFlag == false) {
-					// controls.heartRate.audio.load();  // Don't do this!!
-					controls.heartRate.audio.play();
+				// clear out sync flag
+				if(chart.status.cardiac.synch == true) {
+					chart.status.cardiac.synch = false;
 				}
 				
-				// increment pointers
-				chart.ekg.patternIndex++;
+				// are we beyond pattern?
+				if(chart.ekg.patternIndex >= chart.ekg.length) {
+					chart.ekg.patternIndex = 0;
+				}
 			}
-			
-			// clear out sync flag
-			if(chart.status.cardiac.synch == true) {
-				chart.status.cardiac.synch = false;
-			}
-			
-			// are we beyond pattern?
-			if(chart.ekg.patternIndex >= chart.ekg.length) {
-				chart.ekg.patternIndex = 0;
+			else
+			{
+				y = 0;
 			}
 			
 			y += chart.ekg.yOffset;
@@ -276,27 +281,32 @@
 	
 //console.log(chart.ekg.patternIndex)
 			
-			// see if we need to draw waveform or if we are in background
-			if((chart.status.resp.synch == false && chart.resp.patternIndex == 0) || chart.resp.stopFlag == true) {
-				// generate random noise between range
-				y = 0;
-			} else if(chart.status.resp.synch == true || chart.resp.patternIndex > 0) {
-				y = chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.patternIndex] * -1;
+			if ( ( isVitalsMonitor == 0 ) || ( controls.CO2.leadsConnected == true ) ) {
+				// see if we need to draw waveform or if we are in background
+				if((chart.status.resp.synch == false && chart.resp.patternIndex == 0) || chart.resp.stopFlag == true) {
+					// generate random noise between range
+					y = 0;
+				} else if(chart.status.resp.synch == true || chart.resp.patternIndex > 0) {
+					y = chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.patternIndex] * -1;
+					
+					// increment pointers
+					chart.resp.patternIndex++;
+				}
 				
-				// increment pointers
-				chart.resp.patternIndex++;
+				// clear out sync flag
+				if(chart.status.resp.synch == true) {
+					chart.status.resp.synch = false;
+				}
+				
+				// are we beyond pattern?
+				if(chart.resp.patternIndex >= chart.resp.length) {
+					chart.resp.patternIndex = 0;
+				}
 			}
-			
-			// clear out sync flag
-			if(chart.status.resp.synch == true) {
-				chart.status.resp.synch = false;
+			else
+			{
+				y = 0;
 			}
-			
-			// are we beyond pattern?
-			if(chart.resp.patternIndex >= chart.resp.length) {
-				chart.resp.patternIndex = 0;
-			}
-			
 			y += chart.resp.yOffset;
 			
 			// create stroke

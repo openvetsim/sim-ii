@@ -91,10 +91,20 @@ var simmgr = {
 					
 					// ekg indicator
 					if(typeof(response.cardiac.ecg_indicator) != "undefined") {
+						var changed = false;
 						if( response.cardiac.ecg_indicator == 1) {
+							if ( controls.ekg.leadsConnected == false ) {
+								changed = true;
+							}
 							controls.ekg.leadsConnected = true;
 						} else {
+							if ( controls.ekg.leadsConnected == true ) {
+								changed = true;
+							}
 							controls.ekg.leadsConnected = false;					
+						}
+						if ( changed ) {
+							controls.heartRate.displayValue();
 						}
 						buttons.setVSButton('ekg');
 					}
@@ -232,20 +242,41 @@ var simmgr = {
 					
 					// etco2 indicator
 					if(typeof(response.respiration.etco2_indicator) != "undefined") {
+						var changed = false;
 						if( response.respiration.etco2_indicator == 1) {
+							if ( controls.CO2.leadsConnected == false ) {
+								changed = true;
+							}
 							controls.CO2.leadsConnected = true;
 						} else {
+							if ( controls.CO2.leadsConnected == true ) {
+								changed = true;
+							}
 							controls.CO2.leadsConnected = false;					
+						}
+						if ( changed ) {
+							controls.awRR.displayValue();
+							controls.etCO2.displayValue();
 						}
 						buttons.setVSButton('CO2');
 					}
 					
 					// spo2 indicator
 					if(typeof(response.respiration.spo2_indicator) != "undefined") {
+						var changed = false;
 						if( response.respiration.spo2_indicator == 1) {
+							if ( controls.SpO2.leadsConnected == false ) {
+								changed = true;
+							}
 							controls.SpO2.leadsConnected = true;
 						} else {
+							if ( controls.SpO2.leadsConnected == true ) {
+								changed = true;
+							}
 							controls.SpO2.leadsConnected = false;					
+						}
+						if ( changed ) {
+							controls.SpO2.displayValue();
 						}
 						buttons.setVSButton('SpO2');
 					}

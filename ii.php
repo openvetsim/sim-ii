@@ -32,6 +32,7 @@
 		<?php require_once(SERVER_INCLUDES . "header.php"); ?>
 		
 		<script type="text/javascript">
+var isVitalsMonitor = 0;	// Student Display Flag
 			$(document).ready(function() {
 				// init menu
 				menu.init();

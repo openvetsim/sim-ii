@@ -54,7 +54,12 @@
 			},
 			
 			displayValue: function() {
-				$('#vs-heartRhythm a.display-rate').html(controls.heartRate.value + '<span class="vs-upper-label"> bpm</span>');
+				if ( ( isVitalsMonitor == 0 ) || ( controls.ekg.leadsConnected == true ) ) {
+					$('#vs-heartRhythm a.display-rate').html(controls.heartRate.value + '<span class="vs-upper-label"> bpm</span>');
+				}
+				else {
+					$('#vs-heartRhythm a.display-rate').html('---<span class="vs-upper-label"> bpm</span>');
+				}
 			}
 		},
 		
@@ -117,7 +122,12 @@
 //					clearTimeout(controls.awRR.beatTimeout);
 //					controls.awRR.beatTimeout = setTimeout(controls.awRR.setSynch, Math.round((60 / controls.awRR.value) * 1000));
 				}
-				$('.awRR a.alt-control-rate').html(controls.awRR.value + '<span class="vs-lower-label"> bpm</span>');							
+				if ( ( isVitalsMonitor == 0 ) || ( controls.CO2.leadsConnected == true ) ) {
+					$('.awRR a.alt-control-rate').html(controls.awRR.value + '<span class="vs-lower-label"> bpm</span>');
+				}
+				else {
+					$('.awRR a.alt-control-rate').html('---<span class="vs-lower-label"> bpm</span>');
+				}
 			},
 			
 			setRespRate: function() {
@@ -192,7 +202,12 @@
 			},
 			
 			displayValue: function(){
-				$('#display-SpO2').html(controls.SpO2.value + '<span class="vs-lower-label"> %</span>');			
+				if ( ( isVitalsMonitor == 0 ) || ( controls.SpO2.leadsConnected == true ) ) {
+					$('#display-SpO2').html(controls.SpO2.value + '<span class="vs-lower-label"> %</span>');
+				}
+				else {
+					$('#display-SpO2').html('---<span class="vs-lower-label"> %</span>');
+				}
 			}
 
 		},
@@ -221,7 +236,13 @@
 			},
 			
 			displayValue: function() {
-				$('#vs-etCO2 a').html(controls.etCO2.value + '<span class="vs-upper-label"> mmHg</span>');						
+				if ( ( isVitalsMonitor == 0 ) || ( controls.CO2.leadsConnected == true ) ) {
+					$('#vs-etCO2 a').html(controls.etCO2.value + '<span class="vs-upper-label"> mmHg</span>');	
+				}
+				else {
+					$('#vs-etCO2 a').html('---<span class="vs-upper-label"> mmHg</span>');	
+				}
+									
 			}
 
 		},

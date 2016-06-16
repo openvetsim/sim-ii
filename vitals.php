@@ -13,12 +13,22 @@
   <head>
     <?php require_once(SERVER_INCLUDES . "header.php"); ?>
 	<script type="text/javascript">
+var isVitalsMonitor = 1;	// Student Display Flag
+
 			$(document).ready(function() {
 				
 				// init profile data
 				//profile.profileINI = <?= $profileINI; ?>;
 				//profile.init();
 				
+				// Resize Chart based on Window Size
+				Wwidth = $(window).width();
+				Wheight = $(window).height();
+				console.log("Screen size ", Wwidth, Wheight );
+				//$("#vsm").css({width:(Wwidth-40), height:(Wheight)} );
+				
+				//$("#vs-left-col").css({width:(Wwidth-190)} );
+				//$(".wide-col").css({width:(Wwidth-40)} );
 				chart.init();
 				simmgr.init();
 				controls.heartRate.init();
