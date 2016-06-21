@@ -16,19 +16,20 @@ var scenario = {
 	scenarioEvents: '',
 	scenarioMedia: '',
 	scenarioVocals: '',
-
+	
 	init: function() {
-		this.currentScenarioState = this.scenarioState.STOPPED;
-		simmgr.sendChange( {'set:scenario:state' : 'terminate'} );
-		scenario.stopScenario();
-console.log(this.currentScenarioState);
+//		this.currentScenarioState = this.scenarioState.STOPPED;
+//		simmgr.sendChange( {'set:scenario:state' : 'terminate'} );
+//		scenario.stopScenario();
+//console.log(this.currentScenarioState);
+		
 		// bind change of scenario
 //		$('#scenario-select select').change(function() {
 //			$('#scenario-name-display').html($(this).children('option:selected').html());
 //		});
 		
 		// bind change of start video check box
-		$('#start-video').change(function() {
+		$('#start-video').unbind().change(function() {
 			if($(this).is(':checked') == false) {
 				scenario.startVideoWithScenario = false;			
 			} else {
@@ -37,7 +38,7 @@ console.log(this.currentScenarioState);
 		});
 		
 		// bind click of scenario button
-		$('#scenario-button').click(function() {
+		$('#scenario-button').unbind().click(function() {
 			scenario.sendNextScenarioState();
 		});
 		
@@ -46,10 +47,14 @@ console.log(this.currentScenarioState);
 									border: '1px solid ' + buttons.disconnectColor
 									}).html('Terminate Scenario').hide();
 									
-		$('#scenario-terminate-button').click(function() {
+		$('#scenario-terminate-button').unbind().click(function() {
 			simmgr.sendChange( {'set:scenario:state' : 'Terminate'} );
 		});
-
+		
+		// bind change of scenario dropdown
+		$('#scenario-select select').unbind().change(function() {
+			simmgr.sendChange({'set:scenario:active': $(this).children('option:selected').val()});
+		});
 	},
 	
 	// start scenario
@@ -103,19 +108,19 @@ console.log(this.currentScenarioState);
 		switch(this.currentScenarioState) {
 			// if stopped, send currently selected scenario
 			case this.scenarioState.STOPPED:
-			// always set scenario name to default for now
-			simmgr.sendChange( {'set:scenario:active' : 'default'} );
-			break;
+				// always set scenario name to default for now
+				simmgr.sendChange( {'set:scenario:active' : scenario.currentScenarioFileName} );
+				break;
 			
 			// if paused, send running
 			case this.scenarioState.PAUSED:
-			simmgr.sendChange( {'set:scenario:state' : 'Running'} );
-			break;
+				simmgr.sendChange( {'set:scenario:state' : 'Running'} );
+				break;
 
 			// if running, send paused
 			case this.scenarioState.RUNNING:
-			simmgr.sendChange( {'set:scenario:state' : 'Paused'} );
-			break;
+				simmgr.sendChange( {'set:scenario:state' : 'Paused'} );
+				break;
 		}
 	},
 	
@@ -132,6 +137,9 @@ console.log(this.currentScenarioState);
 				scenario.scenarioEvents = response.events;
 				scenario.scenarioMedia = response.media;
 				scenario.scenarioVocals = response.vocals;
+				
+				// update scenario dropdown if needed
+				$('#scenario-select select').val(scenario.currentScenarioFileName);
 			}
 		});
 	}	

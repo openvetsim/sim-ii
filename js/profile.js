@@ -21,5 +21,8 @@
 				left: scenario.scenarioHeader.title.left + 'px'
 			});
 			
+			// update header
+			$('#scenario-name-display').html(scenario.scenarioHeader.title.name);			
+			
 		}
 	}

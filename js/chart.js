@@ -15,7 +15,37 @@
 				synch: false
 			}
 		},
-			
+		
+		// baseline params for introducing sinusoid amplitude into generated waveform
+		// params are fixed for no oscillations
+		baselineP1: 0,
+		baselineP2: 0,
+		baselineUnit: 0.1,
+		
+		// fibrillation parameters
+		fibP1: 0,
+		fibP2: 0,
+		fibP3: 0,
+		
+		// following params are fixed for high frequency filtering for vfib
+		fibUnit1: 12,
+		fibUnit2: 12,
+		fibP1Constant: 4.3,
+		fibP2Constant: 2.7,
+		// ------------------
+		
+		fibP3ListIndex: 0,
+//		fibP3List: [ 10, 9, 8, 9, 10, 11, 12, 13, 14,14,15,16,16,15,14,13,12,11, 10, 9, 8, 7, 6, 5, 4, 5, 6, 7, 8, 9, 10, 11, 12, 11, 10, 11, 12, 9, 8, 9 ],
+		fibP3List: [ 10, 9, 8, 9, 10, 11, 12, 13, 14,14,15,16,16,15,14,13,12,11],
+		fibDivide: 1, // amplitude of ventricular bibrillation
+						// 4 = fine
+						// 3 - medium
+						// 1 - coarse
+		
+		vfib: {
+			base: 0
+		},
+
 		// ekg strip parameters
 		ekg: {
 			width: 0,				// width of strip in pixels
@@ -27,7 +57,8 @@
 			yOffset: 0,				// yOffset of trace
 			xOffsetLeft: 10,		// left xOffset of trace
 			xOffsetRight: 0,		// right xOffset of trace
-			rhythmIndex: 0,			// index of current rhythm being displayed
+			rhythmIndex: '',		// index of current rhythm being displayed
+			rateIndex: 0,			// index of pattern for current heart rate
 			length: 0,				// variable to hold length of pattern
 			patternIndex: 0,		// index of currently displayed pixel in pattern
 			lastY: 0,				// variable to save last displayed Y coordinate of pattern
@@ -64,52 +95,58 @@
 		// assume document is rendered before calling init.
 		init: function() {
 			/************************** EKG **********************************/
-			// init respiration
+			// set initial pattern
+			chart.ekg.rhythmIndex = 'asystole';	// Flatline
+			chart.ekg.rateIndex = 0;	// lowest heart rate
+			
+			// init canvas for ekg
 			chart.initStrip('ekg');
 			
 			// init rhythm patterns
-			/*
-			chart.ekg.rhythm[0] = [
-				 0,  1,  2,  3,  5, 8, 10, 5,
-				 1,  0,  1,  3,  6, 15, 25, 37,  45,
-				 50, 45, 37,
-				 24, 16, 10,  6,  3,  1,  -5, -8, -10, -5, 0
+			chart.ekg.rhythm.asystole = new Array;
+			chart.ekg.rhythm.sinus = new Array;
+			chart.ekg.rhythm.vfib = new Array;
+			
+			// asystole
+			chart.ekg.rhythm['asystole'][0] = [
+				0, 0, 0, 0, 0, 0, 0		// Flatline
 			];
-			chart.ekg.rhythm[1] = [
-				2,  0,  0,  2,  -5,  -8, -15, -25, -37, -45, -50, -45,
-				-37, -24, -15,  -8,  3,  1,  0,  0,  0,  0
+			
+			// sinus
+			chart.ekg.rhythm['sinus'][0] = [
+				4, 3, 4, 6, 7, 7, 6, 4, 2, 1, 1, 1, 2, 2, 2, 3, 17, 52, 64, 26, -3, -5, -2, 0, 1, 2, 3, 4, 4, 5, 6, 7, 8, 10, 11, 13, 15, 16, 17, 17, 16, 14, 10, 7, 4, 2, 1, 0, 0, 1, 1 // Up to 75
 			];
-			chart.ekg.rhythm[2] = [
-				2,  0,  0,  2,  -5,  -8, -15, -25, -37, -45, -50, -45,
-				-37, -24, -15,  -8,  3,  1,  0,  0,  0,  0
+			chart.ekg.rhythm['sinus'][1] = [
+				4, 3, 6, 7, 4, 2, 1, 2, 3, 17, 64, 26, -5, -2, 0, 2, 4, 5, 6,  10, 11, 15, 16, 17, 16, 10, 4, 1, 0, 1 // Up to 140
 			];
-			*/
-			chart.ekg.rhythm[0] = [
-			0, 0, 0, 0, 0, 0, 0		// Flatline
+			chart.ekg.rhythm['sinus'][2] = [
+				4, 3, 7, 4, 1, 3, 35, 64, -5, -2, 4, 6, 11, 15, 17, 10, 4, 1 // Up to 230
 			];
-			chart.ekg.rhythm[1] = [
-			7, 7, 8, 8, 8, 7, 7, 6, 6, 6, 7, 7, 7, 8, 7, 7, 7 // Currently Unused
+			chart.ekg.rhythm['sinus'][3] = [
+				3, 7, 1, 3, 35, 64, -5, 4, 11, 17, 4, 1 // Up to 300
 			];
-			chart.ekg.rhythm[2] = [
-			7, 7, 8, 8, 8, 7, 7, 6, 6, 6, 7, 7, 7, 8, 7, 7, 7 // Random - Pattern is not actually used.
+			
+			
+			// vfib
+			chart.ekg.rhythm['vfib'][0] = [
+				2, 3, 17, 52, 64, 26, -3, -5, -2, 0, 1, 2, 3, 4, 4, 5, 6, 7, 
+				8, 10, 11, 13, 15, 16, 17, 17, 16, 14, 10, 7, 4, 2, 1, 0, 0, 1, 1 // Up to 75
 			];
-			chart.ekg.rhythm[3] = [
-			4, 3, 4, 6, 7, 7, 6, 4, 2, 1, 1, 1, 2, 2, 2, 3, 17, 52, 64, 26, -3, -5, -2, 0, 1, 2, 3, 4, 4, 5, 6, 7, 8, 10, 11, 13, 15, 16, 17, 17, 16, 14, 10, 7, 4, 2, 1, 0, 0, 1, 1 // Up to 75
+			chart.ekg.rhythm['vfib'][1] = [
+				2, 3, 17, 64, 26, -5, -2, 0, 2, 4, 5, 6,  10, 11, 15, 16, 17, 16, 10, 4, 1, 0, 1 // Up to 140
 			];
-			chart.ekg.rhythm[4] = [
-			4, 3, 6, 7, 4, 2, 1, 2, 3, 17, 64, 26, -5, -2, 0, 2, 4, 5, 6,  10, 11, 15, 16, 17, 16, 10, 4, 1, 0, 1 // Up to 140
+			chart.ekg.rhythm['vfib'][2] = [
+				3, 35, 64, -5, -2, 4, 6, 11, 15, 17, 10, 4, 1 // Up to 230
 			];
-			chart.ekg.rhythm[5] = [
-			4, 3, 7, 4, 1, 3, 35, 64, -5, -2, 4, 6, 11, 15, 17, 10, 4, 1 // Up to 230
+			chart.ekg.rhythm['vfib'][3] = [
+				3, 35, 64, -5, 4, 11, 17, 4, 1 // Up to 300
 			];
-			chart.ekg.rhythm[6] = [
-			3, 7, 1, 3, 35, 64, -5, 4, 11, 17, 4, 1 // Up to 300
-			]
+			
 			// setup pattern length
-			chart.ekg.length = chart.ekg.rhythm[chart.ekg.rhythmIndex].length
+			chart.ekg.length = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex].length
 			
 			// setup beep value
-			chart.ekg.beepValue = chart.ekg.rhythm[0].max() * -1;
+			chart.ekg.beepValue = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex].max() * -1;
 			
 			// start the pattern
 			chart.ekg.interval = setInterval(chart.drawEkgPixel, chart.ekg.drawInterval);
@@ -152,27 +189,37 @@
 		
 		// Passed the cardiac data from simmgr status
 		updateCardiac: function( cardiac) {
-			if ( cardiac.rate <= 0 )
-			{
-				chart.ekg.rhythmIndex = 0;	// Flatline
+			if ( cardiac.rate <= 0  ) {
+				chart.ekg.rhythmIndex = 'asystole';	// Flatline
+			} else if(chart.ekg.rhythmIndex == 'sinus') {
+				if( cardiac.rate <= 75 ) {
+					chart.ekg.rateIndex = 0;
+				}
+				else if( cardiac.rate <= 140 ) {
+					chart.ekg.rateIndex = 1;
+				}
+				else if( cardiac.rate <= 230 ) {
+					chart.ekg.rateIndex = 2;
+				}
+				else {
+					chart.ekg.rateIndex = 3;
+				}			
+			} else if(chart.ekg.rhythmIndex == 'vfib') {
+				if( cardiac.rate <= 75 ) {
+					chart.ekg.rateIndex = 0;
+				}
+				else if( cardiac.rate <= 140 ) {
+					chart.ekg.rateIndex = 1;
+				}
+				else if( cardiac.rate <= 230 ) {
+					chart.ekg.rateIndex = 2;
+				}
+				else {
+					chart.ekg.rateIndex = 3;
+				}			
 			}
-			else if ( cardiac.rate <= 75 )
-			{
-				chart.ekg.rhythmIndex = 3;
-			}
-			else if ( cardiac.rate <= 140 )
-			{
-				chart.ekg.rhythmIndex = 4;
-			}
-			else if ( cardiac.rate <= 230 )
-			{
-				chart.ekg.rhythmIndex = 5;
-			}
-			else
-			{
-				chart.ekg.rhythmIndex = 6;
-			}
-			chart.ekg.length = chart.ekg.rhythm[chart.ekg.rhythmIndex].length;
+
+			chart.ekg.length = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex].length;
 			if(chart.ekg.patternIndex >= chart.ekg.length) {
 				chart.ekg.patternIndex = 0;
 			}
@@ -204,27 +251,39 @@
 				if(chart.ekg.stopFlag == true) {
 					y = 0;
 					controls.heartRate.audio.pause();
-				} else if(chart.ekg.rhythmIndex == 2) {
+				} else if(chart.ekg.rhythmIndex == 'sinus') {
+					if(chart.status.cardiac.synch == false && chart.ekg.patternIndex == 0) {
+						// generate random noise between range
+						y = Math.floor((Math.random() * chart.ekg.noiseMax));
+						if(y > (chart.ekg.noiseMax / 2)) {
+							y -= (chart.ekg.noiseMax / 2);
+						}
+					} else if(chart.status.cardiac.synch == true || chart.ekg.patternIndex > 0) {
+						y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex][chart.ekg.patternIndex] * -1;
+						
+						// beep?
+						if(y == chart.ekg.beepValue && chart.ekg.beepFlag == true && chart.ekg.stopFlag == false) {
+							// controls.heartRate.audio.load();  // Don't do this!!
+							controls.heartRate.audio.play();
+						}
+						
+						// increment pointers
+						chart.ekg.patternIndex++;
+					}
+				} else if(chart.ekg.rhythmIndex == 'asystole') {
+					y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex][chart.ekg.patternIndex] * -1;
+					
 					// generate random noise between range
-					y = (Math.floor((Math.random() * chart.ekg.yOffset)) * -1) + (chart.ekg.yOffset / 2);
-
-				} else if(chart.status.cardiac.synch == false && chart.ekg.patternIndex == 0) {
-					// generate random noise between range
-					y = Math.floor((Math.random() * chart.ekg.noiseMax));
+					y += Math.floor((Math.random() * chart.ekg.noiseMax));
 					if(y > (chart.ekg.noiseMax / 2)) {
 						y -= (chart.ekg.noiseMax / 2);
-					}
-				} else if(chart.status.cardiac.synch == true || chart.ekg.patternIndex > 0) {
-					y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.patternIndex] * -1;
-					
-					// beep?
-					if(y == chart.ekg.beepValue && chart.ekg.beepFlag == true && chart.ekg.stopFlag == false) {
-						// controls.heartRate.audio.load();  // Don't do this!!
-						controls.heartRate.audio.play();
 					}
 					
 					// increment pointers
 					chart.ekg.patternIndex++;
+				} else if(chart.ekg.rhythmIndex == 'vfib') {
+					chart.vfib.base = chart.getBaseline();
+					y = chart.vfib.base + chart.getfib() - 6;
 				}
 				
 				// clear out sync flag
@@ -237,8 +296,7 @@
 					chart.ekg.patternIndex = 0;
 				}
 			}
-			else
-			{
+			else {
 				y = 0;
 			}
 			
@@ -303,8 +361,7 @@
 					chart.resp.patternIndex = 0;
 				}
 			}
-			else
-			{
+			else {
 				y = 0;
 			}
 			y += chart.resp.yOffset;
@@ -330,4 +387,42 @@
 				chart.resp.ctx.fillRect(0, 0, chart.resp.xOffsetLeft, chart.resp.height);
 			}
 		},
+
+		getBaseline: function() {
+			x1 = chart.baselineP1 / chart.baselineUnit;
+			y1 = Math.sin(x1);
+			
+			x2 = chart.baselineP2 / chart.baselineUnit;
+			y2 = Math.sin(x2);
+			chart.baselineP1 += 0.1;
+			chart.baselineP2 += 0.25;
+			return ( chart.baselineUnit*(y1 + y2) );
+		},
+		
+		getfib: function() {
+			if ( chart.fibUnit1 == 0 ) {
+				return ( 0 );
+			}
+			else {	
+				if ( ( chart.fibP3 % 4 ) == 1 )
+				{
+					chart.fibMultiply = chart.fibP3List[chart.fibP3ListIndex];
+					chart.fibP3ListIndex++;
+					if ( chart.fibP3ListIndex >= chart.fibP3List.length ) {
+						chart.fibP3ListIndex = 0;
+					}
+//console.log("fib Multiply: " + fibMultiply);
+				}
+			
+				y1 = Math.sin(chart.fibP1 / chart.fibUnit1 );
+				y2 = Math.sin(chart.fibP2 / chart.fibUnit2 );
+				
+				chart.fibP1 += chart.fibP1Constant;
+				chart.fibP2 += chart.fibP2Constant;
+				chart.fibP3 += 1;
+				
+				return ( (chart.fibMultiply/chart.fibDivide)*(y1 + y2) );
+			}
+		}
+		
 	}

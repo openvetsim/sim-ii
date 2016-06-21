@@ -115,7 +115,7 @@ var simmgr = {
 						controls.heartSound.soundName = response.cardiac.heart_sound;
 					}
 
-					// heart sound name
+					// heart sound mute
 					if(typeof(response.cardiac.heart_sound_mute) != "undefined") {
 						// change value only if necessary
 						if(response.cardiac.heart_sound_mute == 1 && controls.heartSound.mute == false) {
@@ -141,6 +141,8 @@ var simmgr = {
 					// heart ecg pattern selection
 					if(typeof(response.cardiac.rhythm) != "undefined") {
 						controls.heartRhythm.currentRhythm = response.cardiac.rhythm;
+						chart.ekg.rhythmIndex = response.cardiac.rhythm;
+						chart.updateCardiac(response.cardiac );
 					}
 					
 					// heart pea
@@ -156,6 +158,18 @@ var simmgr = {
 					// heart vfib amplitude
 					if(typeof(response.cardiac.vfib_amplitude) != "undefined") {
 						controls.heartRhythm.vfibAmplitude = response.cardiac.vfib_amplitude;
+						switch(controls.heartRhythm.vfibAmplitude) {
+							case 'low':
+								chart.fibDivide = 4;
+								break;
+							case 'med':
+								chart.fibDivide = 2.5;
+								break;
+							case 'high':
+							default:
+								chart.fibDivide = 1;
+								break;						
+						}
 					}
 					
 					// heart vpc frequency
@@ -366,6 +380,15 @@ var simmgr = {
 							}
 						}
 					}
+					
+					// scenario selection
+					if(typeof(response.scenario.active) != "undefined" && response.scenario.active != scenario.currentScenarioFileName) {
+						scenario.currentScenarioFileName = response.scenario.active;
+						scenario.loadScenario();
+						scenario.init();
+						profile.init();
+					}
+
 				}
 			},
 			

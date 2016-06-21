@@ -16,15 +16,13 @@
 	}
 	
 	$heartSoundArray = array(
-		"none" => "None",
 		"normal" => "Normal",
-		"aortic_stenosis" => "Aortic Stenosis",
-		"austin_flint_murmur" => "Austin Flint Murmur",
-		"friction_rub" => "Friction Rub",
-		"mitral_valve_prolapse" => "Mitral Valve Prolapse",
 		"systolic_murmur" => "Systolic Murmur",
+		"pansystolic_murmur" => "Pansystolic Murmur",
+		"holosystolic_murmur" => "Holoystolic Murmur",
+		"continuous_murmur" => "Continuous Murmur",
 		"diastolic_murmur" => "Diastolic Murmur",
-		"os70" => "OS70 (Opening snap of Mitral Stenosis)"
+		"gallop" => "Gallop"
 	);
 	
 	// lung sound options

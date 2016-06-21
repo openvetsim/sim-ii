@@ -64,7 +64,7 @@
 		},
 		
 		heartRhythm: {
-			currentRhythm: 'sinus',
+			currentRhythm: '',
 			pea: false,
 			vpc: 'none',
 			vpcFrequency: 10,
