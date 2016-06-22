@@ -108,8 +108,7 @@ var scenario = {
 		switch(this.currentScenarioState) {
 			// if stopped, send currently selected scenario
 			case this.scenarioState.STOPPED:
-				// always set scenario name to default for now
-				simmgr.sendChange( {'set:scenario:active' : scenario.currentScenarioFileName} );
+				simmgr.sendChange( {'set:scenario:state' : 'Running'} );
 				break;
 			
 			// if paused, send running

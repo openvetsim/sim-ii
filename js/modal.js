@@ -885,10 +885,10 @@
 			};
 
 			modal.showModal(response);
-			$('#modal .container').css('width', '500px');
+			$('#modal .container').css('width', '700px');
 			$('#modal .container .control-modal-div').css({
-				'width': '500px',
-				height: '300px',
+				'width': '700px',
+				'height': '300px',
 				'overflow': 'scroll'
 			});
 			$('#modal .container .control-modal-div table').css({

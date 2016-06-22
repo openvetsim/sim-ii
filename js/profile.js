@@ -22,7 +22,7 @@
 			});
 			
 			// update header
-			$('#scenario-name-display').html(scenario.scenarioHeader.title.name);			
+			$('#scenario-name-display').html(scenario.scenarioHeader.title.name);		
 			
 		}
 	}

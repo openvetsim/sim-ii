@@ -388,7 +388,31 @@ var simmgr = {
 						scenario.init();
 						profile.init();
 					}
+					
+					// scenario scene name
+					if(typeof(response.scenario.scene_name) != "undefined") {
+						$('#scene-name').html(response.scenario.scene_name);
+					}
+					
+					// scenario scene number
+					if(typeof(response.scenario.scene_id) != "undefined") {
+						$('#scene-id').html(response.scenario.scene_id);
+					}
+					
 
+				}
+				
+				/************ event log **************/
+				if( typeof(response.logfile) != '"undefined"' ) {
+					if(typeof(response.logfile.active) != "undefined" && response.logfile.active == 1) {
+						if(typeof(response.logfile.filename) != "undefined" && typeof(response.logfile.lines_written) != "undefined") {
+							if( (response.logfile.filename != events.currentLogFileName) || (response.logfile.lines_written != events.currentLogRecord) ) {
+								events.currentLogFileName = response.logfile.filename;
+								events.currentLogRecord = response.logfile.lines_written;
+								events.addEventsFromLog();
+							}
+						}
+					}
 				}
 			},
 			

@@ -113,7 +113,10 @@ var isVitalsMonitor = 0;	// Student Display Flag
 				<h1>Cornell Vet School Simulator</h1>
 				<h1 class="welcome-title">Welcome <?= $userName; ?></h1>
 				<div class="profile-display scenario">
-					Scenario: <span id="scenario-name-display">Default Scenario: Frame 1</span>
+					Scenario Name: 
+					<span id="scenario-name-display">Default Scenario</span>
+					&nbsp;&nbsp;|&nbsp;&nbsp;Scene Name:&nbsp;<span id="scene-name">Test</span>
+					&nbsp;&nbsp;|&nbsp;&nbsp;Scene ID:&nbsp;<span id="scene-id">1</span>
 				</div>
 				<ul id="main-nav">
 					<li class="with-sub-nav">
