@@ -596,6 +596,7 @@
 							$(this).children('span').addClass('selected');
 							controls.vocals.audio.src = BROWSER_SCENARIOS_VOCALS + controls.vocals.fileName;
 							controls.vocals.audio.load();
+							controls.vocals.audio.addEventListener('ended', simmgr.endAudio );
 							controls.vocals.audio.play();
 							simmgr.sendChange({
 								'set:vocals:filename': controls.vocals.fileName,
@@ -608,6 +609,7 @@
 						$('#audio-control-play').click(function() {
 							if(controls.vocals.fileName != '' && controls.vocals.mute != true) {
 								controls.vocals.audio.load();
+								controls.vocals.audio.addEventListener('ended', simmgr.endAudio );
 								controls.vocals.audio.play();
 								simmgr.sendChange({'set:vocals:play': 1});								
 							}
