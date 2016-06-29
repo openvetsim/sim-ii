@@ -16,6 +16,7 @@ var simmgr = {
 	pulseCount : 0,
 	interval : 500,
 	running : 0,
+	audioPlayStarted : 0,
 	
 	init : function() {
 		console.log("simmgr: init" );
@@ -222,6 +223,54 @@ var simmgr = {
 					if(typeof(response.vocals.volume) != "undefined") {
 						controls.vocals.value = response.vocals.volume;
 					}
+					
+					// Play/Stop control
+					if(typeof(response.vocals.play) != "undefined") {
+						controls.vocals.play = response.vocals.play;
+						// Local Display Only section
+						if ( simmgr.isLocalDisplay() ) {
+							if(response.vocals.play == 1) {
+								// First, prevent replay
+								if ( simmgr.audioPlayStarted == 1 ) {
+									// Do nothing, wait for play to clear
+								}
+								else {
+									// Play current sound
+									simmgr.audioPlayStarted = 1;
+									console.log("Audio Start" );
+									controls.vocals.audio.src = BROWSER_SCENARIOS_VOCALS + controls.vocals.fileName;
+									controls.vocals.audio.load();
+									controls.vocals.audio.play();
+								}
+							}
+							else {
+								if ( simmgr.audioPlayStarted == 1 ) {
+									// Play has cleared, so stop and allow restart
+									console.log("Audio Stop" );
+									controls.vocals.audio.pause();
+									controls.vocals.audio.currentTime = 0;
+									controls.vocals.audio.src = "";
+								}
+								simmgr.audioPlayStarted = 0;
+							}
+						}
+						// End Local Display Only
+					}
+					$('#vocal-list li a').dblclick(function() {
+							controls.vocals.fileName = $(this).attr('data-filename');
+							$('#vocal-list li a span').removeClass('selected');
+							$(this).children('span').addClass('selected');
+							controls.vocals.audio.src = BROWSER_SCENARIOS_VOCALS + controls.vocals.fileName;
+							controls.vocals.audio.load();
+							controls.vocals.audio.addEventListener('ended', simmgr.endAudio );
+							controls.vocals.audio.play();
+							console.log("Audio play" );
+							simmgr.sendChange({
+								'set:vocals:filename': controls.vocals.fileName,
+								'set:vocals:play': 1
+							});
+
+						});
 				}
 				
 				/************ respiration **************/
@@ -424,6 +473,19 @@ var simmgr = {
 				}
 			}
 		});			
+	},
+	
+	// After audio play, clear the play controller (II only). Allow a 2 second lag
+	endAudio : function() {
+		console.log("Audio done" );
+		setTimeout(function(){
+			if ( controls.vocals.play == 1 )	// Only clear if still set.
+			{
+				simmgr.sendChange({
+					'set:vocals:play': 0
+				});
+			}
+		}, 2000 );
 	},
 	
 	// Generic routine to change Instructor parameters. 'data' is an array of parameters and values
