@@ -885,9 +885,9 @@
 			};
 
 			modal.showModal(response);
-			$('#modal .container').css('width', '700px');
+			$('#modal .container').css('width', '800px');
 			$('#modal .container .control-modal-div').css({
-				'width': '700px',
+				'width': '800px',
 				'height': '300px',
 				'overflow': 'scroll'
 			});
@@ -917,7 +917,7 @@
 			$('#modal .container').css({'width': '1000px', top: '50px'});
 			$('#modal .container .control-modal-div').css({
 				'width': '1000px',
-				height: '400px',
+				'height': '400px',
 				'overflow': 'auto'
 			});
 			modal.bindCloseModal();

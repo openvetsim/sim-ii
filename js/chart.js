@@ -63,7 +63,7 @@
 			patternIndex: 0,		// index of currently displayed pixel in pattern
 			lastY: 0,				// variable to save last displayed Y coordinate of pattern
 			xPos: 0,				// current x position on strip
-			drawInterval: 13,		// interval in milli-sec to display pixels
+			drawInterval: 15,		// interval in milli-sec to display pixels
 			noiseMax: 2,			// max amplitude of background noise total +/-
 			stopFlag: false,			// stop flag 
 			beepValue: 0,			// value to beep at
