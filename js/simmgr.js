@@ -17,6 +17,7 @@ var simmgr = {
 	interval : 500,
 	running : 0,
 	audioPlayStarted : 0,
+	mediaPlayStarted : 0,
 	
 	init : function() {
 		console.log("simmgr: init" );
@@ -237,7 +238,6 @@ var simmgr = {
 								else {
 									// Play current sound
 									simmgr.audioPlayStarted = 1;
-									console.log("Audio Start" );
 									controls.vocals.audio.src = BROWSER_SCENARIOS_VOCALS + controls.vocals.fileName;
 									controls.vocals.audio.load();
 									controls.vocals.audio.play();
@@ -246,7 +246,6 @@ var simmgr = {
 							else {
 								if ( simmgr.audioPlayStarted == 1 ) {
 									// Play has cleared, so stop and allow restart
-									console.log("Audio Stop" );
 									controls.vocals.audio.pause();
 									controls.vocals.audio.currentTime = 0;
 									controls.vocals.audio.src = "";
@@ -264,7 +263,6 @@ var simmgr = {
 							controls.vocals.audio.load();
 							controls.vocals.audio.addEventListener('ended', simmgr.endAudio );
 							controls.vocals.audio.play();
-							console.log("Audio play" );
 							simmgr.sendChange({
 								'set:vocals:filename': controls.vocals.fileName,
 								'set:vocals:play': 1
@@ -273,6 +271,88 @@ var simmgr = {
 						});
 				}
 				
+				/************ media **************/
+				if(typeof(response.media) != "undefined" ) {
+					// filename
+					if(typeof(response.media.filename) != "undefined") {
+						controls.media.fileName = response.media.filename;
+					}
+					if(typeof(response.media.play) !== 'undefined' )
+					{
+						if ( ( response.media.play == 1 ) && ( simmgr.mediaPlayStarted == 0 ) )
+						{
+							// Start new media display. Base action on file type
+							var fileName = controls.media.fileName;
+							var fileExt = fileName.split('.')[fileName.split('.').length - 1].toLowerCase();
+							switch ( fileExt )
+							{
+								// Image files - List from https://www.library.cornell.edu/preservation/tutorial/presentation/table7-1.html
+								case 'jpg': case 'jpeg': case 'jif': case 'jfif':
+								case 'png':	case 'gif':	case 'tif': case 'tiff':
+								case 'jp2': case 'jpx': case 'j2k': case 'j2c':
+								case 'fpx':	case 'pcd':	case 'pdf':
+									
+									// Create a window the full size of the image. Scale down to fit in screen (if larger)
+									$('#media-video').remove();
+									$('#media-overlay').remove();
+									$('body').append("<img id='media-overlay' src='"+BROWSER_SCENARIOS_MEDIA+controls.media.fileName+"'>" );
+									$('#media-overlay').on('load', function() {
+										var margintop = 0;
+										var marginleft = 0;
+										var iHeight = $('#media-overlay').height();
+										var bHeight = $('body').height();
+										if (iHeight < bHeight) {
+											margintop = (bHeight - iHeight) / 2;
+										}
+										var iWidth = $('#media-overlay').width();
+										var bWidth = $('body').width();
+										if (iWidth < bWidth) {
+											marginleft = (bWidth - iWidth) / 2;
+										}
+										$('#media-overlay').css({'margin-left': marginleft, 'margin-top' : margintop } );
+									});
+									$('#media-overlay').draggable();
+									break;
+								
+								// Video file
+								
+								case 'mp4': case 'webm': case 'ogg':
+									$('#media-video').remove();
+									$('#media-overlay').remove();
+									var vcontrol = "controls autoplay";
+									var vheight;
+									var vwidth;
+									if ( simmgr.isLocalDisplay() ) {
+										vwidth=1280;
+										vheight=960;
+									}
+									else {
+										vwidth=640;
+										vheight=480;
+									}
+									$('body').append("<video id='media-overlay' width='"+vwidth+"' height='"+vheight+"' "+vcontrol+" ><source src='"
+											+BROWSER_SCENARIOS_MEDIA+controls.media.fileName+
+											"' type='video/"+fileExt+"'>Browser does not support this video tag ("+fileExt+")</video>");
+									var margintop = ($(window).height() - (vheight+200) ) / 2;
+									if ( margintop < 0 ) {
+										margintop = 0;
+									}
+									var marginleft = ($(window).width() - vwidth ) / 2;
+									$('#media-overlay').css({'margin-left': marginleft, 'margin-top' : margintop, 'cursor' : 'pointer' } );
+									$('#media-overlay').draggable();
+									break;
+							
+							}
+							simmgr.mediaPlayStarted = 1;
+						}
+						else if ( ( response.media.play == 0 ) && ( simmgr.mediaPlayStarted == 1 ) )
+						{
+							$('#media-overlay').remove();
+							$('#media-video').remove();
+							simmgr.mediaPlayStarted = 0;
+						}
+					}
+				}
 				/************ respiration **************/
 				if(typeof(response.respiration) != "undefined" ) {
 					// awRR
@@ -477,7 +557,6 @@ var simmgr = {
 	
 	// After audio play, clear the play controller (II only). Allow a 2 second lag
 	endAudio : function() {
-		console.log("Audio done" );
 		setTimeout(function(){
 			if ( controls.vocals.play == 1 )	// Only clear if still set.
 			{

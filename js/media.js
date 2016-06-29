@@ -27,16 +27,19 @@ var media = {
 			mediaOptionContent += '<option value="' + scenario.scenarioMedia.file[index]['filename'] + '" ' + mediaSelected + '>' + scenario.scenarioMedia.file[index]['title'] + '</option>';
 		}
 		$('#media-select > select').html(mediaOptionContent);
-
 	},
 	
 	showMedia: function() {
+		media.currentMediaFileName = $('#media-select select').val();
 		$('#media-button').css({'background-color': buttons.connectColor, 
 									border: '1px solid ' + buttons.connectColor
 									}).html('Remove Media');
 		media.mediaIsDisplayed = true;
 		$('#media-select select').prop('disabled', true);
-		/* code stub for SimMgr */
+		simmgr.sendChange({
+			'set:media:filename': media.currentMediaFileName,
+			'set:media:play': 1
+		});
 		return;
 	},
 
@@ -46,7 +49,9 @@ var media = {
 									}).html('Show Media');
 		media.mediaIsDisplayed = false;
 		$('#media-select select').prop('disabled', false);
-		/* code stub for SimMgr */
+		simmgr.sendChange({
+			'set:media:play': 0
+		});
 		return;
 	}
 }

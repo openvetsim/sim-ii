@@ -238,7 +238,16 @@ a:hover {
 		margin: 0px 0 0 10px;
 		width: 120px;
 	}
-
+#media-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	max-width: 100%;
+	max-height: 100%;
+	margin:auto;
+	display:block;
+	cursor:move;
+}
 
 /* mannequin */
 #mannequin {

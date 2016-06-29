@@ -326,6 +326,10 @@
 			}
 		},
 		
+		media: {
+			fileName: ''
+		},
+		
 		nbp: {
 			systolicValue: 120,
 			minSystolicValue: 0,
