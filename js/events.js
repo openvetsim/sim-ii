@@ -26,6 +26,19 @@
 							}
 						});
 					}
+					
+					// remove previous events
+					$('.event-priority').remove();
+					
+					// get priority events if any
+					if(response.priority.length > 0) {
+						var content = '<li class="event-priority event-divider">|</li><li class="event-priority">Quick Event Links:</li>';
+						response.priority.forEach(function(element, index, event) {
+							content += '<li class="event-priority"><a class="event-link" href="javascript: void(2);" onclick="events.sendPriorityEvent(\'' + element.id + '\');">' + element.title + '</a></li>';
+						});
+						$('ul#main-nav li.menu-events').after(content);
+					}
+					
 				}
 			});
 						
@@ -38,7 +51,7 @@
 					$(this).val('');
 				}
 			});
-
+			
 			$('#comment-button').unbind().click(function() {
 				if($('#comment-input').val() == '' || $('#comment-input').val() == events.defaultComment) {
 					modal.showText('Please enter a comment');
@@ -56,6 +69,11 @@
 			
 			// code stub to send event to sim mgr
 			simmgr.sendChange({'set:event:event_id': $(eventObj).attr('data-event-id')});
+		},
+		
+		sendPriorityEvent: function(eventID) {
+			// code stub to send event to sim mgr
+			simmgr.sendChange({'set:event:event_id': eventID});
 		},
 		
 		addEventsFromLog: function() {

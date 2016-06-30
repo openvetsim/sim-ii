@@ -121,8 +121,11 @@ var simmgr = {
 					if(typeof(response.cardiac.heart_sound_mute) != "undefined") {
 						// change value only if necessary
 						if(response.cardiac.heart_sound_mute == 1 && controls.heartSound.mute == false) {
-							controls.heartSound.mute = true;
-							$('#heart-sound-mute').show();
+//							controls.heartSound.mute = true;
+//							$('#heart-sound-mute').show();
+							
+							// force heart sound to not mute
+							simmgr.sendChange({'set:cardiac:heart_sound_mute': 0});
 						} else if(response.cardiac.heart_sound_mute == 0 && controls.heartSound.mute == true) {
 							controls.heartSound.mute = false;							
 							$('#heart-sound-mute').hide();
@@ -433,8 +436,10 @@ var simmgr = {
 					// left lung mute
 					if(typeof(response.respiration.left_lung_sound_mute) != "undefined") {
 						if(response.respiration.left_lung_sound_mute == 1) {
-							controls.leftLung.mute = true;
-							$('#left-lung-mute').show();
+//							controls.leftLung.mute = true;
+//							$('#left-lung-mute').show();
+							// force mute to false
+							simmgr.sendChange({'set:respiration:left_lung_sound_mute': 0});						
 						} else {
 							controls.leftLung.mute = false;
 							$('#left-lung-mute').hide();						
@@ -455,8 +460,10 @@ var simmgr = {
 					// right lung mute
 					if(typeof(response.respiration.right_lung_sound_mute) != "undefined") {
 						if(response.respiration.right_lung_sound_mute == 1) {
-							controls.rightLung.mute = true;
-							$('#right-lung-mute').show();
+//							controls.rightLung.mute = true;
+//							$('#right-lung-mute').show();
+							// force mute to false
+							simmgr.sendChange({'set:respiration:left_lung_sound_mute': 0});						
 						} else {
 							controls.rightLung.mute = false;
 							$('#right-lung-mute').hide();						

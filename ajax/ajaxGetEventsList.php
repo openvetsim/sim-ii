@@ -19,6 +19,7 @@
 	}
 					
 	$content = '';
+	$priority = array();
 
 	// get elements of event library
 	foreach($eventsArray['category'] as $eventCategory) {
@@ -52,6 +53,13 @@
 							<a data-category="' . $eventCategory['title'] . '" data-category-id="' . $eventCategory['name'] . '" data-event-id="' . $event['id'] . '" href="javascript: void(2);" onclick="events.sendEventLibraryClick(this);">' . $event['title'] . '</a>
 						</li>					
 				';
+				
+				if(isset($event['priority']) === TRUE && $event['priority'] == 1) {
+					$priority[] = array(
+						'title' => $event['title'],
+						'id' => $event['id'],
+					);
+				}
 			}
 		}
 		
@@ -63,6 +71,7 @@
 
 	$returnVal['status'] = AJAX_STATUS_OK;
 	$returnVal['html'] = $content;
+	$returnVal['priority'] = $priority;
 	echo json_encode($returnVal);
 	exit();
 ?>

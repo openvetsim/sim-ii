@@ -186,6 +186,11 @@ a:hover {
 				color: #999999;
 			}
 			
+	ul#main-nav li a.event-link {
+		margin: 0;
+		color: #AAAAAA;
+	}
+			
 /* Scenario Select Control */
 .scenario-button {
 	cursor: pointer;

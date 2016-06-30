@@ -58,9 +58,9 @@
 		<hr / class="modal-divider">
 		<div class="control-modal-div">
 			<div id="volume-controls">
-				<p id="mute-volume-title" class="clearer">Mute</p>
+				<!-- <p id="mute-volume-title" class="clearer">Mute</p> -->
 				<p id="volume-title">- Volume +</p>
-				<input type="checkbox" id="mute-volume" class="clearer">
+				<!-- <input type="checkbox" id="mute-volume" class="clearer"> -->
 				<div id="volume-slider"></div>
 			</div>
 			<div class="clearer"></div>

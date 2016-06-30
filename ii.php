@@ -140,9 +140,10 @@ var isVitalsMonitor = 0;	// Student Display Flag
 					<li >
 						<a href="javascript:void(2);" onclick="modal.showUsers();">Users</a>
 					</li>
-					<li >
+					<li class="menu-events">
 						<a href="javascript:void(2);" onclick="modal.showEvents(); return false;">Events</a>
 					</li>
+
 					<li class="logout">
 						<a href="index.php">Logout</a>						
 					</li>
