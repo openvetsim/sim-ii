@@ -31,9 +31,9 @@ var scenario = {
 		// bind change of start video check box
 		$('#start-video').unbind().change(function() {
 			if($(this).is(':checked') == false) {
-				scenario.startVideoWithScenario = false;			
+				simmgr.sendChange( {'set:scenario:record' : 0} );
 			} else {
-				scenario.startVideoWithScenario = true;
+				simmgr.sendChange( {'set:scenario:record' : 1} );
 			}
 		});
 		

@@ -1,6 +1,7 @@
 	var events = {
 		currentLogRecord: 1,
 		currentLogFileName: '',
+		defaultComment: 'Please enter comment for log',
 		
 		init: function() {
 			// set up list of events for this scenario into modal
@@ -30,14 +31,31 @@
 						
 			// force event monitor to scroll to bottom and hide div for modal
 			$("#event-monitor").scrollTop(1000);
+			
+			// bind comments
+			$('#comment-input').unbind().focus(function() {
+				if($(this).val() == events.defaultComment) {
+					$(this).val('');
+				}
+			});
+
+			$('#comment-button').unbind().click(function() {
+				if($('#comment-input').val() == '' || $('#comment-input').val() == events.defaultComment) {
+					modal.showText('Please enter a comment');
+				} else {
+					simmgr.sendChange({'set:event:comment': $('#comment-input').val()});
+				}
+				$('#comment-input').val(events.defaultComment);
+			});
 		},
 		
 		sendEventLibraryClick: function(eventObj) {
 			$(eventObj).prev('img').show();
-			$('#event-monitor table').append('<tr><td class="time-stamp">00:02:00</td><td class="event">Event: ' + $(eventObj).attr('data-category') + ':' + $(eventObj).html() + '</td></tr>');
-			$("#event-monitor").scrollTop($('#event-monitor table').height());
+//			$('#event-monitor table').append('<tr><td class="time-stamp">00:02:00</td><td class="event">Event: ' + $(eventObj).attr('data-category') + ':' + $(eventObj).html() + '</td></tr>');
+//			$("#event-monitor").scrollTop($('#event-monitor table').height());
 			
 			// code stub to send event to sim mgr
+			simmgr.sendChange({'set:event:event_id': $(eventObj).attr('data-event-id')});
 		},
 		
 		addEventsFromLog: function() {
