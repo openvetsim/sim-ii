@@ -53,7 +53,7 @@ var isVitalsMonitor = 0;	// Student Display Flag
 				events.init();
 				scenario.init();
 				media.init();
-				log.init();
+//				log.init();
 				
 				// init displayed values
 				$('#vs-heartRhythm p.display-rate').html(controls.heartRate.value);
@@ -207,7 +207,7 @@ var isVitalsMonitor = 0;	// Student Display Flag
 				</div>
 				<div class="wide-col">
 					<div class="alt-control control-Tperi">
-						<a class="alt-control-title color-blue" href="javascript: void(0)" onclick="modal.Tperi(); return false;">Tperi</a>
+						<a class="alt-control-title color-blue" href="javascript: void(0)" onclick="modal.Tperi(); return false;">Temp</a>
 						<a class="alt-control-rate color-blue" href="javascript: void(0)" onclick="modal.Tperi(); return false;" id="display-Tperi">123</a>
 					</div>
 					<div class="alt-control awRR">
@@ -253,33 +253,12 @@ var isVitalsMonitor = 0;	// Student Display Flag
 			</div>
 			<div id="event-monitor" class="float-right ii-border">
 				<table>
-					<tr>
-						<td class="time-stamp">00:00:00</td>
-						<td class="event">VS: awRR: 90; HR: 80; BP: 120/80; SP02: 90; etCO2: 34 mmHg</td>
-					</tr>
-					<tr>
-						<td class="time-stamp">00:01:00</td>
-						<td class="event">VS: awRR: 90; HR: 80; BP: 120/80; SP02: 90; etCO2: 34 mmHg</td>
-					</tr>
-					<tr>
-						<td class="time-stamp">00:02:00</td>
-						<td class="event">VS: awRR: 90; HR: 80; BP: 120/80; SP02: 90; etCO2: 34 mmHg</td>
-					</tr>
-					<tr>
-						<td class="time-stamp">00:03:00</td>
-						<td class="event">VS: awRR: 90; HR: 80; BP: 120/80; SP02: 90; etCO2: 34 mmHg</td>
-					</tr>
-					<tr>
-						<td class="time-stamp">00:04:00</td>
-						<td class="event">VS: awRR: 90; HR: 80; BP: 120/80; SP02: 90; etCO2: 34 mmHg</td>
-					</tr>
-					<tr>
-						<td class="time-stamp">00:05:00</td>
-						<td class="event">VS: awRR: 90; HR: 80; BP: 120/80; SP02: 90; etCO2: 34 mmHg</td>
-					</tr>
 				</table>
 			</div>
-
+			<div id="comment-box" class="float-left ii-border">
+				<input type="text" id="comment-input" value="Please enter comment for log">
+				<button id="comment-button" class="scenario-button float-left">Log Comment</button>				
+			</div>
 			<div id="event-library" class="float-left"></div>
 
 			<div class="clearer"></div>

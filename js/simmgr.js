@@ -516,6 +516,7 @@ var simmgr = {
 						scenario.loadScenario();
 						scenario.init();
 						profile.init();
+						events.init();
 					}
 					
 					// scenario scene name
@@ -528,7 +529,13 @@ var simmgr = {
 						$('#scene-id').html(response.scenario.scene_id);
 					}
 					
-
+					// scenario record
+					if(typeof(response.scenario.record) != "undefined" && response.scenario.record == 1) {
+						scenario.startVideoWithScenario = true;
+					} else {
+						scenario.startVideoWithScenario = false;
+					}
+					$('#start-video').attr('checked', scenario.startVideoWithScenario);
 				}
 				
 				/************ event log **************/

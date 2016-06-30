@@ -304,12 +304,12 @@ a:hover {
 	
 /* events */
 #event-monitor {
-	height: 150px;
+	height: 168px;
 	width: 775px;
 	margin: 10px 7px 0 0;
-	cursor: pointer;
 	padding-left: 5px;
-	overflow: hidden;
+	overflow-x: hidden;
+	overflow-y: scroll;
 }
 	#event-monitor table {
 		width: 100%;
@@ -322,6 +322,29 @@ a:hover {
 		
 		#event-monitor tr:nth-child(odd) {
 			background-color: #CCCCCC;
+		}
+		
+#comment-box {
+	margin: 10px 0 0 90px;
+	padding: 0 10px 0 10px;
+	height: 50px;
+}
+	#comment-input {
+		margin: 10px 0 0 0px;
+		float: left;
+		height: 25px;
+		width: 400px;
+		padding: 0 5px 0 5px;
+	}
+	#comment-button {
+		margin: 8px 0 0 10px;
+		padding: 5px;
+		background-color: green;
+		border: 1px solid green;
+	}
+		#comment-button:active {
+			background-color: #b31b1b;
+			border: 1px solid #b31b1b;
 		}
 		
 /* event library */
