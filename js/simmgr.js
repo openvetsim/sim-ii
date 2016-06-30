@@ -478,7 +478,7 @@ var simmgr = {
 				}
 
 				/************ scenario **************/
-				if( typeof(response.scenario) != '"undefined"' ) {
+				if( ( typeof(response.scenario) != '"undefined"' ) && ( !isVitalsMonitor ) ){
 					if(typeof(response.scenario.runtime) != "undefined" ) {
 						$('#scenario-running-time').html(response.scenario.runtime);
 					}
@@ -587,5 +587,4 @@ var simmgr = {
 	{
 		return ( SERVER_ADDR == REMOTE_ADDR );
 	}
-	
 }

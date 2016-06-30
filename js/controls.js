@@ -7,7 +7,6 @@
 			increment: 1,
 			
 			beatITimeout: 0,
-			audio: new Audio('./audio/ekg.mp3'),
 			
 			modalUnitsLabel: 'BPM',
 			
