@@ -1,7 +1,7 @@
 /* 
 	simmgr Communications
 
-	There are two basic modes for ythis class:
+	There are two basic modes for this class:
 	
 	After init, this class will poll the simmgr via AJAX to
 	fetch parameter changes for display. It will push sync
@@ -49,6 +49,9 @@ var simmgr = {
 				$(this).text("Start Status Updates");
 			}
 		});
+		
+		// This call will periodically tap the server to prevent PHP session timeouts.
+		simmgr.tapHost();
 	},
 	
 	getStatus : function () {
@@ -361,9 +364,19 @@ var simmgr = {
 					// awRR
 					if(typeof(response.respiration.rate) != "undefined") {
 						var respirationRate = response.respiration.rate;
-						if(respirationRate != controls.awRR.value) {
+						if(controls.inhalation_duration.value != controls.awRR.value) {
 							controls.awRR.value = response.respiration.rate;
 							controls.awRR.displayValue();
+							// Calculate the inhalation time
+							if ( respirationRate > 0 )
+							{
+								controls.inhalation_duration.value = Math.floor((1/(respirationRate/60))*1000);
+							}
+							else
+							{
+								// Default to avoid divide by zero
+								controls.inhalation_duration.value = 400; 
+							}
 						}
 					}
 					
@@ -593,6 +606,17 @@ var simmgr = {
 			},
 			error: function( jqXHR,  textStatus,  errorThrown){
 				console.log("error: "+textStatus+" : "+errorThrown );
+			}
+		});			
+	},
+	
+	// PHP call to maintain login
+	tapHost : function ( ) {
+		$.ajax({
+			url: BROWSER_AJAX + 'ajaxTap.php',
+			type: 'post',
+			complete: function() {
+				setTimeout(function() { simmgr.tapHost(); }, 600000 );	// Run very 10 minutes
 			}
 		});			
 	},

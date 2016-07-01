@@ -87,7 +87,9 @@
 			lastY: 0,				// variable to save last displayed Y coordinate of pattern
 			xPos: 0,				// current x position on strip
 			drawInterval: 25,		// interval in milli-sec to display pixels
-			stopFlag: false			// stop flag
+			activeCount: 0,			// Count of updates since sync
+			halfCount: 100,			// Count to middle of period, for start of Exhale
+			stopFlag: false,		// stop flag
 		},
 		
 		cursorWidth: 10,			// width of cursor in pixels
@@ -106,6 +108,35 @@
 			chart.ekg.rhythm.asystole = new Array;
 			chart.ekg.rhythm.sinus = new Array;
 			chart.ekg.rhythm.vfib = new Array;
+			chart.ekg.rhythm.afib = new Array;
+			chart.ekg.rhythm.vtach1 = new Array;
+			chart.ekg.rhythm.vtach2 = new Array;
+			chart.ekg.rhythm.vtach3 = new Array;
+			
+			// Atrial Fibrillation
+			chart.ekg.rhythm['afib'][0] = [
+				2, 3, 17, 52, 64, 26, -3, -5, -2, 0, 1, 2, 3, 4, 4, 5, 6, 7, 8, 10, 11, 13, 15, 16, 17, 17, 16, 14, 10, 7, 4, 2, 1, 0, 0, 1, 1 // Up to 75
+			];
+			chart.ekg.rhythm['afib'][1] = [
+				4, 3, 6, 7, 4, 2, 1, 2, 3, 17, 64, 26, -5, -2, 0, 2, 4, 5, 6,  10, 11, 15, 16, 17, 16, 10, 4, 1, 0, 1 // Up to 140
+			];
+			chart.ekg.rhythm['afib'][2] = [
+				4, 3, 7, 4, 1, 3, 35, 64, -5, -2, 4, 6, 11, 15, 17, 10, 4, 1 // Up to 230
+			];
+			chart.ekg.rhythm['afib'][3] = [
+				3, 7, 1, 3, 35, 64, -5, 4, 11, 17, 4, 1 // Up to 300
+			];
+
+			// Ventricular Tachycardia
+			chart.ekg.rhythm['vtach1'][0] = [
+				-4, -16, -4, 0, 6, 17, 34, 42, 48, 52, 54, 56, 60, 62, 61, 62, 60, 56, 54, 52, 50, 44, 32, 20, 12, 0
+			];
+			chart.ekg.rhythm['vtach2'][0] = [
+				2, 3, 6, 7, 9, 10,12, 17, 34, 48, 52, 54, 56, 60, 62, 63,  62, 56, 50, 44, 32, 20, 12, 6, 0, -6, -8, -10, -14, -20, -22, -23, -24, -24, -23, -19, -15, -13, -9, -8, -4, -2, 0, 2, 3, 2, 1, 0
+			];
+			chart.ekg.rhythm['vtach3'][0] = [
+				-4, -8, -10, -14, -16, -20, -22, -23, -24, -23, -21, -13, -6, -4, 2, 3, 6, 7, 9, 10,12, 17, 34, 48, 52, 54, 56, 60, 61, 62, 62, 61,  59, 56, 50, 44, 32, 20, 12, 6, 0
+			];
 			
 			// asystole
 			chart.ekg.rhythm['asystole'][0] = [
@@ -156,6 +187,7 @@
 			chart.initStrip('resp');
 			
 			// init rhythm patterns
+			/*
 			chart.resp.rhythm[1] = [ 
 				0,1,2,4,8,16,24,28,30,31,
 				32,33,34,35,36,37,38,39,40,41,42,43,44,45,
@@ -172,6 +204,22 @@
 			chart.resp.rhythm[0] = [ 
 				0,1,2,4,8,16,24,28,30,31,32,32,31,25,15,8,0,0
 			];
+			*/
+			chart.resp.rhythm[0] = [	// Inhale
+				28,24,20,15,8,0
+			];
+			chart.resp.rhythm[1] = [	// Hold In
+				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2
+			];
+			chart.resp.rhythm[2] = [	// Exhale
+				2,4,8,16,24,28,30,31,32
+			];
+			chart.resp.rhythm[3] = [	// Hold Out
+				32,32,32,32,32,32,32,32,32,31,31,31,
+				31,31,31,31,31,31,31,30,30,30,30,30,
+				30,29,29,29,29,29,29,29,29,28,28,28,
+				28,28,28,28
+			];
 			
 			// beep indicator
 			if(chart.ekg.beepFlag == true){
@@ -181,7 +229,7 @@
 			}
 			
 			// setup pattern length
-			chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex].length
+			chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex].length;
 			
 			// start the pattern
 			chart.resp.interval = setInterval(chart.drawRespPixel, chart.resp.drawInterval, "resp");
@@ -217,13 +265,31 @@
 				else {
 					chart.ekg.rateIndex = 3;
 				}			
+			} else if(chart.ekg.rhythmIndex == 'afib') {
+				if( cardiac.rate <= 75 ) {
+					chart.ekg.rateIndex = 0;
+				}
+				else if( cardiac.rate <= 140 ) {
+					chart.ekg.rateIndex = 1;
+				}
+				else if( cardiac.rate <= 230 ) {
+					chart.ekg.rateIndex = 2;
+				}
+				else {
+					chart.ekg.rateIndex = 3;
+				}			
+			} 
+			if ( typeof ( chart.ekg.rhythm[chart.ekg.rhythmIndex] ) === 'undefined' )
+			{
+				console.log("No EKG Rhythm "+chart.ekg.rhythmIndex );
+				chart.ekg.rhythmIndex = 'asystole';	// Flatline
+				chart.ekg.rateIndex = 0;
 			}
-
 			chart.ekg.length = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex].length;
 			if(chart.ekg.patternIndex >= chart.ekg.length) {
 				chart.ekg.patternIndex = 0;
 			}
-			
+
 			chart.heartRate = cardiac.rate;
 			controls.heartRate.value = cardiac.rate;
 //console.log(cardiac );
@@ -270,7 +336,57 @@
 						// increment pointers
 						chart.ekg.patternIndex++;
 					}
+				} else if(chart.ekg.rhythmIndex == 'afib') {
+					if(chart.status.cardiac.synch == false && chart.ekg.patternIndex == 0) {
+						// generate slow noise between range
+						y = chart.vfib.base + chart.getafibBase() - 6;
+						
+					} else if(chart.status.cardiac.synch == true || chart.ekg.patternIndex > 0) {
+						y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex][chart.ekg.patternIndex] * -1;
+						
+						// beep?
+						if(y == chart.ekg.beepValue && chart.ekg.beepFlag == true && chart.ekg.stopFlag == false) {
+							// controls.heartRate.audio.load();  // Don't do this!!
+							controls.heartRate.audio.play();
+						}
+						
+						// increment pointers
+						chart.ekg.patternIndex++;
+					}
 				} else if(chart.ekg.rhythmIndex == 'asystole') {
+					y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex][chart.ekg.patternIndex] * -1;
+					
+					// generate random noise between range
+					y += Math.floor((Math.random() * chart.ekg.noiseMax));
+					if(y > (chart.ekg.noiseMax / 2)) {
+						y -= (chart.ekg.noiseMax / 2);
+					}
+					
+					// increment pointers
+					chart.ekg.patternIndex++;
+				} else if(chart.ekg.rhythmIndex == 'vtach1') {
+					y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex][chart.ekg.patternIndex] * -1;
+					
+					// generate random noise between range
+					y += Math.floor((Math.random() * chart.ekg.noiseMax));
+					if(y > (chart.ekg.noiseMax / 2)) {
+						y -= (chart.ekg.noiseMax / 2);
+					}
+					
+					// increment pointers
+					chart.ekg.patternIndex++;
+				} else if(chart.ekg.rhythmIndex == 'vtach2') {
+					y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex][chart.ekg.patternIndex] * -1;
+					
+					// generate random noise between range
+					y += Math.floor((Math.random() * chart.ekg.noiseMax));
+					if(y > (chart.ekg.noiseMax / 2)) {
+						y -= (chart.ekg.noiseMax / 2);
+					}
+					
+					// increment pointers
+					chart.ekg.patternIndex++;
+				} else if(chart.ekg.rhythmIndex == 'vtach3') {
 					y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex][chart.ekg.patternIndex] * -1;
 					
 					// generate random noise between range
@@ -340,6 +456,41 @@
 //console.log(chart.ekg.patternIndex)
 			
 			if ( ( isVitalsMonitor == 0 ) || ( controls.CO2.leadsConnected == true ) ) {
+				if(chart.status.resp.synch == true ) {	// Restart Cycle
+					chart.resp.patternIndex = 0;
+					chart.resp.rhythmIndex = 0;
+					// Calculate the half point count
+					chart.resp.halfCount = (controls.inhalation_duration.value / chart.resp.drawInterval)/2;
+					chart.resp.activeCount = 0;
+					chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex].length;
+					y = chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.patternIndex] * -1;
+					chart.status.resp.synch = false;
+				}
+				else {
+					y = chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.patternIndex] * -1;
+					chart.resp.patternIndex++;
+					chart.resp.activeCount++;
+
+					if(chart.resp.patternIndex >= chart.resp.length) {
+						switch ( chart.resp.rhythmIndex ) {
+							case 0:	// Inhillation
+								chart.resp.rhythmIndex = 1;
+								break;
+							case 1: // Hold In
+								if ( chart.resp.activeCount >= chart.resp.halfCount ) {
+									chart.resp.rhythmIndex = 2;
+								}
+								break;
+							case 2: // Exhillation
+								chart.resp.rhythmIndex = 3;
+								break;
+							case 3: // Hold Out
+								break;
+						}
+						chart.resp.patternIndex = 0;
+					}
+				}
+				/*
 				// see if we need to draw waveform or if we are in background
 				if((chart.status.resp.synch == false && chart.resp.patternIndex == 0) || chart.resp.stopFlag == true) {
 					// generate random noise between range
@@ -360,6 +511,7 @@
 				if(chart.resp.patternIndex >= chart.resp.length) {
 					chart.resp.patternIndex = 0;
 				}
+				*/
 			}
 			else {
 				y = 0;
@@ -405,6 +557,32 @@
 			}
 			else {	
 				if ( ( chart.fibP3 % 4 ) == 1 )
+				{
+					chart.fibMultiply = chart.fibP3List[chart.fibP3ListIndex];
+					chart.fibP3ListIndex++;
+					if ( chart.fibP3ListIndex >= chart.fibP3List.length ) {
+						chart.fibP3ListIndex = 0;
+					}
+//console.log("fib Multiply: " + fibMultiply);
+				}
+			
+				y1 = Math.sin(chart.fibP1 / chart.fibUnit1 );
+				y2 = Math.sin(chart.fibP2 / chart.fibUnit2 );
+				
+				chart.fibP1 += chart.fibP1Constant;
+				chart.fibP2 += chart.fibP2Constant;
+				chart.fibP3 += 1;
+				
+				return ( (chart.fibMultiply/chart.fibDivide)*(y1 + y2) );
+			}
+		},
+		
+		getafibBase: function() {
+			if ( chart.fibUnit1 == 0 ) {
+				return ( 0 );
+			}
+			else {	
+				if ( ( chart.fibP3 % 2 ) == 1 )
 				{
 					chart.fibMultiply = chart.fibP3List[chart.fibP3ListIndex];
 					chart.fibP3ListIndex++;

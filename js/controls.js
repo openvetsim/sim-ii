@@ -163,6 +163,10 @@
 			active: false
 		},
 		
+		inhalation_duration: {
+			value: 500
+		},
+
 		pulseStrength: {
 			value: "medium"
 		},
