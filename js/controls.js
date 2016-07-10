@@ -5,6 +5,7 @@
 			maxValue: 300,
 			slideBar: '',
 			increment: 1,
+			delay: 1,
 			
 			beatITimeout: 0,
 			
@@ -35,10 +36,20 @@
 			},
 			
 			setSynch: function() {
+				// if afib, then get randomized delay, else delay multiplier is 1.0
+				if(controls.heartRhythm.currentRhythm == 'afib') {
+					controls.heartRate.delay = chart.afib.delay[chart.afib.delayPtr++];
+					if(chart.afib.delayPtr > chart.afib.delayCount) {
+						chart.afib.delayPtr = 0;
+					}
+				} else {
+					controls.heartRate.delay = 1.0;
+				}
+			
 				chart.status.cardiac.synch = true;
 				if ( ! ( simmgr.isLocalDisplay() ) )
 				{
-					controls.heartRate.beatTimeout = setTimeout(controls.heartRate.setSynch, Math.round((60 / controls.heartRate.value) * 1000));
+					controls.heartRate.beatTimeout = setTimeout(controls.heartRate.setSynch, Math.round((60 / controls.heartRate.value) * 1000) * controls.heartRate.delay);
 				}
 			},
 			

@@ -147,10 +147,19 @@ var simmgr = {
 					
 					/***** heart rhythm *****/
 					// heart ecg pattern selection
-					if(typeof(response.cardiac.rhythm) != "undefined") {
+					if(typeof(response.cardiac.rhythm) != "undefined" && controls.heartRhythm.currentRhythm != response.cardiac.rhythm) {
 						controls.heartRhythm.currentRhythm = response.cardiac.rhythm;
 						chart.ekg.rhythmIndex = response.cardiac.rhythm;
 						chart.updateCardiac(response.cardiac );
+						
+						// calculate afib delays...scale heart rate between 0 and 2 for 100 samples
+						// average delay will be with +/- 3%.
+						if(response.cardiac.rhythm == 'afib') {
+							chart.afib.delay = new Array;
+							for(var index = 0; index <= chart.afib.delayCount; index++) {
+								chart.afib.delay[index] = parseFloat((Math.random() * 2.0).toFixed(2));
+ 							}
+						}
 					}
 					
 					// heart pea

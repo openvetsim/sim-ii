@@ -37,13 +37,19 @@
 		fibP3ListIndex: 0,
 //		fibP3List: [ 10, 9, 8, 9, 10, 11, 12, 13, 14,14,15,16,16,15,14,13,12,11, 10, 9, 8, 7, 6, 5, 4, 5, 6, 7, 8, 9, 10, 11, 12, 11, 10, 11, 12, 9, 8, 9 ],
 		fibP3List: [ 10, 9, 8, 9, 10, 11, 12, 13, 14,14,15,16,16,15,14,13,12,11],
-		fibDivide: 1, // amplitude of ventricular bibrillation
+		fibDivide: 6, // amplitude of ventricular bibrillation
 						// 4 = fine
 						// 3 - medium
 						// 1 - coarse
 		
 		vfib: {
 			base: 0
+		},
+		
+		afib: {
+			delay: new Array,
+			delayCount: 100,
+			delayPtr: 0
 		},
 
 		// ekg strip parameters
@@ -115,16 +121,10 @@
 			
 			// Atrial Fibrillation
 			chart.ekg.rhythm['afib'][0] = [
-				2, 3, 17, 52, 64, 26, -3, -5, -2, 0, 1, 2, 3, 4, 4, 5, 6, 7, 8, 10, 11, 13, 15, 16, 17, 17, 16, 14, 10, 7, 4, 2, 1, 0, 0, 1, 1 // Up to 75
+				0, 1, 2, 3, 10, 17, 20, 52, 64, 40, 26, 10, 0, -10, -20, -15, -10, -1 // Up to 150
 			];
 			chart.ekg.rhythm['afib'][1] = [
-				4, 3, 6, 7, 4, 2, 1, 2, 3, 17, 64, 26, -5, -2, 0, 2, 4, 5, 6,  10, 11, 15, 16, 17, 16, 10, 4, 1, 0, 1 // Up to 140
-			];
-			chart.ekg.rhythm['afib'][2] = [
-				4, 3, 7, 4, 1, 3, 35, 64, -5, -2, 4, 6, 11, 15, 17, 10, 4, 1 // Up to 230
-			];
-			chart.ekg.rhythm['afib'][3] = [
-				3, 7, 1, 3, 35, 64, -5, 4, 11, 17, 4, 1 // Up to 300
+				0, 2, 3, 10, 20, 52, 64, 26, 10, 0, -20, -15, -10, -1 // Up to 300
 			];
 
 			// Ventricular Tachycardia
@@ -266,17 +266,10 @@
 					chart.ekg.rateIndex = 3;
 				}			
 			} else if(chart.ekg.rhythmIndex == 'afib') {
-				if( cardiac.rate <= 75 ) {
+				if( cardiac.rate <= 150 ) {
 					chart.ekg.rateIndex = 0;
-				}
-				else if( cardiac.rate <= 140 ) {
+				} else {
 					chart.ekg.rateIndex = 1;
-				}
-				else if( cardiac.rate <= 230 ) {
-					chart.ekg.rateIndex = 2;
-				}
-				else {
-					chart.ekg.rateIndex = 3;
 				}			
 			} 
 			if ( typeof ( chart.ekg.rhythm[chart.ekg.rhythmIndex] ) === 'undefined' )
@@ -339,7 +332,7 @@
 				} else if(chart.ekg.rhythmIndex == 'afib') {
 					if(chart.status.cardiac.synch == false && chart.ekg.patternIndex == 0) {
 						// generate slow noise between range
-						y = chart.vfib.base + chart.getafibBase() - 6;
+						y = chart.vfib.base + chart.getafibBase();
 						
 					} else if(chart.status.cardiac.synch == true || chart.ekg.patternIndex > 0) {
 						y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex][chart.ekg.patternIndex] * -1;
@@ -577,7 +570,7 @@
 			}
 		},
 		
-		getafibBase: function() {
+		getafibBase2: function() {
 			if ( chart.fibUnit1 == 0 ) {
 				return ( 0 );
 			}
@@ -599,8 +592,36 @@
 				chart.fibP2 += chart.fibP2Constant;
 				chart.fibP3 += 1;
 				
-				return ( (chart.fibMultiply/chart.fibDivide)*(y1 + y2) );
+				return ( (chart.fibMultiply/8)*(y1 + y2) );
+//				return ( (chart.fibMultiply/chart.fibDivide)*(y1 + y2) );
 			}
-		}
+		},
 		
+		getafibBase: function() {
+			if ( chart.fibUnit1 == 0 ) {
+				return ( 0 );
+			}
+			else {	
+				if ( ( chart.fibP3 % 2 ) == 1 )
+				{
+					chart.fibMultiply = chart.fibP3List[chart.fibP3ListIndex];
+					chart.fibP3ListIndex++;
+					if ( chart.fibP3ListIndex >= chart.fibP3List.length ) {
+						chart.fibP3ListIndex = 0;
+					}
+//console.log("fib Multiply: " + fibMultiply);
+				}
+			
+				y1 = Math.sin(chart.fibP1 / chart.fibUnit1 );
+				y2 = Math.sin(chart.fibP2 / chart.fibUnit2 );
+				
+				chart.fibP1 += 6;
+				chart.fibP2 += 4;
+//				chart.fibP1 += chart.fibP1Constant;
+//				chart.fibP2 += chart.fibP2Constant;
+				chart.fibP3 += 1;
+				
+				return ( (chart.fibMultiply/4)*(y1 + y2) );
+			}
+		}		
 	}
