@@ -1,7 +1,7 @@
 	var controls = {
 		heartRate: {
 			value: 75,
-			minValue: 1,
+			minValue: 10,
 			maxValue: 300,
 			slideBar: '',
 			increment: 1,
