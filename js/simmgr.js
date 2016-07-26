@@ -18,9 +18,11 @@ var simmgr = {
 	running : 0,
 	audioPlayStarted : 0,
 	mediaPlayStarted : 0,
+	timeStamp: 0,
 	
 	init : function() {
 		console.log("simmgr: init" );
+		
 		// Set the interval faster if the client is the local vitals display
 		if ( simmgr.isLocalDisplay() )
 		{
@@ -55,11 +57,14 @@ var simmgr = {
 	},
 	
 	getStatus : function () {
+		// get unique time stamp
+		simmgr.timeStamp = new Date().getTime();
+		
 		$.ajax({
 			url: BROWSER_CGI + 'simstatus.cgi',
 			type: 'get',
 			dataType: 'json',
-			data: { status: 1 },
+			data: { status: simmgr.timeStamp },
 			success: function(response,  textStatus, jqXHR ) {
 				if ( simmgr.isLocalDisplay() )
 				{
@@ -82,6 +87,10 @@ var simmgr = {
 					if ( ( typeof(response.cardiac.rate) != "undefined" ) && ( response.cardiac.rate != controls.heartRate.value ) )
 					{
 						controls.heartRate.setHeartRateValue(response.cardiac.rate );
+						if(response.cardiac.rhythm == 'vtach3') {
+							// pre calculate R on T based on heart rate
+							chart.initVtach3();
+						}
 						chart.updateCardiac(response.cardiac );
 					}
 					
@@ -159,6 +168,10 @@ var simmgr = {
 							for(var index = 0; index <= chart.afib.delayCount; index++) {
 								chart.afib.delay[index] = parseFloat((Math.random() * 2.0).toFixed(2));
  							}
+						} else if(response.cardiac.rhythm == 'vtach3') {
+							// pre calculate R on T based on heart rate
+							chart.initVtach3();
+							chart.updateCardiac(response.cardiac );
 						}
 					}
 					

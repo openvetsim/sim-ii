@@ -29,7 +29,7 @@
 				// get latest value from modal and send to the SimMgr
 				rate = $('.strip-value.new').val();
 				time = $('.transfer-time').val();
-				controls.heartRate.setHeartRateValue(rate );
+//				controls.heartRate.setHeartRateValue(rate );
 				controls.heartRate.slideBar.slider("value", controls.heartRate.value);
 				
 				simmgr.sendChange( { 'set:cardiac:rate' : rate, 'set:cardiac:transfer_time' : time } );

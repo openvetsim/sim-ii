@@ -117,7 +117,7 @@
 			chart.ekg.rhythm.afib = new Array;
 			chart.ekg.rhythm.vtach1 = new Array;
 			chart.ekg.rhythm.vtach2 = new Array;
-			chart.ekg.rhythm.vtach3 = new Array;
+			chart.ekg.rhythm.vtach3 = new Array;  // place holder since vtach 3 is half sine
 			
 			// Atrial Fibrillation
 			chart.ekg.rhythm['afib'][0] = [
@@ -129,13 +129,38 @@
 
 			// Ventricular Tachycardia
 			chart.ekg.rhythm['vtach1'][0] = [
-				-4, -16, -4, 0, 6, 17, 34, 42, 48, 52, 54, 56, 60, 62, 61, 62, 60, 56, 54, 52, 50, 44, 32, 20, 12, 0
+				8, 8, 11, 21, 40, 56, 63, 67, 55, 37,
+				17, -7, -13, -16, -21, -23, -24, -25, -26, -26,
+				-24, -18, -11, -3, 5, 11, 14, 16, 15, 15,
+				13, 12, 12, 13, 13, 17, 16, 15, 11, 9,
+				9, 8, 8
+			];
+			chart.ekg.rhythm['vtach1'][1] = [
+				8, 11, 21, 40, 56, 63, 67, 55, 37, 17,
+				-7, -13, -16, -23, -26, -24, -18, -11, -3, 5, 
+				11, 9, 8
+			];
+			chart.ekg.rhythm['vtach1'][2] = [
+				8, 21, 40, 56, 63, 67, 37, 17,
+				-7, -13, -26, -18, -11, 
+				11, 8
 			];
 			chart.ekg.rhythm['vtach2'][0] = [
-				2, 3, 6, 7, 9, 10,12, 17, 34, 48, 52, 54, 56, 60, 62, 63,  62, 56, 50, 44, 32, 20, 12, 6, 0, -6, -8, -10, -14, -20, -22, -23, -24, -24, -23, -19, -15, -13, -9, -8, -4, -2, 0, 2, 3, 2, 1, 0
+				0, 0, 0, 0, 0, 1, 2, 3, 3, 4,
+				5, 3, -25, -52, -51, -49, -30, -19, -9, 11, 
+				24, 25, 27, 28, 31, 35, 39, 42, 43, 40, 
+				33, 25, 16, 9, 4, 0, 0, 0, 0, 0 
+			];
+			chart.ekg.rhythm['vtach2'][1] = [
+				0, 1, 2, 3, 4, 5, 3, -25, -52, -30, 
+				-19, -9, 11, 25, 35, 42, 33, 25, 16, 4
+			];
+			chart.ekg.rhythm['vtach2'][2] = [
+				1, 5, 3, -25, -52, -30, 
+				-19, 11, 35, 42, 33, 16, 4
 			];
 			chart.ekg.rhythm['vtach3'][0] = [
-				-4, -8, -10, -14, -16, -20, -22, -23, -24, -23, -21, -13, -6, -4, 2, 3, 6, 7, 9, 10,12, 17, 34, 48, 52, 54, 56, 60, 61, 62, 62, 61,  59, 56, 50, 44, 32, 20, 12, 6, 0
+				0, 1, 2, 3
 			];
 			
 			// asystole
@@ -266,12 +291,31 @@
 					chart.ekg.rateIndex = 3;
 				}			
 			} else if(chart.ekg.rhythmIndex == 'afib') {
-				if( cardiac.rate <= 150 ) {
+				if( cardiac.rate <= 80 ) {
 					chart.ekg.rateIndex = 0;
 				} else {
 					chart.ekg.rateIndex = 1;
 				}			
+			} else if(chart.ekg.rhythmIndex == 'vtach1') {
+				if( cardiac.rate <= 80 ) {
+					chart.ekg.rateIndex = 0;
+				} else if( cardiac.rate <= 160 ) {
+					chart.ekg.rateIndex = 1;
+				} else {
+					chart.ekg.rateIndex = 2;				
+				}		
+			} else if(chart.ekg.rhythmIndex == 'vtach2') {
+				if( cardiac.rate <= 100 ) {
+					chart.ekg.rateIndex = 0;
+				} else if(cardiac.rate <= 180) {
+					chart.ekg.rateIndex = 1;
+				} else {
+					chart.ekg.rateIndex = 2;			
+				}
+			}  else if(chart.ekg.rhythmIndex == 'vtach3') {
+				chart.ekg.rateIndex = 0;
 			} 
+			
 			if ( typeof ( chart.ekg.rhythm[chart.ekg.rhythmIndex] ) === 'undefined' )
 			{
 				console.log("No EKG Rhythm "+chart.ekg.rhythmIndex );
@@ -298,6 +342,19 @@
 			return;
 		},
 		
+		// routine to initialize vtach 3 R on T values based on heart rate sinusoidal
+		initVtach3: function() {
+			chart.ekg.rhythm.vtach3[0] = new Array;	
+			xIncr = (controls.heartRate.value * chart.ekg.drawInterval * Math.PI) / 60000;
+			var amplitude = chart.ekg.height / 2;
+			var offset = chart.ekg.height / 2;
+			var index = 0;
+			for(var x = 0; x <= Math.PI; x += xIncr) {
+				chart.ekg.rhythm.vtach3[0][index] = (Math.sin(x) * -amplitude) + 10;
+				index++;
+			}
+		},
+		
 		drawEkgPixel: function() {
 			var y;
 
@@ -310,7 +367,7 @@
 				if(chart.ekg.stopFlag == true) {
 					y = 0;
 					controls.heartRate.audio.pause();
-				} else if(chart.ekg.rhythmIndex == 'sinus') {
+				} else if(chart.ekg.rhythmIndex == 'sinus' || chart.ekg.rhythmIndex == 'vtach1' || chart.ekg.rhythmIndex == 'vtach2') {
 					if(chart.status.cardiac.synch == false && chart.ekg.patternIndex == 0) {
 						// generate random noise between range
 						y = Math.floor((Math.random() * chart.ekg.noiseMax));
@@ -357,36 +414,8 @@
 					
 					// increment pointers
 					chart.ekg.patternIndex++;
-				} else if(chart.ekg.rhythmIndex == 'vtach1') {
-					y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex][chart.ekg.patternIndex] * -1;
-					
-					// generate random noise between range
-					y += Math.floor((Math.random() * chart.ekg.noiseMax));
-					if(y > (chart.ekg.noiseMax / 2)) {
-						y -= (chart.ekg.noiseMax / 2);
-					}
-					
-					// increment pointers
-					chart.ekg.patternIndex++;
-				} else if(chart.ekg.rhythmIndex == 'vtach2') {
-					y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex][chart.ekg.patternIndex] * -1;
-					
-					// generate random noise between range
-					y += Math.floor((Math.random() * chart.ekg.noiseMax));
-					if(y > (chart.ekg.noiseMax / 2)) {
-						y -= (chart.ekg.noiseMax / 2);
-					}
-					
-					// increment pointers
-					chart.ekg.patternIndex++;
 				} else if(chart.ekg.rhythmIndex == 'vtach3') {
-					y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex][chart.ekg.patternIndex] * -1;
-					
-					// generate random noise between range
-					y += Math.floor((Math.random() * chart.ekg.noiseMax));
-					if(y > (chart.ekg.noiseMax / 2)) {
-						y -= (chart.ekg.noiseMax / 2);
-					}
+					y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex][chart.ekg.patternIndex];
 					
 					// increment pointers
 					chart.ekg.patternIndex++;

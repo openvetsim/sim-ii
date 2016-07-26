@@ -24,7 +24,7 @@
 			array('value' => 'afib', 'type' => 'pulse', 'name' => 'Atrial Fibrillation'),
 			array('value' => 'vtach1', 'type' => 'pulse', 'name' => 'Ventricular Tarchycardia 1'),
 			array('value' => 'vtach2', 'type' => 'pulse', 'name' => 'Ventricular Tarchycardia 2'),
-			array('value' => 'vtach3', 'type' => 'pulse', 'name' => 'Ventricular Tarchycardia 3'),
+			array('value' => 'vtach3', 'type' => 'pulse', 'name' => 'R on T'),
 			array('value' => 'vfib', 'type' => 'no-pulse', 'name' => 'Ventricular Fibrillation'),
 			array('value' => 'asystole', 'type' => 'no-pulse', 'name' => 'Asystole')
 		);

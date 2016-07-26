@@ -194,7 +194,7 @@ var isVitalsMonitor = 0;	// Student Display Flag
 				</div>
 				<div id="vs-right-col">
 					<div class="vs-controls clearer">
-						<a href="javascript: void(0)" onclick="modal.heartRhythm(); return false;"class="strip-label color-green">HR</a>
+						<a href="javascript: void(0)" onclick="modal.heartRhythm(); return false;" class="strip-label color-green">HR</a>
 					</div>
 					<div id="vs-heartRhythm" class="vs-controls">
 						<a href="javascript: void(0)" onclick="modal.heartRate(); return false;" class="display-rate color-green">70</a>
@@ -216,7 +216,7 @@ var isVitalsMonitor = 0;	// Student Display Flag
 						<a class="alt-control-rate color-white" href="javascript: void(0)" onclick="modal.awRR(); return false;">123</a>
 					</div>
 					<div class="alt-control with-sub SpO2">
-						<a class="alt-control-title color-yellow" href="javascript: void(0)" onclick="modal.SpO2(); return false;">SpO<sub>2<sub></a>
+						<a class="alt-control-title color-yellow" href="javascript: void(0)" onclick="modal.SpO2(); return false;">SpO<sub>2</sub></a>
 						<a id="display-SpO2" class="alt-control-rate color-yellow" href="javascript: void(0)" onclick="modal.SpO2(); return false;">123</a>
 					</div>
 					<div id="vs-nbp" class="alt-control">
