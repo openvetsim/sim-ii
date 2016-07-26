@@ -386,8 +386,9 @@ var simmgr = {
 					// awRR
 					if(typeof(response.respiration.rate) != "undefined") {
 						var respirationRate = response.respiration.rate;
-						if(controls.inhalation_duration.value != controls.awRR.value) {
-							controls.awRR.value = response.respiration.rate;
+						if( respirationRate != controls.awRR.value ) {
+							console.log("recalc" );
+							controls.awRR.value = respirationRate;
 							controls.awRR.displayValue();
 							// Calculate the inhalation time
 							if ( respirationRate > 0 )
@@ -401,7 +402,10 @@ var simmgr = {
 							}
 						}
 					}
-					
+					else
+					{
+						console.log("no respiration rate" );
+					}
 					// spo2
 					if(typeof(response.respiration.spo2) != "undefined") {
 						var spo2Rate = response.respiration.spo2;
@@ -518,7 +522,10 @@ var simmgr = {
 					}
 
 				}
-
+				else
+				{
+					console.log("no respiration" );
+				}
 				/************ scenario **************/
 				if( ( typeof(response.scenario) != '"undefined"' ) && ( !isVitalsMonitor ) ){
 					if(typeof(response.scenario.runtime) != "undefined" ) {
