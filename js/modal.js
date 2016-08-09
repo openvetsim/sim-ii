@@ -102,17 +102,24 @@
 						// heart rhythm controls
 						controls.heartRhythm.setHeartRhythmModal();
 						
+						// see if we are in r on t, adjust minimum value and value accordingly
+						var modalMinValue = (controls.heartRhythm.currentRhythm == 'vtach3') ? controls.heartRate.rOnTMinValue : controls.heartRate.normalMinValue;
+						var modalValue = controls.heartRate.value;
+						if(modalValue < modalMinValue) {
+							modalValue = modalMinValue;
+						}
+						
 						// bind controls
 						controls.heartRate.slideBar = $(".control-slider-1").slider({
-							value: controls.heartRate.value,
-							min: controls.heartRate.minValue,
+							value: modalValue,
+							min: modalMinValue,
 							max: controls.heartRate.maxValue,
 							step: 1,
 							slide: function(event, ui) {
 								$('.strip-value.new').val(ui.value);
 							}
 						});
-						$('.strip-value').val(controls.heartRate.value);
+						$('.strip-value').val(modalValue);
 						
 						// bind apply button
 						$('.modal-button.apply').click(function() {
@@ -146,7 +153,26 @@
 						
 						// bind ecg rhythm select
 						$('select.ecg-select').change(function() {
+							var ecgMin = controls.heartRate.normalMinValue;
+							var ecgValue = controls.heartRate.value;
+							if($(this).children('option:selected').val() == 'vtach3') {
+								ecgMin = controls.heartRate.rOnTMinValue;
+								if(ecgValue < controls.heartRate.rOnTMinValue) {
+									ecgValue = controls.heartRate.rOnTMinValue;
+								}
+							}
 							controls.heartRhythm.setHeartRhythmModal();
+							// bind controls
+							controls.heartRate.slideBar = $(".control-slider-1").slider({
+								value: ecgValue,
+								min: ecgMin,
+								max: controls.heartRate.maxValue,
+								step: 1,
+								slide: function(event, ui) {
+									$('.strip-value.new').val(ui.value);
+								}
+							});
+							$('.strip-value').val(ecgValue);
 						});						
 						
 					}

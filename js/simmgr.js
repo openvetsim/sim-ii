@@ -91,6 +91,7 @@ var simmgr = {
 							// pre calculate R on T based on heart rate
 							chart.initVtach3();
 						}
+						
 						chart.updateCardiac(response.cardiac );
 					}
 					
@@ -161,6 +162,18 @@ var simmgr = {
 						chart.ekg.rhythmIndex = response.cardiac.rhythm;
 						chart.updateCardiac(response.cardiac );
 						
+						// set minimum heart rate
+						if(response.cardiac.rhythm == 'vtach3') {
+							controls.heartRate.minValue = controls.heartRate.rOnTMinValue;
+							if(controls.heartRate.value < controls.heartRate.minValue) {
+								simmgr.sendChange( { 'set:cardiac:rate' : controls.heartRate.minValue } );
+								controls.heartRate.setHeartRateValue(controls.heartRate.minValue);
+							}
+						} else {
+							controls.heartRate.minValue = controls.heartRate.normalMinValue;						
+						}
+
+
 						// calculate afib delays...scale heart rate between 0 and 2 for 100 samples
 						// average delay will be with +/- 3%.
 						if(response.cardiac.rhythm == 'afib') {

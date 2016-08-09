@@ -6,6 +6,8 @@
 			slideBar: '',
 			increment: 1,
 			delay: 1,
+			rOnTMinValue: 180,
+			normalMinValue: 10,
 			
 			beatITimeout: 0,
 			
