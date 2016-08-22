@@ -101,7 +101,9 @@ var simmgr = {
 						controls.nbp.diastolicValue = response.cardiac.bps_dia;
 						controls.nbp.systolicValue = response.cardiac.bps_sys;
 						controls.nbp.reportedHRValue = response.cardiac.nibp_rate;
-						controls.nbp.updateDisplayedNBP();
+						
+						// only update reading when requested.
+						//controls.nbp.updateDisplayedNBP();
 					}
 					
 					// ekg indicator
@@ -124,6 +126,37 @@ var simmgr = {
 						buttons.setVSButton('ekg');
 					}
 
+					// bp cuff
+					if(typeof(response.cardiac.bp_cuff) != "undefined") {
+						if( response.cardiac.bp_cuff == 1) {
+							controls.bpcuff.leadsConnected = true;
+							$('#button-nbp').show();
+						} else {
+							controls.bpcuff.leadsConnected = false;					
+							$('#button-nbp').hide();
+						}
+						buttons.setVSButton('bpcuff');
+					}
+					
+					// read nibp
+					if(typeof(response.cardiac.nibp_read) != "undefined" && controls.bpcuff.leadsConnected == true) {
+						if( response.cardiac.nibp_read == 1) {
+							$('#button-nbp').css('background-color', buttons.disconnectColor);
+						} else {
+							$('#button-nbp').css('background-color', buttons.connectColor);							
+						}
+						
+						if(response.cardiac.nibp_read != controls.nbp.nibp_read) {
+							controls.nbp.nibp_read = response.cardiac.nibp_read;
+							controls.nbp.updateDisplayedNBP();
+						}
+					}
+					
+					// nibp frequency
+					if(typeof(response.cardiac.nibp_freq) != "undefined") {
+						controls.nbp.nibp_freq = response.cardiac.nibp_freq;
+					}
+					
 					/***** heart sounds *****/
 					// heart sound name
 					if(typeof(response.cardiac.heart_sound) != "undefined") {
@@ -400,7 +433,7 @@ var simmgr = {
 					if(typeof(response.respiration.rate) != "undefined") {
 						var respirationRate = response.respiration.rate;
 						if( respirationRate != controls.awRR.value ) {
-							console.log("recalc" );
+//console.log("recalc" );
 							controls.awRR.value = respirationRate;
 							controls.awRR.displayValue();
 							// Calculate the inhalation time

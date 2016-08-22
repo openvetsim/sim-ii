@@ -181,13 +181,36 @@
 		},
 
 		pulseStrength: {
-			value: "medium"
+			value: "medium",
+			left: {
+				femoral: {
+					value: "medium"
+				},
+				dorsal: {
+					value: "medium"
+				}
+			}, 
+			right: {
+				femoral: {
+					value: "medium"
+				},
+				dorsal: {
+					value: "medium"
+				}
+			}
+			
 		},
 		
 		ekg: {
 			leadsConnected: false,
 			connectHTML: "Disconnect EKG Leads",
 			disconnectHTML: "Connect EKG Leads"
+		},
+		
+		bpcuff: {
+			leadsConnected: false,
+			connectHTML: "Disconnect BP Cuff",
+			disconnectHTML: "Connect BP Cuff"
 		},
 		
 		SpO2: {
@@ -357,6 +380,9 @@
 			
 			meanValue: 0,
 			
+			nibp_read: -1,
+			nibp_freq: 0,
+			
 			slideBarSystolic: '',
 			slideBarDiastolic: '',
 			slideBarLinkedHR: '',
@@ -371,16 +397,28 @@
 			},
 			
 			updateDisplayedNBP: function() {
-				// update displayed NBP
-				$('#displayed-systolic').html(controls.nbp.systolicValue);
-				$('#displayed-diastolic').html(controls.nbp.diastolicValue);
-				
-				// calculate mean NBP
-				controls.nbp.meanValue = Math.floor((controls.nbp.systolicValue - controls.nbp.diastolicValue) / 3) + parseInt(controls.nbp.diastolicValue);
-				$('#displayed-meanNBP').html(controls.nbp.meanValue)
-				
-				// display reported HR
-				$('#displayed-reportedHR').html(controls.nbp.reportedHRValue + ' <span class="nbip-label">bpm</span>');				
+				if(controls.nbp.nibp_read == 1) {
+					// update displayed NBP
+					$('#displayed-systolic').html('---');
+					$('#displayed-diastolic').html('---');
+					
+					// calculate mean NBP
+					$('#displayed-meanNBP').html('---')
+					
+					// display reported HR
+					$('#displayed-reportedHR').html('---');					
+				} else {
+					// update displayed NBP
+					$('#displayed-systolic').html(controls.nbp.systolicValue);
+					$('#displayed-diastolic').html(controls.nbp.diastolicValue);
+					
+					// calculate mean NBP
+					controls.nbp.meanValue = Math.floor((controls.nbp.systolicValue - controls.nbp.diastolicValue) / 3) + parseInt(controls.nbp.diastolicValue);
+					$('#displayed-meanNBP').html(controls.nbp.meanValue)
+					
+					// display reported HR
+					$('#displayed-reportedHR').html(controls.nbp.reportedHRValue + ' <span class="nbip-label">bpm</span>');	
+				}
 			},
 						
 			validateNewValue: function(type) {

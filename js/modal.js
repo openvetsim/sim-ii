@@ -447,6 +447,7 @@
 						$('.strip-value.systolic').val(parseInt(controls.nbp.systolicValue));
 						$('.strip-value.diastolic').val(parseInt(controls.nbp.diastolicValue));
 						$('#nbp-control-coupled').prop('checked', controls.nbp.coupled);
+						$('select.read-time option[value=' + controls.nbp.nibp_freq + ']').attr('selected', true);
 						
 						// bind controls
 						controls.nbp.slideBarSystolic = $(".control-slider-1.systolic").slider({
@@ -570,6 +571,7 @@
 												'set:cardiac:bps_dia': $('.strip-value.new.diastolic').val(), 
 												'set:cardiac:bps_sys': $('.strip-value.new.systolic').val(),
 											    'set:cardiac:nibp_rate': $('.strip-value.new.linked-hr').val(),
+												'set:cardiac:nibp_freq': $('.read-time option:selected').val(),
 												'set:cardiac:transfer_time': $('.transfer-time option:selected').val()
 											});
 							modal.closeModal();

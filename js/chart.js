@@ -239,13 +239,14 @@
 			chart.resp.rhythm[2] = [	// Exhale
 				2,4,8,16,24,28,30,31,32
 			];
+
 			chart.resp.rhythm[3] = [	// Hold Out
 				32,32,32,32,32,32,32,32,32,31,31,31,
 				31,31,31,31,31,31,31,30,30,30,30,30,
 				30,29,29,29,29,29,29,29,29,28,28,28,
 				28,28,28,28
 			];
-			
+
 			// beep indicator
 			if(chart.ekg.beepFlag == true){
 				$('#ekg-sound').html('Turn EKG Sound OFF!').removeClass('play').addClass('pause')

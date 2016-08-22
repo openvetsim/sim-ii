@@ -137,13 +137,15 @@ button.nvs-button {
 }
 
 #button-nbp {
-	width: 40px;
-	border: 1px solid #80cc99;
-	background: #80cc99;
+	width: 90px;
+	position: absolute;
+	bottom: 0;
+	right: 50px;
 }
 	#vs-nbp {
 		margin: 10px 0 0 0;
 		width: 320px;
+		position: relative;
 	}
 		#vs-nbp a.alt-control-title {
 			margin: 0px 0 0px 0;
@@ -156,6 +158,9 @@ button.nvs-button {
 		}
 			#vs-nbp a.alt-control-rate#display-nbp-hr {
 				margin-top: 15px;
+			}
+			#vs-nbp a.alt-control-rate #displayed-diastolic {
+				margin-right: -10px;
 			}
 			#vs-nbp a.alt-control-rate.nbip {
 				width: 355px;
@@ -210,4 +215,5 @@ button.nvs-button {
 }
 .nbip-label {
 	font-size: 20px;
+	margin-left: -10px;
 }

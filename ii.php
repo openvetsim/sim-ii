@@ -161,28 +161,30 @@ var isVitalsMonitor = 0;	// Student Display Flag
 				<img class="nvs-button" id="button-ekg" src="<?= BROWSER_IMAGES; ?>ekg.png" alt="EKG Icon">
 				<h2 id="button-CO2-title" class="nvs-button"></h2>
 				<img class="nvs-button" id="button-CO2" src="<?= BROWSER_IMAGES; ?>co2.png" alt="CO2 Icon">
+				<h2 id="button-bpcuff-title" class="nvs-button"></h2>
+				<img class="nvs-button" id="button-bpcuff" src="<?= BROWSER_IMAGES; ?>bpcuff.png" alt="bpcuff Icon">
 
 				<div id="vocals-dog-control" class="dog-control">
-					<a href="javascript: void(2)" onclick="modal.vocals(); return false;">Vocals</a>
+					<a id="vocals-dog-control-title" href="javascript: void(2)" onclick="modal.vocals(); return false;">Vocals</a>
 					<a class="sound-mute" id="vocals-mute" href="javascript: void(2)" onclick="modal.vocals(); return false;"><img src="<?= BROWSER_IMAGES; ?>sound_mute.png"></a>
 				</div>
 				<div id="pulse-dog-control" class="dog-control">
-					<a href="javascript: void(2)" onclick="modal.pulseStrength(); return false;">Pulse Strength</a>
+					<a id="pulse-dog-control-title" href="javascript: void(2)" onclick="modal.pulseStrength(); return false;">Pulse Strength</a>
 				</div>
 				<div id="left-lung-dog-control" class="dog-control">
-					<a href="javascript: void(2)" onclick="modal.leftLung(); return false;">Left Lung</a>
+					<a id="left-lung-dog-control-title" href="javascript: void(2)" onclick="modal.leftLung(); return false;">Left Lung</a>
 					<a class="sound-mute" id="left-lung-mute" href="javascript: void(2)" onclick="modal.leftLung(); return false;"><img src="<?= BROWSER_IMAGES; ?>sound_mute.png"></a>
 				</div>
 				<div id="right-lung-dog-control" class="dog-control">
-					<a href="javascript: void(2)" onclick="modal.rightLung(); return false;">Right Lung</a>
+					<a id="right-lung-dog-control-title" href="javascript: void(2)" onclick="modal.rightLung(); return false;">Right Lung</a>
 					<a class="sound-mute" id="right-lung-mute" href="javascript: void(2)" onclick="modal.rightLung(); return false;"><img src="<?= BROWSER_IMAGES; ?>sound_mute.png"></a>
 				</div>
 				<div id="heart-sound-dog-control" class="dog-control">
-					<a href="javascript: void(2)" onclick="modal.heartSound(); return false;">Heart Sound</a>
+					<a id="heart-sound-dog-control-title" href="javascript: void(2)" onclick="modal.heartSound(); return false;">Heart Sound</a>
 					<a class="sound-mute" id="heart-sound-mute" href="javascript: void(2)" onclick="modal.heartSound(); return false;"><img src="<?= BROWSER_IMAGES; ?>sound_mute.png"></a>
 				</div>
 				<div id="chest-dog-control" class="dog-control">
-					<a href="javascript: void(2)" onclick="modal.chestRise(); return false;">Chest Movement</a>
+					<a id="chest-dog-control-title" href="javascript: void(2)" onclick="modal.chestRise(); return false;">Chest Movement</a>
 				</div>
 			</div>
 			
@@ -223,6 +225,7 @@ var isVitalsMonitor = 0;	// Student Display Flag
 						<a class="alt-control-title color-red" href="javascript: void(0)" onclick="modal.nbp(); return false;">NIBP</a>
 						<a id="display-nbp" class="alt-control-rate nbip color-red" href="javascript: void(0)" onclick="modal.nbp(); return false;"><span id="displayed-systolic">140</span>/<span id="displayed-diastolic">75</span> (<span id="displayed-meanNBP">80</span>) <span class="nbip-label">mmHg</span></a>
 						<a id="display-nbp-hr" class="alt-control-rate color-red" href="javascript: void(0)" onclick="modal.nbp(); return false;"><span style="font-size: 18px;">PR</span> <span id="displayed-reportedHR">75</span></a>
+						<button id="button-nbp" class="scenario-button red-button">Read NIBP</button>
 					</div>
 				</div>
 				<button id="startStopButton">Stop Status Updates</button>

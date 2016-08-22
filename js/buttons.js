@@ -7,6 +7,7 @@
 			buttons.setVSButton("ekg");
 			buttons.setVSButton("SpO2");
 			buttons.setVSButton("CO2");
+			buttons.setVSButton("bpcuff");
 			
 			// bind button events
 			$('#button-ekg').click(function() {
@@ -18,6 +19,18 @@
 			$('#button-CO2').click(function() {
 				buttons.bindVSButton("CO2");
 			});
+			$('#button-bpcuff').click(function() {
+				buttons.bindVSButton("bpcuff");
+			});
+			
+			// remove border from nibp button and bind action
+			$('#button-nbp').css('border', 'none');
+			$('#button-nbp').click(function() {
+				if(controls.nbp.nibp_read != 1) {
+					simmgr.sendChange({'set:cardiac:nibp_read': 1});					
+				}
+			});
+			
 		},
 		
 		setVSButton: function(buttonType) {
@@ -45,6 +58,8 @@
 					simmgr.sendChange({'set:respiration:spo2_indicator': value});					
 				} else if(buttonType == 'CO2') {
 					simmgr.sendChange({'set:respiration:etco2_indicator': value});										
+				} else if(buttonType == 'bpcuff') {
+					simmgr.sendChange({'set:cardiac:bp_cuff': value});										
 				}
 		}
 	}

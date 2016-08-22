@@ -1,7 +1,15 @@
 	var profile = {
 		init: function() {
 			// set up background image for animal silhouette from profile
-			$('#mannequin').css('background-image', 'url(' + BROWSER_PROFILES_IMAGES + scenario.scenarioProfile['filename'] + ')');
+			if(typeof scenario.scenarioProfile.avatar != 'undefined') {
+				$('#mannequin').css({
+					'background-image': 'url(' + BROWSER_PROFILES_IMAGES + scenario.scenarioProfile.avatar['filename'] + ')',
+					'background-repeat': 'no-repeat',
+					'background-position': 'center center',
+					'background-size': scenario.scenarioProfile.avatar['width_pct'] + '% ' +  scenario.scenarioProfile.avatar['height_pct'] + '%'
+				});
+				$('div.dog-control a').css('color', "'" + scenario.scenarioProfile.controls['color'] +"'");
+			}
 		
 			// set positioning of controls
 			$.each(scenario.scenarioProfile.controls.control, function() {

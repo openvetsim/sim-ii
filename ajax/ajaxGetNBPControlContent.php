@@ -63,11 +63,24 @@
 
 		<hr / class="modal-divider">
 		<div class="control-modal-div">
-			<p class="modal-section-title">Transfer Time</p>
-			<select class="transfer-time modal-select">
-				' . controls::getTransferDropDown() . '
-			</select>
+			<div class="sub-control">
+				<p class="modal-section-title">Transfer Time</p>
+				<select class="transfer-time modal-select">
+					' . controls::getTransferDropDown() . '
+				</select>
+			</div>
+			<div class="sub-control">
+				<p class="modal-section-title">NIBP Read Time</p>
+				<select class="read-time modal-select">
+					<option value="0">Manual</option>
+					<option value="3">3 minutes</option>
+					<option value="5">5 minutes</option>
+					<option value="10">10 minutes</option>
+					<option value="15">15 minutes</option>
+				</select>
+			</div>
 		</div>
+		<div class="clearer"></div>
 		<hr / class="modal-divider">
 		<div class="control-modal-div">
 			<button class="red-button modal-button apply">Apply</button>

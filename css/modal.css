@@ -64,6 +64,11 @@
 		height: 45px;
 		width: 345px;
 	}
+		.control-modal-div .sub-control {
+			float: left;
+			width: 50%;
+			margin-bottom: 20px;
+		}
 		.control-modal-div.pulse-strength {
 			width: 315px;
 		}
