@@ -573,7 +573,7 @@ var simmgr = {
 					console.log("no respiration" );
 				}
 				/************ scenario **************/
-				if( ( typeof(response.scenario) != '"undefined"' ) && ( !isVitalsMonitor ) ){
+				if( ( typeof(response.scenario) != '"undefined"' )  ){
 					if(typeof(response.scenario.runtime) != "undefined" ) {
 						$('#scenario-running-time').html(response.scenario.runtime);
 					}
@@ -586,18 +586,24 @@ var simmgr = {
 							switch(newScenarioState) {
 								case 'STOPPED':
 									scenario.currentScenarioState = scenario.scenarioState.STOPPED;
-									scenario.stopScenario();
+									if ( ! isVitalsMonitor ) {
+										scenario.stopScenario();
+									}
 									break;
 								
 								case 'PAUSED':
 									scenario.currentScenarioState = scenario.scenarioState.PAUSED;
-									scenario.pauseScenario();
+									if ( ! isVitalsMonitor ) {
+										scenario.pauseScenario();
+									}
 									profile.removePatientInfo();
 									break;
 								
 								case 'RUNNING':
 									scenario.currentScenarioState = scenario.scenarioState.RUNNING;
-									scenario.continueScenario();
+									if ( ! isVitalsMonitor ) {
+										scenario.continueScenario();
+									}
 									profile.removePatientInfo();
 									break;
 								
@@ -611,29 +617,35 @@ var simmgr = {
 					if(typeof(response.scenario.active) != "undefined" && response.scenario.active != scenario.currentScenarioFileName) {
 						scenario.currentScenarioFileName = response.scenario.active;
 						scenario.loadScenario();
-						scenario.init();
+						if ( ! isVitalsMonitor ) { 
+							scenario.init();
+						}
 						profile.init();
-						events.init();
+						if ( ! isVitalsMonitor ) { 
+							events.init();
+						}
 						profile.initPatientInfo();
 					}
 					
-					// scenario scene name
-					if(typeof(response.scenario.scene_name) != "undefined") {
-						$('#scene-name').html(response.scenario.scene_name);
-					}
+					if ( ! isVitalsMonitor ) {
+						// scenario scene name
+						if( typeof(response.scenario.scene_name) != "undefined") {
+							$('#scene-name').html(response.scenario.scene_name);
+						}
+						
+						// scenario scene number
+						if( typeof(response.scenario.scene_id) != "undefined") {
+							$('#scene-id').html(response.scenario.scene_id);
+						}
 					
-					// scenario scene number
-					if(typeof(response.scenario.scene_id) != "undefined") {
-						$('#scene-id').html(response.scenario.scene_id);
+						// scenario record
+						if(typeof(response.scenario.record) != "undefined" && response.scenario.record == 1) {
+							scenario.startVideoWithScenario = true;
+						} else {
+							scenario.startVideoWithScenario = false;
+						}
+						$('#start-video').attr('checked', scenario.startVideoWithScenario);
 					}
-					
-					// scenario record
-					if(typeof(response.scenario.record) != "undefined" && response.scenario.record == 1) {
-						scenario.startVideoWithScenario = true;
-					} else {
-						scenario.startVideoWithScenario = false;
-					}
-					$('#start-video').attr('checked', scenario.startVideoWithScenario);
 				}
 				
 				/************ event log **************/

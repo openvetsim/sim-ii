@@ -5,15 +5,20 @@
 	
 	// is user logged in
 	if(adminClass::isUserLoggedIn() === FALSE) {
-		$returnVal['status'] = AJAX_STATUS_LOGIN_FAIL;
-		echo json_encode($returnVal);
-		exit();
+		if ( $SERVER_ADDR != $REMOTE_ADDR )
+		{
+			$returnVal['status'] = AJAX_STATUS_LOGIN_FAIL;
+			$returnVal['cause'] = "No login";
+			echo json_encode($returnVal);
+			exit();
+		}
 	}
 
 	// get file name
 	$fileName = dbClass::valuesFromPost('fn');
 	if($fileName == '') {
 		$returnVal['status'] = AJAX_STATUS_FAIL;
+		$returnVal['cause'] = "fn not set";
 		echo json_encode($returnVal);
 		exit();			
 	}

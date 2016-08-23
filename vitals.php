@@ -17,20 +17,16 @@ var isVitalsMonitor = 1;	// Student Display Flag
 
 			$(document).ready(function() {
 				
-				// init profile data
-				//profile.profileINI = <?= $profileINI; ?>;
-				//profile.init();
-				
 				// Resize Chart based on Window Size
 				Wwidth = $(window).width();
 				Wheight = $(window).height();
 				console.log("Screen size ", Wwidth, Wheight );
-				//$("#vsm").css({width:(Wwidth-40), height:(Wheight)} );
 				
-				//$("#vs-left-col").css({width:(Wwidth-190)} );
-				//$(".wide-col").css({width:(Wwidth-40)} );
+				// init profile data
+				scenario.loadScenario();
+				profile.init();
+				
 				chart.init();
-				simmgr.init();
 				controls.heartRate.init();
 				controls.awRR.init();
 				controls.SpO2.init();
@@ -39,9 +35,14 @@ var isVitalsMonitor = 1;	// Student Display Flag
 				controls.nbp.init();
 				//buttons.init();
 				//events.init();
-				//scenario.init();
+				scenario.init();
 				//media.init();
 				//log.init();
+				
+				// init patient info
+				profile.initPatientInfo();
+				
+				simmgr.init();
 			});
 		</script>
 <style type="text/css" media="screen">

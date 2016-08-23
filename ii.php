@@ -22,7 +22,13 @@
 		$scenarioFileArray = pathinfo(SERVER_SCENARIOS . $scenario);
 		$scenarioHeader = scenarioXML::getScenarioHeaderArray($scenarioFileArray['filename']);
 		$scenarioContent .= '
-			<option value="' . $scenarioFileArray['filename'] . '">' . $scenarioHeader['title']['name'] . '</option>
+			<option value="' . $scenarioFileArray['filename'] . '">';
+		if ( isset($scenarioHeader['title']['name'] ) && strlen($scenarioHeader['title']['name']) > 0 ) {
+			$scenarioContent .= $scenarioHeader['title']['name'];
+		} else {
+			$scenarioContent .= $scenarioFileArray['filename'];
+		}
+		$scenarioContent .= '</option>
 		';
 	}
 ?>

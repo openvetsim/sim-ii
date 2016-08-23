@@ -6,9 +6,13 @@
 
 	// is user logged in
 	if(adminClass::isUserLoggedIn() === FALSE) {
-		$returnVal['status'] = AJAX_STATUS_LOGIN_FAIL;
-		echo json_encode($returnVal);
-		exit();
+		if ( $SERVER_ADDR != $REMOTE_ADDR )
+		{
+			$returnVal['status'] = AJAX_STATUS_LOGIN_FAIL;
+			$returnVal['cause'] = "No login";
+			echo json_encode($returnVal);
+			exit();
+		}
 	}
 	
 	$profileArray = $_POST['profile'];
