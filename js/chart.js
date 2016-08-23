@@ -16,6 +16,10 @@
 			}
 		},
 		
+		displayETCO2: {
+			max: 0
+		},
+		
 		// baseline params for introducing sinusoid amplitude into generated waveform
 		// params are fixed for no oscillations
 		baselineP1: 0,
@@ -206,7 +210,7 @@
 			
 			// start the pattern
 			chart.ekg.interval = setInterval(chart.drawEkgPixel, chart.ekg.drawInterval);
-			
+						
 			/************************** Respiration **********************************/
 			// init respiration
 			chart.initStrip('resp');
@@ -234,18 +238,18 @@
 				60,52,44,36,28,24,20,15,8,0
 			];
 			chart.resp.rhythm[1] = [	// Hold In
-				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2
+				0,0,0,0,0,0,0,0,0,0
 			];
 			chart.resp.rhythm[2] = [	// Exhale
-				2,4,8,16,24,28,30,31,60
+				0,8,15,20,24,28,36,44,52,60
 			];
 
 			chart.resp.rhythm[3] = [	// Hold Out
-				60,60,60,60,60,60,60,60,60,31,31,31,
-				31,31,31,31,31,31,31,30,30,30,30,30,
-				30,29,29,29,29,29,29,29,29,28,28,28,
-				28,28,28,28
+				62,62,62,62,62,62,62,62,62,62
 			];
+			
+			// get max value
+			chart.resp.max = chart.resp.rhythm[3].max();
 
 			// beep indicator
 			if(chart.ekg.beepFlag == true){
@@ -486,11 +490,19 @@
 					chart.resp.halfCount = (controls.inhalation_duration.value / chart.resp.drawInterval)/2;
 					chart.resp.activeCount = 0;
 					chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex].length;
-					y = chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.patternIndex] * -1;
+					if(chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.patternIndex] > chart.displayETCO2.max) {
+						y = chart.displayETCO2.max * -1;
+					} else {
+						y = chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.patternIndex] * -1;
+					}
 					chart.status.resp.synch = false;
 				}
 				else {
-					y = chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.patternIndex] * -1;
+					if(chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.patternIndex] > chart.displayETCO2.max) {
+						y = chart.displayETCO2.max * -1;
+					} else {
+						y = chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.patternIndex] * -1;
+					}
 					chart.resp.patternIndex++;
 					chart.resp.activeCount++;
 
@@ -513,28 +525,6 @@
 						chart.resp.patternIndex = 0;
 					}
 				}
-				/*
-				// see if we need to draw waveform or if we are in background
-				if((chart.status.resp.synch == false && chart.resp.patternIndex == 0) || chart.resp.stopFlag == true) {
-					// generate random noise between range
-					y = 0;
-				} else if(chart.status.resp.synch == true || chart.resp.patternIndex > 0) {
-					y = chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.patternIndex] * -1;
-					
-					// increment pointers
-					chart.resp.patternIndex++;
-				}
-				
-				// clear out sync flag
-				if(chart.status.resp.synch == true) {
-					chart.status.resp.synch = false;
-				}
-				
-				// are we beyond pattern?
-				if(chart.resp.patternIndex >= chart.resp.length) {
-					chart.resp.patternIndex = 0;
-				}
-				*/
 			}
 			else {
 				y = 0;
@@ -561,6 +551,11 @@
 				chart.resp.xPos = chart.resp.xOffsetLeft;
 				chart.resp.ctx.fillRect(0, 0, chart.resp.xOffsetLeft, chart.resp.height);
 			}
+		},
+		
+		getETC02MaxDisplay: function() {
+			// calculate maximum displayed for ETCO2
+			chart.displayETCO2.max = Math.floor(chart.resp.max * (controls.etCO2.value / controls.etCO2.maxValue));
 		},
 
 		getBaseline: function() {

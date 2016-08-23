@@ -109,7 +109,7 @@
 		awRR: {
 			value: 30,
 			minValue: 1,
-			maxValue: 120,
+			maxValue: 60,
 			slideBar: '',
 			beatTimeout: 0,
 			increment: 1,

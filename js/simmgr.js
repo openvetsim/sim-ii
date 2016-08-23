@@ -468,6 +468,7 @@ var simmgr = {
 						if(etCO2Rate != controls.etCO2.value) {
 							controls.etCO2.value = response.respiration.etco2;
 							controls.etCO2.displayValue();
+							chart.getETC02MaxDisplay();				
 						}
 					}
 					
