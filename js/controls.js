@@ -66,7 +66,7 @@
 			},
 			
 			displayValue: function() {
-				if ( ( isVitalsMonitor == 0 ) || ( controls.ekg.leadsConnected == true ) ) {
+				if ( ( profile.isVitalsMonitor == false ) || ( controls.ekg.leadsConnected == true ) ) {
 					$('#vs-heartRhythm a.display-rate').html(controls.heartRate.value + '<span class="vs-upper-label"> bpm</span>');
 				}
 				else {
@@ -134,7 +134,7 @@
 //					clearTimeout(controls.awRR.beatTimeout);
 //					controls.awRR.beatTimeout = setTimeout(controls.awRR.setSynch, Math.round((60 / controls.awRR.value) * 1000));
 				}
-				if ( ( isVitalsMonitor == 0 ) || ( controls.CO2.leadsConnected == true ) ) {
+				if ( ( profile.isVitalsMonitor == false ) || ( controls.CO2.leadsConnected == true ) ) {
 					$('.awRR a.alt-control-rate').html(controls.awRR.value + '<span class="vs-lower-label"> bpm</span>');
 				}
 				else {
@@ -241,7 +241,7 @@
 			},
 			
 			displayValue: function(){
-				if ( ( isVitalsMonitor == 0 ) || ( controls.SpO2.leadsConnected == true ) ) {
+				if ( ( profile.isVitalsMonitor == false ) || ( controls.SpO2.leadsConnected == true ) ) {
 					$('#display-SpO2').html(controls.SpO2.value + '<span class="vs-lower-label"> %</span>');
 				}
 				else {
@@ -275,7 +275,7 @@
 			},
 			
 			displayValue: function() {
-				if ( ( isVitalsMonitor == 0 ) || ( controls.CO2.leadsConnected == true ) ) {
+				if ( ( profile.isVitalsMonitor == false ) || ( controls.CO2.leadsConnected == true ) ) {
 					$('#vs-etCO2 a').html(controls.etCO2.value + '<span class="vs-upper-label"> mmHg</span>');	
 				}
 				else {

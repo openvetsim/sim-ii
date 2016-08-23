@@ -1,7 +1,10 @@
 	var profile = {
+	
+		isVitalsMonitor: false,
+		
 		init: function() {
 			// set up background image for animal silhouette from profile
-			if( !isVitalsMonitor ) {
+			if(profile.isVitalsMonitor == false ) {
 				if ( typeof scenario.scenarioProfile.avatar != 'undefined') {
 					$('#mannequin').css({
 						'background-image': 'url(' + BROWSER_PROFILES_IMAGES + scenario.scenarioProfile.avatar['filename'] + ')',
@@ -36,7 +39,7 @@
 		},
 		
 		initPatientInfo: function() {
-			if(typeof isVitalsDisplay != 'undefined' && isVitalsDisplayisVitalsDisplay == true) {
+			if(profile.isVitalsMonitor == true) {
 				profile.removePatientInfo();
 				$.ajax({
 					url: BROWSER_AJAX + 'ajaxGetPatientInformation.php',

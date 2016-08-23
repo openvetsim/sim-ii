@@ -586,14 +586,14 @@ var simmgr = {
 							switch(newScenarioState) {
 								case 'STOPPED':
 									scenario.currentScenarioState = scenario.scenarioState.STOPPED;
-									if ( ! isVitalsMonitor ) {
+									if ( profile.isVitalsMonitor == false ) {
 										scenario.stopScenario();
 									}
 									break;
 								
 								case 'PAUSED':
 									scenario.currentScenarioState = scenario.scenarioState.PAUSED;
-									if ( ! isVitalsMonitor ) {
+									if ( profile.isVitalsMonitor == false ) {
 										scenario.pauseScenario();
 									}
 									profile.removePatientInfo();
@@ -601,7 +601,7 @@ var simmgr = {
 								
 								case 'RUNNING':
 									scenario.currentScenarioState = scenario.scenarioState.RUNNING;
-									if ( ! isVitalsMonitor ) {
+									if ( profile.isVitalsMonitor == false ) {
 										scenario.continueScenario();
 									}
 									profile.removePatientInfo();
@@ -617,17 +617,17 @@ var simmgr = {
 					if(typeof(response.scenario.active) != "undefined" && response.scenario.active != scenario.currentScenarioFileName) {
 						scenario.currentScenarioFileName = response.scenario.active;
 						scenario.loadScenario();
-						if ( ! isVitalsMonitor ) { 
+						if ( profile.isVitalsMonitor == false ) { 
 							scenario.init();
 						}
 						profile.init();
-						if ( ! isVitalsMonitor ) { 
+						if ( profile.isVitalsMonitor == false ) { 
 							events.init();
 						}
 						profile.initPatientInfo();
 					}
 					
-					if ( ! isVitalsMonitor ) {
+					if ( profile.isVitalsMonitor == false ) {
 						// scenario scene name
 						if( typeof(response.scenario.scene_name) != "undefined") {
 							$('#scene-name').html(response.scenario.scene_name);

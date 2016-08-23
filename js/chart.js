@@ -231,7 +231,7 @@
 			];
 			*/
 			chart.resp.rhythm[0] = [	// Inhale
-				28,24,20,15,8,0
+				60,52,44,36,28,24,20,15,8,0
 			];
 			chart.resp.rhythm[1] = [	// Hold In
 				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2
@@ -363,7 +363,7 @@
 			chart.drawCursor('ekg');
 	
 //console.log(chart.ekg.patternIndex)
-			if ( ( isVitalsMonitor == 0 ) || ( controls.ekg.leadsConnected == true ) ) {
+			if ( ( profile.isVitalsMonitor == false ) || ( controls.ekg.leadsConnected == true ) ) {
 				// see if we need to draw waveform or if we are in background
 				if(chart.ekg.stopFlag == true) {
 					y = 0;
@@ -478,7 +478,7 @@
 	
 //console.log(chart.ekg.patternIndex)
 			
-			if ( ( isVitalsMonitor == 0 ) || ( controls.CO2.leadsConnected == true ) ) {
+			if ( ( profile.isVitalsMonitor == false ) || ( controls.CO2.leadsConnected == true ) ) {
 				if(chart.status.resp.synch == true ) {	// Restart Cycle
 					chart.resp.patternIndex = 0;
 					chart.resp.rhythmIndex = 0;

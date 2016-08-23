@@ -13,8 +13,6 @@
   <head>
     <?php require_once(SERVER_INCLUDES . "header.php"); ?>
 	<script type="text/javascript">
-var isVitalsMonitor = 1;	// Student Display Flag
-
 			$(document).ready(function() {
 				
 				// Resize Chart based on Window Size
@@ -25,7 +23,8 @@ var isVitalsMonitor = 1;	// Student Display Flag
 				// init profile data
 				scenario.loadScenario();
 				profile.init();
-				
+				profile.isVitalsMonitor = true;	// Student Display Flag
+
 				chart.init();
 				controls.heartRate.init();
 				controls.awRR.init();
