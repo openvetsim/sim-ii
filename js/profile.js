@@ -36,7 +36,7 @@
 		},
 		
 		initPatientInfo: function() {
-			// if(simmgr.isLocalDisplay() == true) {
+			if(isVitalsDisplay == true) {
 				profile.removePatientInfo();
 				$.ajax({
 					url: BROWSER_AJAX + 'ajaxGetPatientInformation.php',
@@ -54,9 +54,9 @@
 
 					}
 				});
-		//} else {
-				//profile.removePatientInfo();			
-	//}
+			} else {
+				profile.removePatientInfo();			
+			}
 		},
 		
 		removePatientInfo: function() {
