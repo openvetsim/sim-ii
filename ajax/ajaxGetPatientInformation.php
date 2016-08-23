@@ -1,0 +1,70 @@
+<?php
+
+	// init
+	require_once("../init.php");
+	$returnVal = array();
+
+	// is user logged in
+	if(adminClass::isUserLoggedIn() === FALSE) {
+		$returnVal['status'] = AJAX_STATUS_LOGIN_FAIL;
+		echo json_encode($returnVal);
+		exit();
+	}
+	
+	$profileArray = $_POST['profile'];
+	
+	// resize image
+	$imageSizeArray = getImageSize(SERVER_SCENARIOS_PATIENTS .  $profileArray['image']);
+	if($imageSizeArray !== FALSE) {
+		// check width, max = 300px
+		if($imageSizeArray[0] >= $imageSizeArray[1]) {
+			$cssContent = ' style="width: 300px" ';
+		} else {
+			$cssContent = ' style="height: 300px" ';		
+		}
+	}
+	
+	$content = '
+		<div id="patient-info">
+			<h1>Patient Information</h1>
+			<table>
+				<tr>
+					<td>&nbsp;</td>
+					<td><img src="' . BROWSER_SCENARIOS_PATIENTS .  $profileArray['image'] . '" ' . $cssContent . '></td>
+				</tr>
+				<tr>
+					<td>Species:</td>
+					<td>' . $profileArray['species'] . '</td>
+				</tr>
+				<tr>
+					<td>Breed:</td>
+					<td>' . $profileArray['breed'] . '</td>
+				</tr>
+				<tr>
+					<td>Gender:</td>
+					<td>' . $profileArray['gender'] . '</td>
+				</tr>
+				<tr>
+					<td>Symptoms:</td>
+					<td>' . $profileArray['symptoms'] . '</td>
+				</tr>
+				<tr>
+					<td>Weight:</td>
+					<td>' . $profileArray['weight'] . '</td>
+				</tr>
+				<tr>
+					<td>Description:</td>
+					<td>' . $profileArray['description'] . '</td>
+				</tr>
+			</table>	
+		</div>
+	';
+
+
+	$returnVal['status'] = AJAX_STATUS_OK;
+	$returnVal['html'] = $content;
+	echo json_encode($returnVal);
+	exit();
+
+
+?>

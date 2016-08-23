@@ -31,6 +31,33 @@
 			
 			// update header
 			$('#scenario-name-display').html(scenario.scenarioHeader.title.name);		
-			
+		},
+		
+		initPatientInfo: function() {
+			if(simmgr.isLocalDisplay() == true) {
+				profile.removePatientInfo();
+				$.ajax({
+					url: BROWSER_AJAX + 'ajaxGetPatientInformation.php',
+					type: 'post',
+					async: false,
+					data: {profile: scenario.scenarioProfile.summary},
+					dataType: 'json',
+					success: function(response) {
+						profile.removePatientInfo();
+						$('body').append(response.html);
+						$('#patient-info').draggable().css({
+							'left': '50%',
+							'margin-left': (Math.floor($('#patient-info').width() / 2) * -1) + 'px'
+						});
+
+					}
+				});
+			} else {
+				profile.removePatientInfo();			
+			}
+		},
+		
+		removePatientInfo: function() {
+			$('#patient-info').remove();
 		}
 	}

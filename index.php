@@ -30,6 +30,9 @@
 				if(loginErrorFlag == 1) {
 					$('p.error_login').toggle();
 				}
+				
+				// focus on username
+				$('input[name=UserEmail]').focus();
 			});
 		</script>
 	</head>

@@ -489,3 +489,32 @@ a:hover {
 		#switch-resp-now {
 			margin-left: 25px;
 		}
+		
+#patient-info {
+	width: 600px;
+	background-color: white;
+	position: fixed;
+	top: 10px;
+	cursor: move;
+	color: black;
+	border: 1px solid black;
+	padding: 10px;
+	font-size: 18px;
+}
+	#patient-info img {
+		border: 1px solid red;
+	}
+	#patient-info h1 {
+		font-size: 28px;
+		margin-bottom: 20px;
+	}
+		#patient-info td {
+			height: 25px;
+			vertical-align: top;
+		}
+			#patient-info td img {
+				width: 300px;
+			}
+		#patient-info td:first-child {
+			width: 120px;
+		}

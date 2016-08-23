@@ -592,11 +592,13 @@ var simmgr = {
 								case 'PAUSED':
 									scenario.currentScenarioState = scenario.scenarioState.PAUSED;
 									scenario.pauseScenario();
+									profile.removePatientInfo();
 									break;
 								
 								case 'RUNNING':
 									scenario.currentScenarioState = scenario.scenarioState.RUNNING;
 									scenario.continueScenario();
+									profile.removePatientInfo();
 									break;
 								
 								default:
@@ -612,6 +614,7 @@ var simmgr = {
 						scenario.init();
 						profile.init();
 						events.init();
+						profile.initPatientInfo();
 					}
 					
 					// scenario scene name
