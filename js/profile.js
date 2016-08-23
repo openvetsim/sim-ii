@@ -36,7 +36,7 @@
 		},
 		
 		initPatientInfo: function() {
-			if(isVitalsDisplay == true) {
+			if(typeof isVitalsDisplay != 'undefined' && isVitalsDisplayisVitalsDisplay == true) {
 				profile.removePatientInfo();
 				$.ajax({
 					url: BROWSER_AJAX + 'ajaxGetPatientInformation.php',
