@@ -83,15 +83,13 @@ var simmgr = {
 				/************ cardiac **************/
 				if ( typeof(response.cardiac) != "undefined" )
 				{
-					// cardiac rate
-					if ( ( typeof(response.cardiac.rate) != "undefined" ) && ( response.cardiac.rate != controls.heartRate.value ) )
+					if ( ( typeof(response.cardiac.rate) != "undefined" ) && ( response.cardiac.rate != controls.heartRate.value ) && controls.cpr.inProgress == false )
 					{
 						controls.heartRate.setHeartRateValue(response.cardiac.rate );
 						if(response.cardiac.rhythm == 'vtach3') {
 							// pre calculate R on T based on heart rate
 							chart.initVtach3();
 						}
-						
 						chart.updateCardiac(response.cardiac );
 					}
 					
@@ -650,7 +648,7 @@ var simmgr = {
 				}
 				
 				/************ event log **************/
-				if( typeof(response.logfile) != '"undefined"' ) {
+				if( typeof(response.logfile) != "undefined" ) {
 					if(typeof(response.logfile.filename) != "undefined" && typeof(response.logfile.lines_written) != "undefined") {
 						if( (response.logfile.filename != events.currentLogFileName) || (response.logfile.lines_written != events.currentLogRecord) ) {
 							events.currentLogFileName = response.logfile.filename;
@@ -661,13 +659,16 @@ var simmgr = {
 				}
 				
 				/************ cpr **************/
-				if( typeof(response.cpr.compression) != '"undefined"' ) {
+				if(( typeof(response.cpr.compression) != "undefined" ) &&  response.cpr.compression != controls.cpr.inProgress) {
 					if(response.cpr.compression == 0) {
 						controls.cpr.inProgress = false;
+						$('#vs-trace-1').attr('onclick', 'modal.heartRhythm();');
 					} else {
 						controls.cpr.inProgress = true;
+						$('#vs-trace-1').attr('onclick', 'javascript:void(2);');
 					}
-					controls.cpr.setCPRState();					
+					controls.cpr.setCPRState();
+					chart.updateCardiac(response.cardiac);
 				}
 			},
 			

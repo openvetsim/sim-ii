@@ -122,6 +122,16 @@
 			chart.ekg.rhythm.vtach1 = new Array;
 			chart.ekg.rhythm.vtach2 = new Array;
 			chart.ekg.rhythm.vtach3 = new Array;  // place holder since vtach 3 is half sine
+			chart.ekg.rhythm.cpr = new Array;  // place holder since cpr is similar to vtach3
+			
+			// init cpr waveform, assume rate will be 120 bpm and waveform is simple 1/2 sinusoidal
+			var cprXIncr = (120 * chart.ekg.drawInterval * Math.PI) / 60000;
+			var cprAmplitude = chart.ekg.height / 2;
+			var cprIndex = 0;
+			for(var x = 0; x <= Math.PI; x += cprXIncr) {
+				chart.ekg.rhythm.cpr[cprIndex] = (Math.sin(x) * -cprAmplitude);
+				cprIndex++;
+			}
 			
 			// Atrial Fibrillation
 			chart.ekg.rhythm['afib'][0] = [
@@ -270,7 +280,9 @@
 		
 		// Passed the cardiac data from simmgr status
 		updateCardiac: function( cardiac) {
-			if ( cardiac.rate <= 0  ) {
+			if(controls.cpr.inProgress == true) {
+				chart.ekg.rateIndex = 0;				
+			} else if ( cardiac.rate <= 0  ) {
 				chart.ekg.rhythmIndex = 'asystole';	// Flatline
 			} else if(chart.ekg.rhythmIndex == 'sinus') {
 				if( cardiac.rate <= 75 ) {
@@ -370,11 +382,19 @@
 			chart.drawCursor('ekg');
 	
 //console.log(chart.ekg.patternIndex)
+
 			if ( ( profile.isVitalsMonitor == false ) || ( controls.ekg.leadsConnected == true ) ) {
 				// see if we need to draw waveform or if we are in background
 				if(chart.ekg.stopFlag == true) {
 					y = 0;
 					controls.heartRate.audio.pause();
+				} else if(controls.cpr.inProgress == true) {
+					y = chart.ekg.rhythm.cpr[chart.ekg.patternIndex];
+					controls.heartRate.value = 120;
+					chart.ekg.length = chart.ekg.rhythm.cpr.length;
+					
+					// increment pointers
+					chart.ekg.patternIndex++;				
 				} else if(chart.ekg.rhythmIndex == 'sinus' || chart.ekg.rhythmIndex == 'vtach1' || chart.ekg.rhythmIndex == 'vtach2') {
 					if(chart.status.cardiac.synch == false && chart.ekg.patternIndex == 0) {
 						// generate random noise between range
