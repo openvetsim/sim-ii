@@ -105,6 +105,7 @@ var isVitalsMonitor = 0;	// Student Display Flag
 				});
 				*/
 				simmgr.init();
+				controls.cpr.init();
 			});
 		</script>
 		<style>
@@ -128,7 +129,7 @@ var isVitalsMonitor = 0;	// Student Display Flag
 					&nbsp;&nbsp;|&nbsp;&nbsp;Scene ID:&nbsp;<span id="scene-id">1</span>
 				</div>
 				<ul id="main-nav">
-					<li class="with-sub-nav">
+					<!-- <li class="with-sub-nav">
 						<a href="javascript:void(2);">File</a>
 						<ul class="sub-nav">
 							<li><a href="javascript: void(2);">File Another Item</a></li>
@@ -145,7 +146,7 @@ var isVitalsMonitor = 0;	// Student Display Flag
 							<li><a href="javascript: void(2);">Settings Another Item</a></li>
 							<li><a href="javascript: void(2);">Settings Another Item</a></li>
 						</ul>
-					</li>
+					</li> -->
 					<li >
 						<a href="javascript:void(2);" onclick="modal.showUsers();">Users</a>
 					</li>
@@ -154,16 +155,21 @@ var isVitalsMonitor = 0;	// Student Display Flag
 					</li>
 
 					<li class="logout">
-						<a href="index.php">Logout</a>						
+						<a href="index.php" class="event-link">Logout</a>						
 					</li>
 					<li class="logout">
 						Version: <?= VERSION_MAJOR . '.' . VERSION_MINOR; ?>						
+					</li>
+					<li class="logout">
+						<a href="javascript: void(2);"  class="event-link cpr-link">Start CPR</a>						
 					</li>
 				</ul>
 			</div>
 
 			<div id="mannequin" class="clearer float-left ii-border">
 				<h1>Non Vital Controls</h1>
+				<h2 id="button-cpr-title" class="nvs-button"></h2>
+				<img class="nvs-button" id="button-cpr" src="<?= BROWSER_IMAGES; ?>spo2.png" alt="CPR Icon">
 				<h2 id="button-SpO2-title" class="nvs-button"></h2>
 				<img class="nvs-button" id="button-SpO2" src="<?= BROWSER_IMAGES; ?>spo2.png" alt="SpO2 Icon">
 				<h2 id="button-ekg-title" class="nvs-button"></h2>

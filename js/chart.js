@@ -250,6 +250,9 @@
 			
 			// get max value
 			chart.resp.max = chart.resp.rhythm[3].max();
+			
+			// get max displayed value
+			chart.getETC02MaxDisplay();
 
 			// beep indicator
 			if(chart.ekg.beepFlag == true){

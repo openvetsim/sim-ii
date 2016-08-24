@@ -397,7 +397,7 @@
 			},
 			
 			updateDisplayedNBP: function() {
-				if(controls.nbp.nibp_read == 1) {
+				if(  ( profile.isVitalsMonitor && ! controls.ekg.leadsConnected ) || controls.nbp.nibp_read == 1) {
 					// update displayed NBP
 					$('#displayed-systolic').html('---');
 					$('#displayed-diastolic').html('---');
@@ -586,6 +586,33 @@
 				} else {
 					$('#heart-sound-mute').hide();				
 					controls.heartSound.slideBar.slider("option", "disabled", false);
+				}
+			}
+		},
+		
+		cpr: {
+			inProgress: false,
+			
+			init: function() {
+				controls.cpr.setCPRState();
+				
+				// bind event
+				$('a.cpr-link').click(function() {
+					if(controls.cpr.inProgress == false) {
+						simmgr.sendChange( { 'set:cpr:compression' : 1 } );					
+					} else {
+						simmgr.sendChange( { 'set:cpr:compression' : 0 } );					
+					}
+				});
+			},
+			
+			setCPRState: function() {
+				if(controls.cpr.inProgress == false) {
+					$('a.cpr-link').html('Start CPR');
+					$('#button-cpr').attr('src', BROWSER_IMAGES + 'empty.png');
+				} else {
+					$('a.cpr-link').html('Stop CPR');					
+					$('#button-cpr').attr('src', BROWSER_IMAGES + 'heart.png');
 				}
 			}
 		}

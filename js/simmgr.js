@@ -659,6 +659,16 @@ var simmgr = {
 						}
 					}
 				}
+				
+				/************ cpr **************/
+				if( typeof(response.cpr.compression) != '"undefined"' ) {
+					if(response.cpr.compression == 0) {
+						controls.cpr.inProgress = false;
+					} else {
+						controls.cpr.inProgress = true;
+					}
+					controls.cpr.setCPRState();					
+				}
 			},
 			
 			error: function( jqXHR,  textStatus,  errorThrown){

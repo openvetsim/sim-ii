@@ -8,6 +8,7 @@
 			buttons.setVSButton("SpO2");
 			buttons.setVSButton("CO2");
 			buttons.setVSButton("bpcuff");
+			buttons.setCPRButton();
 			
 			// bind button events
 			$('#button-ekg').click(function() {
@@ -42,6 +43,14 @@
 				$('#button-' + buttonType).css({
 					'background-color': buttons.connectColor
 					}).prop('title', controls[buttonType].connectHTML);			
+			}
+		},
+		
+		setCPRButton: function() {
+			if(controls.cpr.inProgress == false) {
+				$('#button-cpr').attr('src', BROWSER_IMAGES + 'empty.png');
+			} else {
+				$('#button-cpr').attr('src', BROWSER_IMAGES + 'heart.png');
 			}
 		},
 		

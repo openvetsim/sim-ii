@@ -935,7 +935,7 @@
 
 		showEvents: function() {
 			var response = {
-				html: '<h1 id="modal-title">Event Library</h1>' + 
+				html: '<h1 id="user-table-title">Event Library</h1>' + 
 										'<hr / class="modal-divider">' +
 										'<div class="control-modal-div">' +
 											$('#event-library').html() +

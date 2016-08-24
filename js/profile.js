@@ -1,8 +1,8 @@
 	var profile = {
 	
 		isVitalsMonitor: false,
-		
 		init: function() {
+	
 			// set up background image for animal silhouette from profile
 			if(profile.isVitalsMonitor == false ) {
 				if ( typeof scenario.scenarioProfile.avatar != 'undefined') {
