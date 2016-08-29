@@ -69,6 +69,7 @@
 			
 			// code stub to send event to sim mgr
 			simmgr.sendChange({'set:event:event_id': $(eventObj).attr('data-event-id')});
+			modal.closeModal();
 		},
 		
 		sendPriorityEvent: function(eventID) {

@@ -90,7 +90,7 @@
 				data: {
 						currentECG: controls.heartRhythm.currentRhythm, 
 						currentAmplitude: controls.heartRhythm.vfibAmplitude, 
-						currentPulse: controls.heartRhythm.vpc, 
+						currentPulse: controls.heartRhythm.vpcResponse, 
 						currentPulseFrequency: controls.heartRhythm.vpcFrequency, 
 						PEA: controls.heartRhythm.pea},
 				dataType: 'json',

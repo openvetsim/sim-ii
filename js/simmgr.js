@@ -225,8 +225,21 @@ var simmgr = {
 					}
 					
 					// heart vpc
-					if(typeof(response.cardiac.vpc) != "undefined") {
-						controls.heartRhythm.vpc = response.cardiac.vpc;
+					if(typeof(response.cardiac.vpc) != "undefined" && response.cardiac.vpc != controls.heartRhythm.vpcResponse) {
+						controls.heartRhythm.vpcResponse = response.cardiac.vpc;
+						if(response.cardiac.vpc != 'none') {
+							var responseArray = response.cardiac.vpc.split("-");
+							
+							controls.heartRhythm.vpcCount = responseArray[1];
+							if(responseArray[0] == 1) {
+								controls.heartRhythm.vpc = "vtach1";
+							} else {
+								controls.heartRhythm.vpc = "vtach2";							
+							}
+							
+							// set vpc pattern length
+							chart.ekg.vpcLength = chart.ekg.rhythm[controls.heartRhythm.vpc][1].length;
+						}
 					}
 					
 					// heart vfib amplitude
@@ -247,8 +260,9 @@ var simmgr = {
 					}
 					
 					// heart vpc frequency
-					if(typeof(response.cardiac.vpc_freq) != "undefined") {
+					if(typeof(response.cardiac.vpc_freq) != "undefined" && controls.heartRhythm.vpcFrequency != response.cardiac.vpc_freq) {
 						controls.heartRhythm.vpcFrequency = response.cardiac.vpc_freq;
+						controls.heartRhythm.calculateVPCFreq();
 					}
 					
 					
@@ -670,6 +684,8 @@ var simmgr = {
 					controls.cpr.setCPRState();
 					chart.updateCardiac(response.cardiac);
 				}
+var newTimeStamp = new Date().getTime() - simmgr.timeStamp;
+$('h1.welcome-title').html(newTimeStamp);
 			},
 			
 			error: function( jqXHR,  textStatus,  errorThrown){

@@ -63,6 +63,7 @@ var isVitalsMonitor = 0;	// Student Display Flag
 
 				// init patient info
 				profile.initPatientInfo();
+				controls.heartRhythm.calculateVPCFreq();
 
 				// init displayed values
 				$('#vs-heartRhythm p.display-rate').html(controls.heartRate.value);

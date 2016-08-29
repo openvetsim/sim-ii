@@ -49,7 +49,7 @@
 				}
 			
 				chart.status.cardiac.synch = true;
-				if ( ! ( simmgr.isLocalDisplay() ) )
+				if ( ! ( simmgr.isLocalDisplay() ) && chart.status.cardiac.vpcSynch == false )
 				{
 					controls.heartRate.beatTimeout = setTimeout(controls.heartRate.setSynch, Math.round((60 / controls.heartRate.value) * 1000) * controls.heartRate.delay);
 				}
@@ -78,9 +78,16 @@
 		heartRhythm: {
 			currentRhythm: '',
 			pea: false,
-			vpc: 'none',
+			vpc: 'vtach1',
+			vpcResponse: 'none',
 			vpcFrequency: 10,
 			vfibAmplitude: 'low',
+			vpcCount: 0,
+			
+			// array to simulate semi-random vpc
+			vpcFrequencyArray: {},
+			vpcFrequencyLength: 0,
+			vpcFrequencyIndex: 0,
 			
 			setHeartRhythmModal: function() {
 				var newECG = $('.ecg-select').children('option:selected').val();
@@ -103,6 +110,29 @@
 				if(newECG == 'vfib') {
 					$('.control-modal-div.amplitude').show();											
 				}
+			},
+			
+			calculateVPCFreq: function() {
+				var count = 0;
+				controls.heartRhythm.vpcFrequencyArray = new Array;
+
+				// if 0% then set array to 0
+				if(controls.heartRhythm.vpcFrequency == 0) {
+					controls.heartRhythm.vpcFrequencyArray.push(0);
+				} else if(controls.heartRhythm.vpcFrequency == 100) {
+					controls.heartRhythm.vpcFrequencyArray.push(1);				
+				} else {
+					// get 100 samples for 100 cycles of sinus rhythm between 10 and 90
+					for(var i = 0; i <= 99; i++) {
+						if(Math.floor((Math.random() * 90) + 10) > controls.heartRhythm.vpcFrequency)  {
+							controls.heartRhythm.vpcFrequencyArray.push(0);						
+						} else {
+							controls.heartRhythm.vpcFrequencyArray.push(1);
+							count++;
+						}
+					}
+				}
+				controls.heartRhythm.vpcFrequencyLength = controls.heartRhythm.vpcFrequencyArray.length;
 			}
 		},
 		

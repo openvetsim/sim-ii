@@ -39,7 +39,8 @@
 		},
 		
 		initPatientInfo: function() {
-			if(profile.isVitalsMonitor == true) {
+			if(true && scenario.currentScenarioState == scenario.scenarioState.STOPPED) {
+//			if(profile.isVitalsMonitor == true) {
 				profile.removePatientInfo();
 				$.ajax({
 					url: BROWSER_AJAX + 'ajaxGetPatientInformation.php',

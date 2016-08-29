@@ -20,13 +20,13 @@
 		}
 		
 		private static $ecgList = array(
-			array('value' => 'sinus', 'type' => 'pulse', 'name' => 'Sinus Rhythm'),
+			array('value' => 'asystole', 'type' => 'no-pulse', 'name' => 'Asystole'),
 			array('value' => 'afib', 'type' => 'pulse', 'name' => 'Atrial Fibrillation'),
-			array('value' => 'vtach1', 'type' => 'pulse', 'name' => 'Ventricular Tarchycardia 1'),
-			array('value' => 'vtach2', 'type' => 'pulse', 'name' => 'Ventricular Tarchycardia 2'),
 			array('value' => 'vtach3', 'type' => 'pulse', 'name' => 'R on T'),
+			array('value' => 'sinus', 'type' => 'pulse', 'name' => 'Sinus Rhythm'),
 			array('value' => 'vfib', 'type' => 'no-pulse', 'name' => 'Ventricular Fibrillation'),
-			array('value' => 'asystole', 'type' => 'no-pulse', 'name' => 'Asystole')
+			array('value' => 'vtach1', 'type' => 'pulse', 'name' => 'Ventricular Tarchycardia 1'),
+			array('value' => 'vtach2', 'type' => 'pulse', 'name' => 'Ventricular Tarchycardia 2')
 		);
 		
 		private static $pulseList = array(
@@ -36,10 +36,10 @@
 			array('value' => '1-3', 'name' => 'VPC 1 Triplet'),
 			array('value' => '2-1', 'name' => 'VPC 2 Singlet'),
 			array('value' => '2-2', 'name' => 'VPC 2 Couplet'),
-			array('value' => '2-3', 'name' => 'VPC 2 Triplet'),
-			array('value' => '3-1', 'name' => 'VPC 3 Singlet'),
-			array('value' => '3-2', 'name' => 'VPC 3 Couplet'),
-			array('value' => '3-3', 'name' => 'VPC 3 Triplet')
+			array('value' => '2-3', 'name' => 'VPC 2 Triplet')
+//			array('value' => '3-1', 'name' => 'VPC 3 Singlet'),
+//			array('value' => '3-2', 'name' => 'VPC 3 Couplet'),
+//			array('value' => '3-3', 'name' => 'VPC 3 Triplet')
 		);				
 		
 		private static $amplitudeList = array(
@@ -49,6 +49,7 @@
 		);				
 		
 		static public function getECGDropDown($currentECG) {
+/*
 			$pulseContent = '
 				<option disabled="disabled">Pulses</option>
 			';
@@ -70,6 +71,21 @@
 				}
 			}
 			return $pulseContent . $noPulseContent;
+*/
+			$content = '';
+			foreach(self::$ecgList as $ecgArray) {
+				$selectContent = ($currentECG == $ecgArray['value']) ? ' selected="selected"' : '';
+				if($ecgArray['type'] == 'pulse') {
+					$content .= '
+						<option data-type="pulse" value="' . $ecgArray['value'] . '"' . $selectContent . '>' . $ecgArray['name'] . '</option>
+					';
+				} else {
+					$content .= '
+						<option data-type="no-pulse" value="' . $ecgArray['value'] . '"' . $selectContent . '>' . $ecgArray['name'] . '</option>
+					';				
+				}
+			}
+			return $content;
 		}
 		
 		static public function getPulseDropDown($currentPulse) {

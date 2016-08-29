@@ -8,7 +8,8 @@
 		status: {
 			cardiac: {
 				heartRate: 0,
-				synch: false
+				synch: false,
+				vpcSynch: false,
 			},
 			
 			resp: {
@@ -71,13 +72,17 @@
 			rateIndex: 0,			// index of pattern for current heart rate
 			length: 0,				// variable to hold length of pattern
 			patternIndex: 0,		// index of currently displayed pixel in pattern
+			vpcLength: 0,			// length of current vpc pattern
+			vpcPatternIndex: 0,		// index of currently displayed pixel in vpc pattern
+			vpcCount: 0,			// count of how many vpc's have been generated
 			lastY: 0,				// variable to save last displayed Y coordinate of pattern
 			xPos: 0,				// current x position on strip
 			drawInterval: 15,		// interval in milli-sec to display pixels
 			noiseMax: 2,			// max amplitude of background noise total +/-
 			stopFlag: false,			// stop flag 
 			beepValue: 0,			// value to beep at
-			beepFlag: false
+			beepFlag: false,
+			vpcSynchDelay: 0		// delay added in to synh if VPC is generated
 		},
 		
 		// respiration strip parameters
@@ -397,10 +402,38 @@
 					chart.ekg.patternIndex++;				
 				} else if(chart.ekg.rhythmIndex == 'sinus' || chart.ekg.rhythmIndex == 'vtach1' || chart.ekg.rhythmIndex == 'vtach2') {
 					if(chart.status.cardiac.synch == false && chart.ekg.patternIndex == 0) {
-						// generate random noise between range
-						y = Math.floor((Math.random() * chart.ekg.noiseMax));
-						if(y > (chart.ekg.noiseMax / 2)) {
-							y -= (chart.ekg.noiseMax / 2);
+						// either generate random noise or VPC if required
+//						if(chart.status.cardiac.vpcSynch == true) {
+						if(false) {
+							// see if we generate vpc for this sinus cycle
+							if(controls.heartRhythm.vpcFrequencyArray[controls.heartRhythm.vpcFrequencyIndex] == 1) {
+								// generate VPC
+								y = chart.ekg.rhythm[controls.heartRhythm.vpc][1][chart.ekg.vpcPatternIndex] * -1;
+							
+								// bump vpc pattern index
+								chart.ekg.vpcPatternIndex++;
+								if(chart.ekg.vpcPatternIndex >= chart.ekg.vpcLength) {
+									// reset index, check count
+									chart.ekg.vpcPatternIndex = 0;
+									chart.ekg.vpcCount++;
+									if(chart.ekg.vpcCount >= controls.heartRhythm.vcpCount) {
+										chart.status.cardiac.vpcSynch = false;
+									}
+								}
+							} else {
+								// generate random noise between range
+								y = Math.floor((Math.random() * chart.ekg.noiseMax));
+								if(y > (chart.ekg.noiseMax / 2)) {
+									y -= (chart.ekg.noiseMax / 2);
+								}
+							}
+							
+						} else {
+							// generate random noise between range
+							y = Math.floor((Math.random() * chart.ekg.noiseMax));
+							if(y > (chart.ekg.noiseMax / 2)) {
+								y -= (chart.ekg.noiseMax / 2);
+							}
 						}
 					} else if(chart.status.cardiac.synch == true || chart.ekg.patternIndex > 0) {
 						y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex][chart.ekg.patternIndex] * -1;
@@ -460,6 +493,22 @@
 				// are we beyond pattern?
 				if(chart.ekg.patternIndex >= chart.ekg.length) {
 					chart.ekg.patternIndex = 0;
+					
+					// if vpc's are required, set vpc synch flag, set vcpCount, get ready to generate VPC waveform
+					if(chart.ekg.rhythmIndex == 'sinus' && controls.heartRhythm.vpcResponse != "none") {
+						chart.status.cardiac.vpcSynch = true;
+						chart.ekg.vpcPatternIndex = 0;
+						chart.ekg.vpcCount = 0;
+							
+						// bump frequency index
+						controls.heartRhythm.vpcFrequencyIndex++;
+						if(controls.heartRhythm.vpcFrequencyIndex >= controls.heartRhythm.vpcFrequencyLength) {
+							controls.heartRhythm.vpcFrequencyIndex = 0;						
+						}
+
+					} else {
+						chart.status.cardiac.vpcSynch = false;
+					}
 				}
 			}
 			else {
@@ -470,7 +519,14 @@
 			
 			// create stroke
 			chart.ekg.ctx.lineWidth = 2;
-			chart.ekg.ctx.strokeStyle = chart.ekg.color;
+			if ( ( profile.isVitalsMonitor == false ) || ( controls.ekg.leadsConnected == true ) )
+			{
+				chart.ekg.ctx.strokeStyle = chart.ekg.color;
+			}
+			else
+			{
+				chart.ekg.ctx.strokeStyle = 'black';
+			}
 			chart.ekg.ctx.beginPath();
 			chart.ekg.ctx.moveTo(chart.ekg.xPos, chart.ekg.lastY);
 			
@@ -556,7 +612,14 @@
 			
 			// create stroke
 			chart.resp.ctx.lineWidth = 2;
-			chart.resp.ctx.strokeStyle = chart.resp.color;
+			if ( ( profile.isVitalsMonitor == false ) || ( controls.CO2.leadsConnected == true ) )
+			{
+				chart.resp.ctx.strokeStyle = chart.resp.color;
+			}
+			else
+			{
+				chart.resp.ctx.strokeStyle = 'black';
+			}
 			chart.resp.ctx.beginPath();
 			chart.resp.ctx.moveTo(chart.resp.xPos, chart.resp.lastY);
 			
