@@ -442,8 +442,8 @@ var simmgr = {
 				/************ respiration **************/
 				if(typeof(response.respiration) != "undefined" ) {
 					// awRR
-					if(typeof(response.respiration.rate) != "undefined") {
-						var respirationRate = response.respiration.rate;
+					if(typeof(response.respiration.awRR) != "undefined") {
+						var respirationRate = response.respiration.awRR;
 						if( respirationRate != controls.awRR.value ) {
 //console.log("recalc" );
 							controls.awRR.value = respirationRate;
@@ -462,7 +462,7 @@ var simmgr = {
 					}
 					else
 					{
-						console.log("no respiration rate" );
+						console.log("no respiration awRR" );
 					}
 					// spo2
 					if(typeof(response.respiration.spo2) != "undefined") {
