@@ -677,6 +677,17 @@ var simmgr = {
 					if(response.cpr.compression == 0) {
 						controls.cpr.inProgress = false;
 						$('#vs-trace-1').attr('onclick', 'modal.heartRhythm();');
+						if ( typeof(response.cardiac.rate) !== 'undefined' )
+						{
+							controls.heartRate.setHeartRateValue(response.cardiac.rate );
+							if ( typeof(response.cardiac.rhythm) !== 'undefined' )
+							{
+								if(response.cardiac.rhythm == 'vtach3') {
+									// pre calculate R on T based on heart rate
+									chart.initVtach3();
+								}
+							}
+						}
 					} else {
 						controls.cpr.inProgress = true;
 						$('#vs-trace-1').attr('onclick', 'javascript:void(2);');
