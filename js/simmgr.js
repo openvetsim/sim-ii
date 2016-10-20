@@ -101,7 +101,7 @@ var simmgr = {
 						controls.nbp.reportedHRValue = response.cardiac.nibp_rate;
 						
 						// only update reading when requested.
-						//controls.nbp.updateDisplayedNBP();
+						controls.nbp.updateDisplayedNBP();
 					}
 					
 					// ekg indicator
@@ -221,7 +221,24 @@ var simmgr = {
 					
 					// heart pea
 					if(typeof(response.cardiac.pea) != "undefined") {
-						controls.heartRhythm.pea = (response.cardiac.pea == 1) ? true : false;
+						if(response.cardiac.pea == 1) {
+							controls.heartRhythm.pea = true;
+							$('#indicator-pea').show();
+						} else {
+							controls.heartRhythm.pea = false;						
+							$('#indicator-pea').hide();
+						}
+					}
+					
+					// heart arrest
+					if(typeof(response.cardiac.arrest) != "undefined") {
+						if(response.cardiac.arrest == 1) {
+							controls.heartRhythm.arrest = true;
+							$('#indicator-arrest').show();
+						} else {
+							controls.heartRhythm.arrest = false;						
+							$('#indicator-arrest').hide();
+						}
 					}
 					
 					// heart vpc
@@ -239,6 +256,12 @@ var simmgr = {
 							
 							// set vpc pattern length
 							chart.ekg.vpcLength = chart.ekg.rhythm[controls.heartRhythm.vpc][1].length;
+							
+							// calculate vpc delay
+							chart.ekg.vpcDelay = chart.ekg.vpcLength * chart.ekg.drawInterval;
+							simmgr.sendChange( { 'set:cardiac:vpc_delay' :  chart.ekg.vpcDelay} );
+						} else {
+							controls.heartRhythm.vpcCount = 0;
 						}
 					}
 					
@@ -525,6 +548,14 @@ var simmgr = {
 						buttons.setVSButton('SpO2');
 					}
 					
+					// manual breath
+					if(typeof(response.respiration.manual_count) != "undefined") {
+						controls.manualRespiration.serverCount = response.respiration.manual_count;
+						if(controls.manualRespiration.serverCount != controls.manualRespiration.iiCount) {
+							controls.manualRespiration.manualBreath();
+						}
+					}
+					
 					/***** Left Lung *****/
 					// left lung sound
 					if(typeof(response.respiration.left_lung_sound) != "undefined") {
@@ -695,8 +726,6 @@ var simmgr = {
 					controls.cpr.setCPRState();
 					chart.updateCardiac(response.cardiac);
 				}
-var newTimeStamp = new Date().getTime() - simmgr.timeStamp;
-$('h1.welcome-title').html(newTimeStamp);
 			},
 			
 			error: function( jqXHR,  textStatus,  errorThrown){

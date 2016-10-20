@@ -13,7 +13,8 @@
 			},
 			
 			resp: {
-				synch: false
+				synch: false,
+				manual: false
 			}
 		},
 		
@@ -74,6 +75,7 @@
 			patternIndex: 0,		// index of currently displayed pixel in pattern
 			vpcLength: 0,			// length of current vpc pattern
 			vpcPatternIndex: 0,		// index of currently displayed pixel in vpc pattern
+			vpcDelay: 0,			// delay im millisec of how long sinus complex is extended
 			vpcCount: 0,			// count of how many vpc's have been generated
 			lastY: 0,				// variable to save last displayed Y coordinate of pattern
 			xPos: 0,				// current x position on strip
@@ -263,6 +265,10 @@
 				62,62,62,62,62,62,62,62,62,62
 			];
 			
+			chart.resp.manualBreathPattern = [	// approximate 300 msec waveform
+				0,0,0,20,44,62,62,62,62,62,62,62,62,62,62,62,62,62,62,44,20,0,0
+			];
+			
 			// get max value
 			chart.resp.max = chart.resp.rhythm[3].max();
 			
@@ -403,10 +409,8 @@
 				} else if(chart.ekg.rhythmIndex == 'sinus' || chart.ekg.rhythmIndex == 'vtach1' || chart.ekg.rhythmIndex == 'vtach2') {
 					if(chart.status.cardiac.synch == false && chart.ekg.patternIndex == 0) {
 						// either generate random noise or VPC if required
-//						if(chart.status.cardiac.vpcSynch == true) {
-						if(false) {
+						if(chart.status.cardiac.vpcSynch == true) {
 							// see if we generate vpc for this sinus cycle
-							if(controls.heartRhythm.vpcFrequencyArray[controls.heartRhythm.vpcFrequencyIndex] == 1) {
 								// generate VPC
 								y = chart.ekg.rhythm[controls.heartRhythm.vpc][1][chart.ekg.vpcPatternIndex] * -1;
 							
@@ -416,18 +420,10 @@
 									// reset index, check count
 									chart.ekg.vpcPatternIndex = 0;
 									chart.ekg.vpcCount++;
-									if(chart.ekg.vpcCount >= controls.heartRhythm.vcpCount) {
+									if(chart.ekg.vpcCount >= controls.heartRhythm.vpcCount) {
 										chart.status.cardiac.vpcSynch = false;
 									}
 								}
-							} else {
-								// generate random noise between range
-								y = Math.floor((Math.random() * chart.ekg.noiseMax));
-								if(y > (chart.ekg.noiseMax / 2)) {
-									y -= (chart.ekg.noiseMax / 2);
-								}
-							}
-							
 						} else {
 							// generate random noise between range
 							y = Math.floor((Math.random() * chart.ekg.noiseMax));
@@ -493,7 +489,7 @@
 				// are we beyond pattern?
 				if(chart.ekg.patternIndex >= chart.ekg.length) {
 					chart.ekg.patternIndex = 0;
-					
+/*					
 					// if vpc's are required, set vpc synch flag, set vcpCount, get ready to generate VPC waveform
 					if(chart.ekg.rhythmIndex == 'sinus' && controls.heartRhythm.vpcResponse != "none") {
 						chart.status.cardiac.vpcSynch = true;
@@ -509,6 +505,7 @@
 					} else {
 						chart.status.cardiac.vpcSynch = false;
 					}
+*/
 				}
 			}
 			else {
@@ -561,7 +558,16 @@
 	
 //console.log(chart.ekg.patternIndex)
 			
-			if ( ( profile.isVitalsMonitor == false ) || ( controls.CO2.leadsConnected == true ) ) {
+			if(controls.manualRespiration.inProgress == true) {
+				if(controls.manualRespiration.manualBreathIndex > chart.resp.manualBreathPattern.length) {
+					controls.manualRespiration.inProgress = false;
+				} else {
+					y = chart.resp.manualBreathPattern[controls.manualRespiration.manualBreathIndex] * -1;
+					controls.manualRespiration.manualBreathIndex++;
+				}
+			} else if (controls.heartRhythm.pea == true) {
+				y = 0;
+			} else if ( ( profile.isVitalsMonitor == false ) || ( controls.CO2.leadsConnected == true ) ) {
 				if(chart.status.resp.synch == true ) {	// Restart Cycle
 					chart.resp.patternIndex = 0;
 					chart.resp.rhythmIndex = 0;
@@ -608,8 +614,8 @@
 			else {
 				y = 0;
 			}
-			y += chart.resp.yOffset;
 			
+			y += chart.resp.yOffset;
 			// create stroke
 			chart.resp.ctx.lineWidth = 2;
 			if ( ( profile.isVitalsMonitor == false ) || ( controls.CO2.leadsConnected == true ) )

@@ -18,12 +18,20 @@
 	$currentAmplitude = dbClass::valuesFromPost('currentAmplitude');
 	$currentPulseFrequency = dbClass::valuesFromPost('currentPulseFrequency');
 	$currentPEA = dbClass::valuesFromPost('PEA');
+	$currentArrest = dbClass::valuesFromPost('arrest');
 	
 	// create PEA value
 	if($currentPEA == 'true') {
 		$PEAChecked = ' checked="checked" ';
 	} else {
 		$PEAChecked = '';
+	}
+	
+	// create arrest value
+	if($currentArrest == 'true') {
+		$arrestChecked = ' checked="checked" ';
+	} else {
+		$arrestChecked = '';
 	}
 	
 	// generate ecg dropdown
@@ -47,6 +55,10 @@
 		<div class="control-modal-div heart-rhythm pea">
 			<p class="modal-section-title">PEA</p>
 			<input type="checkbox" value="yes" ' . $PEAChecked . ' name="PEA" id="PEA">
+		</div>
+		<div class="control-modal-div heart-rhythm pea">
+			<p class="modal-section-title">Arrest</p>
+			<input type="checkbox" value="yes" ' . $arrestChecked . ' name="arrest" id="arrest">
 		</div>
 		<div class="control-modal-div heart-rhythm pulses clearer">
 			<p class="modal-section-title">VPC</p>

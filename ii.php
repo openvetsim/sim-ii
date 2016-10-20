@@ -107,6 +107,7 @@ var isVitalsMonitor = 0;	// Student Display Flag
 				*/
 				simmgr.init();
 				controls.cpr.init();
+				controls.manualRespiration.init();
 			});
 		</script>
 		<style>
@@ -156,13 +157,16 @@ var isVitalsMonitor = 0;	// Student Display Flag
 					</li>
 
 					<li class="logout">
-						<a href="index.php" class="event-link">Logout</a>						
-					</li>
-					<li class="logout">
 						Version: <?= VERSION_MAJOR . '.' . VERSION_MINOR; ?>						
 					</li>
 					<li class="logout">
+						<a href="index.php" class="event-link">Logout</a>						
+					</li>
+					<li class="logout">
 						<a href="javascript: void(2);"  class="event-link cpr-link">Start CPR</a>						
+					</li>
+					<li class="logout">
+						<a href="javascript: void(2);"  class="event-link breath-link">Manual Breath</a>						
 					</li>
 				</ul>
 			</div>
@@ -179,6 +183,10 @@ var isVitalsMonitor = 0;	// Student Display Flag
 				<img class="nvs-button" id="button-CO2" src="<?= BROWSER_IMAGES; ?>co2.png" alt="CO2 Icon">
 				<h2 id="button-bpcuff-title" class="nvs-button"></h2>
 				<img class="nvs-button" id="button-bpcuff" src="<?= BROWSER_IMAGES; ?>bpcuff.png" alt="bpcuff Icon">
+				
+				<!-- PEA and Cardiac Arrest Indicators -->
+				<h2 id="indicator-pea">PEA</h2>
+				<h2 id="indicator-arrest">Arrest</h2>
 
 				<div id="vocals-dog-control" class="dog-control">
 					<a id="vocals-dog-control-title" href="javascript: void(2)" onclick="modal.vocals(); return false;">Vocals</a>

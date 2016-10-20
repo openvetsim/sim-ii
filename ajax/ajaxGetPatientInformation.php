@@ -49,12 +49,12 @@
 					<td>' . $profileArray['gender'] . '</td>
 				</tr>
 				<tr>
-					<td>Symptoms:</td>
-					<td>' . $profileArray['symptoms'] . '</td>
-				</tr>
-				<tr>
 					<td>Weight:</td>
 					<td>' . $profileArray['weight'] . '</td>
+				</tr>
+				<tr>
+					<td>Symptoms:</td>
+					<td>' . $profileArray['symptoms'] . '</td>
 				</tr>
 				<tr>
 					<td>Description:</td>

@@ -92,7 +92,9 @@
 						currentAmplitude: controls.heartRhythm.vfibAmplitude, 
 						currentPulse: controls.heartRhythm.vpcResponse, 
 						currentPulseFrequency: controls.heartRhythm.vpcFrequency, 
-						PEA: controls.heartRhythm.pea},
+						PEA: controls.heartRhythm.pea,
+						arrest: controls.heartRhythm.arrest,
+				},
 				dataType: 'json',
 				success: function(response) {
 					if(response.status == AJAX_STATUS_OK) {
@@ -130,6 +132,7 @@
 												'set:cardiac:rhythm': $('select.ecg-select option:selected').val(),
 												'set:cardiac:vpc': $('select.pulse-select option:selected').val(),
 												'set:cardiac:pea': ($('input#PEA').is(':checked') == true) ? 1 : 0,
+												'set:cardiac:arrest': ($('input#arrest').is(':checked') == true) ? 1 : 0,
 												'set:cardiac:vpc_freq': $('select.frequency-select option:selected').val(),
 												'set:cardiac:vfib_amplitude': $('select.amplitude-select option:selected').val(),
 												'set:cardiac:rate': $('.strip-value.new').val()												

@@ -79,7 +79,7 @@
 						<a href="javascript: void(0)" onclick="modal.heartRate(); return false;" class="display-rate color-green">70</a>
 					</div>
 					<div class="vs-controls clearer">
-						<a href="javascript: void(0)" class="strip-label color-white">etCO<sub>2</sub></a>
+						<a href="javascript: void(0)" class="strip-label color-white">ETCO<sub>2</sub></a>
 					</div>
 					<div id="vs-etCO2" class="vs-controls">
 						<a href="javascript: void(0)" onclick="modal.etCO2(); return false;" class="display-rate color-white">75</a>
@@ -87,7 +87,7 @@
 				</div>
 				<div class="wide-col">
 					<div class="alt-control control-Tperi">
-						<a class="alt-control-title color-blue" href="javascript: void(0)" onclick="modal.Tperi(); return false;">Tperi</a>
+						<a class="alt-control-title color-blue" href="javascript: void(0)" onclick="modal.Tperi(); return false;">Temp</a>
 						<a class="alt-control-rate color-blue" href="javascript: void(0)" onclick="modal.Tperi(); return false;" id="display-Tperi">123</a>
 					</div>
 					<div class="alt-control awRR">

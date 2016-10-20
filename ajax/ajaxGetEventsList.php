@@ -17,7 +17,7 @@
 		echo json_encode($returnVal);
 		exit();		
 	}
-					
+			
 	$content = '';
 	$priority = array();
 
@@ -46,6 +46,20 @@
 				echo json_encode($returnVal);
 				exit();					
 			}
+			
+			// HACK...need elements to be an array
+			if(is_array($eventArray[0]) === FALSE) {
+				$eventArray[0] = array(
+					'title' => $eventArray['title'],
+					'id' => $eventArray['id'],
+					'priority' => $eventArray['priority']
+				);
+				unset($eventArray['title']);
+				unset($eventArray['id']);
+				unset($eventArray['priority']);
+			}
+			
+			
 			foreach($eventArray as $event) {
 				$content .= '
 						<li>

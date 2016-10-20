@@ -49,9 +49,28 @@
 				}
 			
 				chart.status.cardiac.synch = true;
-				if ( ! ( simmgr.isLocalDisplay() ) && chart.status.cardiac.vpcSynch == false )
+				
+				// vpc?
+				if(controls.heartRhythm.vpcCount > 0 && controls.heartRhythm.currentRhythm == 'sinus') {
+					if(controls.heartRhythm.vpcFrequencyArray[controls.heartRhythm.vpcFrequencyIndex] == 1) {
+						// flag that we are going to do a vpc pulse
+						chart.status.cardiac.vpcSynch = true;
+						chart.ekg.vpcCount = 0;
+					}
+					
+					controls.heartRhythm.vpcFrequencyIndex++;
+					if(controls.heartRhythm.vpcFrequencyIndex >= controls.heartRhythm.vpcFrequencyLength) {
+						controls.heartRhythm.vpcFrequencyIndex = 0;
+					}
+				}
+				
+				if ( ! ( simmgr.isLocalDisplay() ) )
 				{
-					controls.heartRate.beatTimeout = setTimeout(controls.heartRate.setSynch, Math.round((60 / controls.heartRate.value) * 1000) * controls.heartRate.delay);
+					if(chart.status.cardiac.vpcSynch == false) {
+						controls.heartRate.beatTimeout = setTimeout(controls.heartRate.setSynch, Math.round((60 / controls.heartRate.value) * 1000) * controls.heartRate.delay);
+					} else {
+						controls.heartRate.beatTimeout = setTimeout(controls.heartRate.setSynch, (Math.round((60 / controls.heartRate.value) * 1000)) + (chart.ekg.vpcDelay * controls.heartRhythm.vpcCount));
+					}
 				}
 			},
 			
@@ -78,11 +97,12 @@
 		heartRhythm: {
 			currentRhythm: '',
 			pea: false,
-			vpc: 'vtach1',
-			vpcResponse: 'none',
+			arrest: false,
+			vpc: 'vtach1',			// vpc rhythm to be generated {'vtach1', 'vtach2'}
+			vpcResponse: 'none',	// actual vpc response from simmgr {'none', '1-1', '1-2', etc...}
 			vpcFrequency: 10,
 			vfibAmplitude: 'low',
-			vpcCount: 0,
+			vpcCount: 0,			// count of vpc's to be generated {0 - none, 1 - singlet, 2 - doublet, 3 - triplet}
 			
 			// array to simulate semi-random vpc
 			vpcFrequencyArray: {},
@@ -113,7 +133,6 @@
 			},
 			
 			calculateVPCFreq: function() {
-				var count = 0;
 				controls.heartRhythm.vpcFrequencyArray = new Array;
 
 				// if 0% then set array to 0
@@ -124,11 +143,10 @@
 				} else {
 					// get 100 samples for 100 cycles of sinus rhythm between 10 and 90
 					for(var i = 0; i <= 99; i++) {
-						if(Math.floor((Math.random() * 90) + 10) > controls.heartRhythm.vpcFrequency)  {
+						if(Math.floor(Math.random() * 100) > controls.heartRhythm.vpcFrequency)  {
 							controls.heartRhythm.vpcFrequencyArray.push(0);						
 						} else {
 							controls.heartRhythm.vpcFrequencyArray.push(1);
-							count++;
 						}
 					}
 				}
@@ -427,28 +445,42 @@
 			},
 			
 			updateDisplayedNBP: function() {
-				if(  ( profile.isVitalsMonitor && ! controls.ekg.leadsConnected ) || controls.nbp.nibp_read == 1) {
-					// update displayed NBP
-					$('#displayed-systolic').html('---');
-					$('#displayed-diastolic').html('---');
-					
-					// calculate mean NBP
-					$('#displayed-meanNBP').html('---')
-					
-					// display reported HR
-					$('#displayed-reportedHR').html('---');					
+				if(profile.isVitalsMonitor) {
+					if((! controls.ekg.leadsConnected ) || controls.nbp.nibp_read == 1) {
+						// display dashes
+						controls.nbp.displayNIBPDashes();
+					} else {
+						// display values
+						controls.nbp.displayNIBPValues();
+					}
 				} else {
 					// update displayed NBP
-					$('#displayed-systolic').html(controls.nbp.systolicValue);
-					$('#displayed-diastolic').html(controls.nbp.diastolicValue);
-					
-					// calculate mean NBP
-					controls.nbp.meanValue = Math.floor((controls.nbp.systolicValue - controls.nbp.diastolicValue) / 3) + parseInt(controls.nbp.diastolicValue);
-					$('#displayed-meanNBP').html(controls.nbp.meanValue)
-					
-					// display reported HR
-					$('#displayed-reportedHR').html(controls.nbp.reportedHRValue + ' <span class="nbip-label">bpm</span>');	
+					controls.nbp.displayNIBPValues();
 				}
+			},
+			
+			displayNIBPDashes: function() {
+				$('#displayed-systolic').html('---');
+				$('#displayed-diastolic').html('---');
+				
+				// calculate mean NBP
+				$('#displayed-meanNBP').html('---')
+				
+				// display reported HR
+				$('#displayed-reportedHR').html('---');					
+			},
+			
+			displayNIBPValues: function() {
+				// update displayed NBP
+				$('#displayed-systolic').html(controls.nbp.systolicValue);
+				$('#displayed-diastolic').html(controls.nbp.diastolicValue);
+				
+				// calculate mean NBP
+				controls.nbp.meanValue = Math.floor((controls.nbp.systolicValue - controls.nbp.diastolicValue) / 3) + parseInt(controls.nbp.diastolicValue);
+				$('#displayed-meanNBP').html(controls.nbp.meanValue)
+				
+				// display reported HR
+				$('#displayed-reportedHR').html(controls.nbp.reportedHRValue + ' <span class="nbip-label">bpm</span>');	
 			},
 						
 			validateNewValue: function(type) {
@@ -645,6 +677,30 @@
 					$('#button-cpr').attr('src', BROWSER_IMAGES + 'heart.png');
 				}
 			}
+		},
+		
+		manualRespiration: {
+			inProgress: false,
+			serverCount: 0,	// manual breath count as provided by server
+			iiCount: 0,		// manual breath count as tracked by application
+			manualBreathIndex: 0,	// count of pixels generated for manual ETCO2 waveform
+			
+			init: function() {
+				// set count
+				this.iiCount = this.serverCount;
+				
+				// bind control
+				$('a.breath-link').click(function() {
+					simmgr.sendChange( { 'set:respiration:manual' : 1 } );				
+				});
+			},
+			
+			manualBreath: function() {
+				this.iiCount = this.serverCount;
+				this.inProgress = true;
+				this.manualBreathIndex = 0;
+			}
+		
 		}
 
 	}
