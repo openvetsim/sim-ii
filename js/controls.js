@@ -691,7 +691,7 @@
 				
 				// bind control
 				$('a.breath-link').click(function() {
-					simmgr.sendChange( { 'set:respiration:manual' : 1 } );				
+					simmgr.sendChange( { 'set:respiration:manual_breath' : 1 } );				
 				});
 			},
 			

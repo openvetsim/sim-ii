@@ -551,7 +551,10 @@ var simmgr = {
 					// manual breath
 					if(typeof(response.respiration.manual_count) != "undefined") {
 						controls.manualRespiration.serverCount = response.respiration.manual_count;
-						if(controls.manualRespiration.serverCount != controls.manualRespiration.iiCount) {
+						if(controls.manualRespiration.serverCount == 0) {	// Allow reset to zero at start of new scene
+							controls.manualRespiration.iiCount = 0;
+						}
+						else if(controls.manualRespiration.serverCount != controls.manualRespiration.iiCount) {
 							controls.manualRespiration.manualBreath();
 						}
 					}
