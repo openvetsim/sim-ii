@@ -272,23 +272,22 @@
 			},
 			
 			setPalpateColor: function() {
-				if(this.position != this.PULSE_POSITION_LEFT_FEMORAL) {
-					return;
-				}
-				var palpateColor = 'none';
-				switch(parseInt(this.pressure)) {
-					case this.PULSE_TOUCH_LIGHT:
-						palpateColor = 'yellow';
-						break;
-					case this.PULSE_TOUCH_MEDIUM:
-						palpateColor = 'green';
-						break;
-					case this.PULSE_TOUCH_HEAVY:
-					case this.PULSE_TOUCH_EXCESSIVE:
-						palpateColor = 'red';
-						break;
-					default:
-						break;
+				var palpateColor = 'transparent';
+				if(this.position == this.PULSE_POSITION_LEFT_FEMORAL) {
+					switch(parseInt(this.pressure)) {
+						case this.PULSE_TOUCH_LIGHT:
+							palpateColor = 'yellow';
+							break;
+						case this.PULSE_TOUCH_MEDIUM:
+							palpateColor = 'green';
+							break;
+						case this.PULSE_TOUCH_HEAVY:
+						case this.PULSE_TOUCH_EXCESSIVE:
+							palpateColor = 'red';
+							break;
+						default:
+							break;
+					}
 				}
 				$('#button-palpate').css('background-color', palpateColor);
 				return;
