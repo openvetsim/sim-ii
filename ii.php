@@ -55,6 +55,7 @@ var isVitalsMonitor = 0;	// Student Display Flag
 				controls.etCO2.init();
 				controls.Tperi.init();
 				controls.nbp.init();
+				controls.pulse.init();
 				buttons.init();
 				events.init();
 				scenario.init();
@@ -173,6 +174,8 @@ var isVitalsMonitor = 0;	// Student Display Flag
 
 			<div id="mannequin" class="clearer float-left ii-border">
 				<h1>Non Vital Controls</h1>
+				<h2 id="button-palpate-title" class="nvs-button"></h2>
+				<img class="nvs-button" id="button-palpate" src="<?= BROWSER_IMAGES; ?>palpate.png" alt="Palpate Icon">
 				<h2 id="button-cpr-title" class="nvs-button"></h2>
 				<img class="nvs-button" id="button-cpr" src="<?= BROWSER_IMAGES; ?>spo2.png" alt="CPR Icon">
 				<h2 id="button-SpO2-title" class="nvs-button"></h2>

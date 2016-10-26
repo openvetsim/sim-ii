@@ -249,6 +249,52 @@
 			
 		},
 		
+		pulse: {
+			// pulse palpate force detected
+			PULSE_TOUCH_NONE: 0,
+			PULSE_TOUCH_LIGHT: 1,
+			PULSE_TOUCH_MEDIUM: 2,
+			PULSE_TOUCH_HEAVY: 3,
+			PULSE_TOUCH_EXCESSIVE: 4,
+			
+			// pulse palpate position detected
+			PULSE_POSITION_NONE: 0,
+			PULSE_POSITION_LEFT_FEMORAL: 4,
+			
+			position: 0,
+			pressure: 0,
+			
+			init: function() {
+				this.position = this.PULSE_POSITION_NONE;
+				this.pressure = this.PULSE_TOUCH_NONE;
+				$('#button-palpate').css('cursor', 'default');
+				this.setPalpateColor();
+			},
+			
+			setPalpateColor: function() {
+				if(this.position != this.PULSE_POSITION_LEFT_FEMORAL) {
+					return;
+				}
+				var palpateColor = 'none';
+				switch(parseInt(this.pressure)) {
+					case this.PULSE_TOUCH_LIGHT:
+						palpateColor = 'yellow';
+						break;
+					case this.PULSE_TOUCH_MEDIUM:
+						palpateColor = 'green';
+						break;
+					case this.PULSE_TOUCH_HEAVY:
+					case this.PULSE_TOUCH_EXCESSIVE:
+						palpateColor = 'red';
+						break;
+					default:
+						break;
+				}
+				$('#button-palpate').css('background-color', palpateColor);
+				return;
+			}
+		},
+		
 		ekg: {
 			leadsConnected: false,
 			connectHTML: "Disconnect EKG Leads",

@@ -729,8 +729,18 @@ var simmgr = {
 					controls.cpr.setCPRState();
 					chart.updateCardiac(response.cardiac);
 				}
+				
+				/************ pulse **************/
+				if(typeof(response.pulse.position) != "undefined" && response.pulse.position != controls.pulse.position) {
+					controls.pulse.position = response.pulse.position;
+					controls.pulse.setPalpateColor();
+				}
+				if(typeof(response.pulse.pressure) != "undefined" && response.pulse.pressure != controls.pulse.pressure) {
+					controls.pulse.pressure = response.pulse.pressure;
+					controls.pulse.setPalpateColor();
+				}
 			},
-			
+
 			error: function( jqXHR,  textStatus,  errorThrown){
 				console.log("error: "+textStatus+" : "+errorThrown );
 			},
