@@ -559,13 +559,20 @@
 //console.log(chart.ekg.patternIndex)
 			
 			if(controls.manualRespiration.inProgress == true) {
-				if(controls.manualRespiration.manualBreathIndex > chart.resp.manualBreathPattern.length) {
+				if(controls.manualRespiration.manualBreathIndex >= chart.resp.manualBreathPattern.length) {
 					controls.manualRespiration.inProgress = false;
+					y = 0;
 				} else {
-					y = chart.resp.manualBreathPattern[controls.manualRespiration.manualBreathIndex] * -1;
-					controls.manualRespiration.manualBreathIndex++;
+					if(chart.resp.manualBreathPattern[controls.manualRespiration.manualBreathIndex] <= chart.displayETCO2.max) {
+                                              y = chart.resp.manualBreathPattern[controls.manualRespiration.manualBreathIndex] * -1;
+                                      } else {
+                                              y = chart.displayETCO2.max * -1;
+                                      }
+									  controls.manualRespiration.manualBreathIndex++;
 				}
 			} else if (controls.heartRhythm.pea == true) {
+				y = 0;
+			} else if(controls.awRR.value == 0) {
 				y = 0;
 			} else if ( ( profile.isVitalsMonitor == false ) || ( controls.CO2.leadsConnected == true ) ) {
 				if(chart.status.resp.synch == true ) {	// Restart Cycle
