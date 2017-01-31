@@ -48,7 +48,7 @@
 			}
 			
 			// HACK...need elements to be an array
-			if(is_array($eventArray[0]) === FALSE) {
+			if(isset($eventArray[0]) === FALSE || is_array($eventArray[0]) === FALSE) {
 				$eventArray[0] = array(
 					'title' => $eventArray['title'],
 					'id' => $eventArray['id'],
