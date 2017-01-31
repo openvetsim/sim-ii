@@ -5,7 +5,7 @@
 	
 	// is user logged in
 	if(adminClass::isUserLoggedIn() === FALSE) {
-		if ( $SERVER_ADDR != $REMOTE_ADDR )
+		if ( SERVER_ADDR != REMOTE_ADDR ) // This allows access without login for Student Vitals display
 		{
 			$returnVal['status'] = AJAX_STATUS_LOGIN_FAIL;
 			$returnVal['cause'] = "No login";
