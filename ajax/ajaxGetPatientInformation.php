@@ -6,7 +6,7 @@
 
 	// is user logged in
 	if(adminClass::isUserLoggedIn() === FALSE) {
-		if ( $SERVER_ADDR != $REMOTE_ADDR )
+		if ( SERVER_ADDR != REMOTE_ADDR )
 		{
 			$returnVal['status'] = AJAX_STATUS_LOGIN_FAIL;
 			$returnVal['cause'] = "No login";
