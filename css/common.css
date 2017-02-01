@@ -505,7 +505,7 @@ a:hover {
 	#patient-info img {
 		border: 1px solid red;
 		position: absolute;
-		top: 7px;
+		top: 0px;
 		right: 131px;
 	}
 	#patient-info h1 {

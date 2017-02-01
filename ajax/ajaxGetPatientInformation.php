@@ -22,9 +22,9 @@
 	if($imageSizeArray !== FALSE) {
 		// check width, max = 300px
 		if($imageSizeArray[0] >= $imageSizeArray[1]) {
-			$cssContent = ' style="width: 150px" ';
+			$cssContent = ' style="width: 138px" ';
 		} else {
-			$cssContent = ' style="height: 150px" ';		
+			$cssContent = ' style="height: 138px" ';		
 		}
 	}
 	
