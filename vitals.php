@@ -1,11 +1,11 @@
 <?php
 	require_once('init.php');
 	// get profile ini
-	$profileURL = parse_ini_file(SERVER_PROFILES . "profile.ini", TRUE);
-	$profileURL = SERVER_PROFILES . $profileURL['settings']['defaultProfile'];
-	$profileINI = json_encode(parse_ini_file($profileURL, TRUE));
+//	$profileURL = parse_ini_file(SERVER_PROFILES . "profile.ini", TRUE);
+//	$profileURL = SERVER_PROFILES . $profileURL['settings']['defaultProfile'];
+//	$profileINI = json_encode(parse_ini_file($profileURL, TRUE));
 
-	$profileINI_Decoded = json_decode($profileINI, TRUE);
+//	$profileINI_Decoded = json_decode($profileINI, TRUE);
 
 ?>
 <!DOCTYPE html >
