@@ -52,8 +52,8 @@
 						profile.removePatientInfo();
 						$('body').append(response.html);
 						$('#patient-info').draggable().css({
-							'left': '50%',
-							'margin-left': (Math.floor($('#patient-info').width() / 2) * -1) + 'px'
+							'left': '0px',
+//							'margin-left': (Math.floor($('#patient-info').width() / 2) * -1) + 'px'
 						});
 
 					}

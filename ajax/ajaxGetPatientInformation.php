@@ -22,20 +22,16 @@
 	if($imageSizeArray !== FALSE) {
 		// check width, max = 300px
 		if($imageSizeArray[0] >= $imageSizeArray[1]) {
-			$cssContent = ' style="width: 300px" ';
+			$cssContent = ' style="width: 150px" ';
 		} else {
-			$cssContent = ' style="height: 300px" ';		
+			$cssContent = ' style="height: 150px" ';		
 		}
 	}
 	
 	$content = '
 		<div id="patient-info">
 			<h1>Patient Information</h1>
-			<table>
-				<tr>
-					<td>&nbsp;</td>
-					<td><img src="' . BROWSER_SCENARIOS_PATIENTS .  $profileArray['image'] . '" ' . $cssContent . '></td>
-				</tr>
+			<img src="' . BROWSER_SCENARIOS_PATIENTS .  $profileArray['image'] . '" ' . $cssContent . '>			<table>
 				<tr>
 					<td>Species:</td>
 					<td>' . $profileArray['species'] . '</td>
