@@ -164,6 +164,9 @@ var isVitalsMonitor = 0;	// Student Display Flag
 						<a href="index.php" class="event-link">Logout</a>						
 					</li>
 					<li class="logout">
+						<a href="../../editor/editor.php"  class="event-link breath-link">Editor</a>						
+					</li>
+					<li class="logout">
 						<a href="javascript: void(2);"  class="event-link cpr-link">Start CPR</a>						
 					</li>
 					<li class="logout">

@@ -267,6 +267,7 @@
 			
 			chart.resp.manualBreathPattern = [	// approximate 300 msec waveform
 				0,0,0,20,44,62,62,62,62,62,62,62,62,62,62,62,62,62,62,44,20,0,0
+//				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 			];
 			
 			// get max value
@@ -347,7 +348,7 @@
 				chart.ekg.rateIndex = 0;
 			} 
 			
-			if ( typeof ( chart.ekg.rhythm[chart.ekg.rhythmIndex] ) === 'undefined' )
+			if ( typeof ( chart.ekg.rhythm[chart.ekg.rhythmIndex] ) === 'undefined' || typeof chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex] == 'undefined')
 			{
 				console.log("No EKG Rhythm "+chart.ekg.rhythmIndex );
 				chart.ekg.rhythmIndex = 'asystole';	// Flatline
