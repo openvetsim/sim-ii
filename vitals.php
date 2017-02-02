@@ -20,7 +20,6 @@
         }
 			$(document).ready(function() {
 				
-				
 				// Resize Chart based on Window Size
 				// Chart is 650 x 400 with 11px on left and 1px left, right and bottom
 				Wwidth = $(window).width();
