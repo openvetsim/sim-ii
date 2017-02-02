@@ -13,12 +13,29 @@
   <head>
     <?php require_once(SERVER_INCLUDES . "header.php"); ?>
 	<script type="text/javascript">
+        function zoom( set ) {
+			setVal = set+"%";
+            document.body.style.zoom = setVal ;
+			console.log("Zoom: "+setVal ) 
+        }
 			$(document).ready(function() {
 				
+				
 				// Resize Chart based on Window Size
+				// Chart is 650 x 400 with 11px on left and 1px left, right and bottom
 				Wwidth = $(window).width();
 				Wheight = $(window).height();
 				console.log("Screen size ", Wwidth, Wheight );
+				// Calculate max scale for width and height
+				zoomW = ( ( Wwidth - 40 ) / 650 ) * 100;
+				zoomH = ( ( Wheight - 40 ) / 400 ) * 100;
+				
+				if ( zoomW > zoomH )
+					zoomSet = zoomH;
+				else
+					zoomSet = zoomW;
+				
+				zoom(zoomSet);
 				
 				// init profile data
 				scenario.loadScenario();
@@ -42,6 +59,9 @@
 				profile.initPatientInfo();
 				
 				simmgr.init();
+				
+
+
 			});
 		</script>
 <style type="text/css" media="screen">
