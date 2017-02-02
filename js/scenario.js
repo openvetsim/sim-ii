@@ -136,7 +136,7 @@ var scenario = {
 				scenario.scenarioEvents = response.events;
 				scenario.scenarioMedia = response.media;
 				scenario.scenarioVocals = response.vocals;
-				
+
 				// update scenario dropdown if needed
 				$('#scenario-select select').val(scenario.currentScenarioFileName);
 			}

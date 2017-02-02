@@ -4,7 +4,6 @@ var media = {
 	
 	init: function() {
 		media.clearMedia();
-
 		// bind event of scenario button
 		$('#media-button').click(function() {
 			if(media.mediaIsDisplayed == true) {
@@ -18,13 +17,12 @@ var media = {
 		var mediaOptionContent = '';
 		var mediaSelected = '';
 		for(var index = 0; index < scenario.scenarioMedia.file.length; index++) {
-			
-			if(scenario.scenarioMedia.file[index]['filename'] == media.currentMediaFileName) {
+			if(scenario.scenarioMedia.file[index]['url'] == media.currentMediaFileName) {
 				mediaSelected = ' selected="selected" ';
 			} else {
 				mediaSelected = '';			
 			}
-			mediaOptionContent += '<option value="' + scenario.scenarioMedia.file[index]['filename'] + '" ' + mediaSelected + '>' + scenario.scenarioMedia.file[index]['title'] + '</option>';
+			mediaOptionContent += '<option value="' + scenario.scenarioMedia.file[index]['url'] + '" ' + mediaSelected + '>' + scenario.scenarioMedia.file[index]['title'] + '</option>';
 		}
 		$('#media-select > select').html(mediaOptionContent);
 	},

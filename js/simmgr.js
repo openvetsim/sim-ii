@@ -418,7 +418,7 @@ var simmgr = {
 										if (iWidth < bWidth) {
 											marginleft = (bWidth - iWidth) / 2;
 										}
-										$('#media-overlay').css({'margin-left': marginleft, 'margin-top' : margintop } );
+										$('#media-overlay').css({'margin-left': marginleft + 'px', 'margin-top' : margintop + 'px' } );
 									});
 									$('#media-overlay').draggable();
 									break;
@@ -672,6 +672,7 @@ var simmgr = {
 							events.init();
 						}
 						profile.initPatientInfo();
+						media.init();
 					}
 					
 					if ( profile.isVitalsMonitor == false ) {

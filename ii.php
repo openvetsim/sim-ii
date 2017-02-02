@@ -59,7 +59,7 @@ var isVitalsMonitor = 0;	// Student Display Flag
 				buttons.init();
 				events.init();
 				scenario.init();
-				media.init();
+//				media.init();
 //				log.init();
 
 				// init patient info
