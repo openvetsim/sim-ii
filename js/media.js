@@ -5,7 +5,7 @@ var media = {
 	init: function() {
 		media.clearMedia();
 		// bind event of scenario button
-		$('#media-button').click(function() {
+		$('#media-button').unbind().click(function() {
 			if(media.mediaIsDisplayed == true) {
 				media.clearMedia();
 			} else {
