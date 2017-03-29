@@ -59,7 +59,7 @@
 		<div class="control-modal-div">
 			<div id="volume-controls">
 				<!-- <p id="mute-volume-title" class="clearer">Mute</p> -->
-				<p id="volume-title">- Volume +</p>
+				<p id="volume-title">- Volume + (<span class="volume-setting"></span>)</p>
 				<!-- <input type="checkbox" id="mute-volume" class="clearer"> -->
 				<div id="volume-slider"></div>
 			</div>

@@ -749,6 +749,7 @@
 													'float': 'none',
 													'margin': '0 auto'
 													});
+						$('.volume-setting').html(controls.leftLung.value);
 						
 						// volume control
 						controls.leftLung.slideBar = $("#volume-slider").slider({
@@ -758,6 +759,7 @@
 							step: controls.leftLung.increment,
 							slide: function(event, ui) {
 								simmgr.sendChange({'set:respiration:left_lung_sound_volume': ui.value});
+								$('.volume-setting').html(ui.value);
 							}
 						});
 						
@@ -807,6 +809,7 @@
 													'float': 'none',
 													'margin': '0 auto'
 													});
+						$('.volume-setting').html(controls.rightLung.value);
 						
 						// volume control
 						controls.rightLung.slideBar = $("#volume-slider").slider({
@@ -816,6 +819,7 @@
 							step: controls.rightLung.increment,
 							slide: function(event, ui) {
 								simmgr.sendChange({'set:respiration:right_lung_sound_volume': ui.value});
+								$('.volume-setting').html(ui.value);
 							}
 						});
 						
@@ -865,6 +869,7 @@
 													'float': 'none',
 													'margin': '0 auto'
 													});
+						$('.volume-setting').html(controls.heartSound.value);
 						
 						// volume control
 						controls.heartSound.slideBar = $("#volume-slider").slider({
@@ -874,6 +879,7 @@
 							step: controls.heartSound.increment,
 							slide: function(event, ui) {
 								simmgr.sendChange({'set:cardiac:heart_sound_volume': ui.value});
+								$('.volume-setting').html(ui.value);
 							}
 						});
 						

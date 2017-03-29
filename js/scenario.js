@@ -1,5 +1,5 @@
 var scenario = {
-	currentScenarioFileName: 'default',
+	currentScenarioFileName: '',
 	scenarioActive: false,
 	startVideoWithScenario: false,
 	scenarioState: {

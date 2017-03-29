@@ -11,8 +11,8 @@
 	}
 	
 	$soundName = dbClass::valuesFromPost('soundName');
-	if(dbClass::isInt($soundID) === FALSE) {
-		$soundID = 1;
+	if($soundName == '') {
+		$soundName = "normal";
 	}
 	
 	$heartSoundArray = array(
@@ -51,7 +51,7 @@
 		<div class="control-modal-div">
 			<div id="volume-controls">
 				<!-- <p id="mute-volume-title" class="clearer">Mute</p> -->
-				<p id="volume-title">- Volume +</p>
+				<p id="volume-title">- Volume + (<span class="volume-setting">5</span>)</p>
 				<!-- <input type="checkbox" id="mute-volume" class="clearer"> -->
 				<div id="volume-slider"></div>
 			</div>
