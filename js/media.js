@@ -17,13 +17,16 @@ console.log('here');
 		// create dropdown for media select
 		var mediaOptionContent = '';
 		var mediaSelected = '';
-		for(var index = 0; index < scenario.scenarioMedia.file.length; index++) {
-			if(scenario.scenarioMedia.file[index]['url'] == media.currentMediaFileName) {
-				mediaSelected = ' selected="selected" ';
-			} else {
-				mediaSelected = '';			
+		
+		if(typeof scenario.scenarioMedia != 'undefined') {
+			for(var index = 0; index < scenario.scenarioMedia.file.length; index++) {
+				if(scenario.scenarioMedia.file[index]['url'] == media.currentMediaFileName) {
+					mediaSelected = ' selected="selected" ';
+				} else {
+					mediaSelected = '';			
+				}
+				mediaOptionContent += '<option value="' + scenario.scenarioMedia.file[index]['url'] + '" ' + mediaSelected + '>' + scenario.scenarioMedia.file[index]['title'] + '</option>';
 			}
-			mediaOptionContent += '<option value="' + scenario.scenarioMedia.file[index]['url'] + '" ' + mediaSelected + '>' + scenario.scenarioMedia.file[index]['title'] + '</option>';
 		}
 		$('#media-select > select').html(mediaOptionContent);
 	},

@@ -575,6 +575,7 @@
 												'set:cardiac:bps_sys': $('.strip-value.new.systolic').val(),
 											    'set:cardiac:nibp_rate': $('.strip-value.new.linked-hr').val(),
 												'set:cardiac:nibp_freq': $('.read-time option:selected').val(),
+												'set:cardiac:nibp_linked_hr': ($('#nbp-control-coupled-hr').is(':checked')) ? 1 : 0,
 												'set:cardiac:transfer_time': $('.transfer-time option:selected').val()
 											});
 							modal.closeModal();

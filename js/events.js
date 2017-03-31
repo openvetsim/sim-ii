@@ -31,7 +31,7 @@
 					$('.event-priority').remove();
 					
 					// get priority events if any
-					if(response.priority.length > 0) {
+					if(typeof response.priority != 'undefined' && response.priority.length > 0) {
 						var content = '<li class="event-priority event-divider">|</li><li class="event-priority">Quick Event Links:</li>';
 						response.priority.forEach(function(element, index, event) {
 							content += '<li class="event-priority"><a class="event-link" href="javascript: void(2);" onclick="events.sendPriorityEvent(\'' + element.id + '\');">' + element.title + '</a></li>';

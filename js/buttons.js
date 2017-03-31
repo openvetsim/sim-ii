@@ -6,6 +6,7 @@
 			// init colors and label
 			buttons.setVSButton("ekg");
 			buttons.setVSButton("SpO2");
+			buttons.setVSButton("Tperi");
 			buttons.setVSButton("CO2");
 			buttons.setVSButton("bpcuff");
 			buttons.setCPRButton();
@@ -16,6 +17,9 @@
 			});
 			$('#button-SpO2').click(function() {
 				buttons.bindVSButton("SpO2");
+			});
+			$('#button-Tperi').click(function() {
+				buttons.bindVSButton("Tperi");
 			});
 			$('#button-CO2').click(function() {
 				buttons.bindVSButton("CO2");
@@ -69,6 +73,8 @@
 					simmgr.sendChange({'set:respiration:etco2_indicator': value});										
 				} else if(buttonType == 'bpcuff') {
 					simmgr.sendChange({'set:cardiac:bp_cuff': value});										
+				} else if(buttonType == 'Tperi') {
+					simmgr.sendChange({'set:general:temperature_enable': value});										
 				}
 		}
 	}

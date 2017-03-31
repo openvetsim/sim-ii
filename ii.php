@@ -180,11 +180,13 @@ var isVitalsMonitor = 0;	// Student Display Flag
 				<h2 id="button-palpate-title" class="nvs-button"></h2>
 				<img class="nvs-button" id="button-palpate" src="<?= BROWSER_IMAGES; ?>palpate.png" alt="Palpate Icon">
 				<h2 id="button-cpr-title" class="nvs-button"></h2>
-				<img class="nvs-button" id="button-cpr" src="<?= BROWSER_IMAGES; ?>spo2.png" alt="CPR Icon">
+				<img class="nvs-button" id="button-cpr" src="<?= BROWSER_IMAGES; ?>empty.png" alt="CPR Icon">
 				<h2 id="button-SpO2-title" class="nvs-button"></h2>
 				<img class="nvs-button" id="button-SpO2" src="<?= BROWSER_IMAGES; ?>spo2.png" alt="SpO2 Icon">
 				<h2 id="button-ekg-title" class="nvs-button"></h2>
 				<img class="nvs-button" id="button-ekg" src="<?= BROWSER_IMAGES; ?>ekg.png" alt="EKG Icon">
+				<h2 id="button-Tperi-title" class="nvs-button"></h2>
+				<img class="nvs-button" id="button-Tperi" src="<?= BROWSER_IMAGES; ?>Tperi.png" alt="Temperature Icon">
 				<h2 id="button-CO2-title" class="nvs-button"></h2>
 				<img class="nvs-button" id="button-CO2" src="<?= BROWSER_IMAGES; ?>co2.png" alt="CO2 Icon">
 				<h2 id="button-bpcuff-title" class="nvs-button"></h2>

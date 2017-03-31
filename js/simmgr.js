@@ -98,7 +98,13 @@ var simmgr = {
 					{
 						controls.nbp.diastolicValue = response.cardiac.bps_dia;
 						controls.nbp.systolicValue = response.cardiac.bps_sys;
-						controls.nbp.reportedHRValue = response.cardiac.nibp_rate;
+						
+						// see if we are linked to main HR
+						if(controls.nbp.linkedHR == true) {
+							controls.nbp.reportedHRValue = response.cardiac.rate;
+						} else {
+							controls.nbp.reportedHRValue = response.cardiac.nibp_rate;
+						}
 						
 						// only update reading when requested.
 						controls.nbp.updateDisplayedNBP();
@@ -136,6 +142,15 @@ var simmgr = {
 						buttons.setVSButton('bpcuff');
 					}
 					
+					// linked hr
+					if(typeof(response.cardiac.nibp_linked_hr) != "undefined") {
+						if( response.cardiac.nibp_linked_hr == 1) {
+							controls.nbp.linkedHR = true;
+						} else {
+							controls.nbp.linkedHR = false;
+						}
+					}
+					
 					// read nibp
 					if(typeof(response.cardiac.nibp_read) != "undefined" && controls.bpcuff.leadsConnected == true) {
 						if( response.cardiac.nibp_read == 1) {
@@ -145,6 +160,14 @@ var simmgr = {
 						}
 						
 						if(response.cardiac.nibp_read != controls.nbp.nibp_read) {
+							// flag that we need to display nibp on the student monitor
+							// when read goes from 1 to 0
+							// assume read can only take place when cuff is attached
+							if(response.cardiac.nibp_read == 0 && controls.nbp.nibp_read == 1) {
+								// cleared out when displaying nibp
+								controls.nbp.display_student_nibp = true;
+							}
+							
 							controls.nbp.nibp_read = response.cardiac.nibp_read;
 							controls.nbp.updateDisplayedNBP();
 						}
@@ -303,6 +326,17 @@ var simmgr = {
 					}
 				}
 				
+				// temperature display
+				if(typeof(response.general.temperature_enable) != "undefined") {
+					if( response.general.temperature_enable == 1) {
+						controls.Tperi.leadsConnected = true;
+					} else {
+						controls.Tperi.leadsConnected = false;					
+					}
+					buttons.setVSButton('Tperi');
+					controls.Tperi.displayValue();
+				}
+
 				/************ vocals **************/
 				if(typeof(response.vocals) != "undefined" ) {
 					// filename

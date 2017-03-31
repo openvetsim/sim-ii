@@ -385,6 +385,9 @@
 			maxValue: 110.0,
 			slideBar: '',
 			increment: 0.1,
+			leadsConnected: false,
+			connectHTML: 'Disconnect Tperi Probe',
+			disconnectHTML: "Connect Tperi Probe",
 			
 			modalUnitsLabel: '&deg;F',
 			
@@ -414,7 +417,11 @@
 			},
 			
 			displayValue: function() {
-				$('#display-Tperi').html(controls.Tperi.value.toFixed(1) + '<span class="vs-lower-label"> &ordm;F</span>');			
+				if ( ( profile.isVitalsMonitor == false ) || ( controls.Tperi.leadsConnected == true ) ) {
+					$('#display-Tperi').html(controls.Tperi.value.toFixed(1) + '<span class="vs-lower-label"> &ordm;F</span>');
+				} else {
+					$('#display-Tperi').html('----' + '<span class="vs-lower-label"> &ordm;F</span>');
+				}
 			}
 		}, 
 
@@ -476,6 +483,8 @@
 			nibp_read: -1,
 			nibp_freq: 0,
 			
+			display_student_nibp: false,
+			
 			slideBarSystolic: '',
 			slideBarDiastolic: '',
 			slideBarLinkedHR: '',
@@ -487,20 +496,25 @@
 			
 			init: function() {
 				controls.nbp.updateDisplayedNBP();
+				if(profile.isVitalsMonitor) {
+					controls.nbp.displayNIBPDashes();									
+				}
 			},
 			
 			updateDisplayedNBP: function() {
 				if(profile.isVitalsMonitor) {
-					if((! controls.ekg.leadsConnected ) || controls.nbp.nibp_read == 1) {
-						// display dashes
-						controls.nbp.displayNIBPDashes();
-					} else {
-						// display values
-						controls.nbp.displayNIBPValues();
+					if(controls.nbp.display_student_nibp == true) {
+						if(controls.nbp.diastolicValue == 0 && controls.nbp.systolicValue == 0) {
+							// display dashes
+							controls.nbp.displayNIBPDashes();					
+						} else {
+							// display values
+							controls.nbp.displayNIBPValues();
+						}
+						controls.nbp.display_student_nibp = false;
 					}
 				} else {
-					// update displayed NBP
-					controls.nbp.displayNIBPValues();
+					controls.nbp.displayNIBPValues();			
 				}
 			},
 			

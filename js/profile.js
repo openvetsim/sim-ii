@@ -2,7 +2,12 @@
 	
 		isVitalsMonitor: false,
 		init: function() {
-	
+			// do we have a valid progile loaded
+			if(typeof scenario.scenarioProfile == 'undefined') {
+				return
+			}
+			
+			
 			// set up background image for animal silhouette from profile
 			if(profile.isVitalsMonitor == false ) {
 				if ( typeof scenario.scenarioProfile.avatar != 'undefined') {
@@ -40,7 +45,7 @@
 		
 		initPatientInfo: function() {
 //			if(true && scenario.currentScenarioState == scenario.scenarioState.STOPPED) {
-			if(profile.isVitalsMonitor == true) {
+			if(profile.isVitalsMonitor == true && typeof scenario.scenarioProfile != 'undefined') {
 				profile.removePatientInfo();
 				$.ajax({
 					url: BROWSER_AJAX + 'ajaxGetPatientInformation.php',
