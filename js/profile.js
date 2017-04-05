@@ -47,22 +47,25 @@
 //			if(true && scenario.currentScenarioState == scenario.scenarioState.STOPPED) {
 			if(profile.isVitalsMonitor == true && typeof scenario.scenarioProfile != 'undefined') {
 				profile.removePatientInfo();
+				if ( ( scenario.currentScenarioState != scenario.scenarioState.RUNNING ) &&
+				     ( scenario.currentScenarioState != scenario.scenarioState.PAUSED ) ) {
 				$.ajax({
-					url: BROWSER_AJAX + 'ajaxGetPatientInformation.php',
-					type: 'post',
-					async: false,
-					data: {profile: scenario.scenarioProfile.summary},
-					dataType: 'json',
-					success: function(response) {
-						profile.removePatientInfo();
-						$('body').append(response.html);
-						$('#patient-info').draggable().css({
-							'left': '0px',
-//							'margin-left': (Math.floor($('#patient-info').width() / 2) * -1) + 'px'
-						});
+						url: BROWSER_AJAX + 'ajaxGetPatientInformation.php',
+						type: 'post',
+						async: false,
+						data: {profile: scenario.scenarioProfile.summary},
+						dataType: 'json',
+						success: function(response) {
+							profile.removePatientInfo();
+							$('body').append(response.html);
+							$('#patient-info').draggable().css({
+								'left': '10px',
+	//							'margin-left': (Math.floor($('#patient-info').width() / 2) * -1) + 'px'
+							});
 
-					}
-				});
+						}
+					});
+				}
 			} else {
 				profile.removePatientInfo();			
 			}

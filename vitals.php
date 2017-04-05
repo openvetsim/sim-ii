@@ -127,5 +127,6 @@
 
 			</div>
 			<button id="startStopButton">Stop</button>
+			<a href='vitals.php?v=1'><button>Refresh</button></a>
 </body>
 </html>

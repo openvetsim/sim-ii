@@ -42,13 +42,13 @@ var simmgr = {
 			{
 				simmgr.running = 1;
 				simmgr.timer = setTimeout(function() { simmgr.getStatus(); }, simmgr.interval );
-				$(this).text("Stop Status Updates");
+				$(this).text("Stop");
 			}
 			else
 			{
 				simmgr.running = 0;
 				clearTimeout(simmgr.timer );
-				$(this).text("Start Status Updates");
+				$(this).text("Start");
 			}
 		});
 		

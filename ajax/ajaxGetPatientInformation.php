@@ -49,7 +49,7 @@
 					<td>' . $profileArray['weight'] . '</td>
 				</tr>
 				<tr>
-					<td>Symptoms:</td>
+					<td>Complaint:</td>
 					<td>' . $profileArray['symptoms'] . '</td>
 				</tr>
 				<tr>
