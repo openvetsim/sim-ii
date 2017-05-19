@@ -669,6 +669,8 @@ var simmgr = {
 									scenario.currentScenarioState = scenario.scenarioState.STOPPED;
 									if ( profile.isVitalsMonitor == false ) {
 										scenario.stopScenario();
+									} else {
+										controls.nbp.displayNIBPDashes();
 									}
 									break;
 								

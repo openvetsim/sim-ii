@@ -70,6 +70,7 @@ var scenario = {
 		$('#scenario-select select').prop('disabled', true);
 		$('#start-video').prop('disabled', true);
 		$('.profile-display.scenario img').show();
+		
 		return;
 	},
 
