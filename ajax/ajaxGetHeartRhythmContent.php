@@ -81,8 +81,14 @@
 			<p class="modal-input-label new-value">New</p>
 			<a class="control-incr-decr-rate decr-rate" href="javascript: void(2);"><<</a>
 			<input value="0" class="strip-value current" readonly="readonly" disabled="disabled">
-			<div class="control-slider-1"></div>
-			<input value="0" class="strip-value new">
+
+			<!-- old slider -->
+			<!-- <div class="control-slider-1"></div>
+			<input value="0" class="strip-value new"> -->
+			
+			<!-- New slider -->
+			<input value="0" class="strip-value new control-slider-1 float-left" data-highlight="true">		
+			
 			<a class="control-incr-decr-rate incr-rate" href="javascript: void(2);">>></a>
 			<div class="clearer"></div>
 		</div>

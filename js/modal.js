@@ -47,16 +47,8 @@
 						modal.showModal(response);
 						modal.bindCloseModal();
 						
-						// bind controls
-						controls.heartRate.slideBar = $(".control-slider-1").slider({
-							value: controls.heartRate.value,
-							min: controls.heartRate.minValue,
-							max: controls.heartRate.maxValue,
-							step: 1,
-							slide: function(event, ui) {
-								$('.strip-value.new').val(ui.value);
-							}
-						});
+						modal.initSingleSlider('heartRate');
+						
 						$('.strip-value').val(controls.heartRate.value);
 						
 						// bind apply button
@@ -112,15 +104,22 @@
 						}
 						
 						// bind controls
+						// add step, min and max
+						$('.control-slider-1').attr({
+							'step': controls.heartRate.increment,
+							'min': modalMinValue,
+							'max': controls.heartRate.maxValue
+						}).val(modalValue);
+			
+						// bind controls
 						controls.heartRate.slideBar = $(".control-slider-1").slider({
-							value: modalValue,
-							min: modalMinValue,
-							max: controls.heartRate.maxValue,
-							step: 1,
-							slide: function(event, ui) {
-								$('.strip-value.new').val(ui.value);
+							create: function() {
+								$('.ui-slider').css({
+									'margin': '0'
+								});
 							}
 						});
+						
 						$('.strip-value').val(modalValue);
 						
 						// bind apply button
@@ -194,17 +193,9 @@
 					if(response.status == AJAX_STATUS_OK) {
 						modal.showModal(response);
 						modal.bindCloseModal();
+
+						modal.initSingleSlider('awRR');
 						
-						// bind controls
-						controls.awRR.slideBar = $(".control-slider-1").slider({
-							value: controls.awRR.value,
-							min: controls.awRR.minValue,
-							max: controls.awRR.maxValue,
-							step: 1,
-							slide: function(event, ui) {
-								$('.strip-value.new').val(ui.value);
-							}
-						});
 						$('.strip-value').val(controls.awRR.value);
 						
 						// bind apply button
@@ -242,16 +233,8 @@
 						modal.showModal(response);
 						modal.bindCloseModal();
 						
-						// bind controls
-						controls.SpO2.slideBar = $(".control-slider-1").slider({
-							value: controls.SpO2.value,
-							min: controls.SpO2.minValue,
-							max: controls.SpO2.maxValue,
-							step: 1,
-							slide: function(event, ui) {
-								$('.strip-value.new').val(ui.value);
-							}
-						});
+						modal.initSingleSlider('SpO2');
+
 						$('.strip-value').val(controls.SpO2.value);
 						
 						// bind apply button
@@ -292,16 +275,8 @@
 						modal.showModal(response);
 						modal.bindCloseModal();
 						
-						// bind controls
-						controls.etCO2.slideBar = $(".control-slider-1").slider({
-							value: controls.etCO2.value,
-							min: controls.etCO2.minValue,
-							max: controls.etCO2.maxValue,
-							step: 1,
-							slide: function(event, ui) {
-								$('.strip-value.new').val(ui.value);
-							}
-						});
+						modal.initSingleSlider('etCO2');
+
 						$('.strip-value').val(controls.etCO2.value);
 						
 						// bind apply button
@@ -342,16 +317,8 @@
 						modal.showModal(response);
 						modal.bindCloseModal();
 						
-						// bind controls
-						controls.Tperi.slideBar = $(".control-slider-1").slider({
-							value: controls.Tperi.value,
-							min: controls.Tperi.minValue,
-							max: controls.Tperi.maxValue,
-							step: controls.Tperi.increment,
-							slide: function(event, ui) {
-								$('.strip-value.new').val(ui.value);
-							}
-						});
+						modal.initSingleSlider('Tperi');
+
 						$('.strip-value').val(parseFloat(controls.Tperi.value).toFixed(1));
 						
 						// bind apply button
@@ -453,44 +420,75 @@
 						$('select.read-time option[value=' + controls.nbp.nibp_freq + ']').attr('selected', true);
 						
 						// bind controls
-						controls.nbp.slideBarSystolic = $(".control-slider-1.systolic").slider({
-							value: controls.nbp.systolicValue,
+						$(".control-slider-1.systolic").attr({
 							min: controls.nbp.minSystolicValue,
 							max: controls.nbp.maxSystolicValue,
 							step: controls.nbp.increment,
-							slide: function(event, ui) {
-								var slideDifference =  ui.value - $('.strip-value.new.systolic').val();
-								$('.strip-value.new.systolic').val(ui.value);
-								controls.nbp.setDiastolicValue(slideDifference);
+						}).val(controls.nbp.systolicValue);
+						
+						// bind controls
+						controls.nbp.slideBarSystolic = $(".control-slider-1.systolic").slider({
+							create: function() {
+								$('.ui-slider').css({
+									'margin': '0'
+								});
 							}
 						});
 						
-						controls.nbp.slideBarDiastolic = $(".control-slider-1.diastolic").slider({
-							value: controls.nbp.diastolicValue,
+						// change in systolic value
+						$(".control-slider-1.systolic").change(function() {
+							var slideDifference =  $(this).val() - $('.strip-value.new.systolic').val();
+							$('.strip-value.new.systolic').val($(this).val());
+							controls.nbp.setDiastolicValue(slideDifference);						
+						});
+						
+						$(".control-slider-1.diastolic").attr({
 							min: controls.nbp.minDiastolicValue,
 							max: controls.nbp.maxDiastolicValue,
 							step: controls.nbp.increment,
-							slide: function(event, ui) {
-								var slideDifference = ui.value - $('.strip-value.new.diastolic').val();
-								$('.strip-value.new.diastolic').val(ui.value);
-								controls.nbp.setSystolicValue(slideDifference);
+						}).val(controls.nbp.diastolicValue);
+						
+						// bind controls
+						controls.nbp.slideBarDiastolic = $(".control-slider-1.diastolic").slider({
+							create: function() {
+								$('.ui-slider').css({
+									'margin': '0'
+								});
 							}
 						});
 						
-						controls.nbp.slideBarLinkedHR = $(".control-slider-1.linked-hr").slider({
-							value: controls.nbp.reportedHRValue,
+						// change in diastolic value
+						$(".control-slider-1.diastolic").change(function() {
+							var slideDifference =  $(this).val() - $('.strip-value.new.diastolic').val();
+							$('.strip-value.new.diastolic').val($(this).val());
+							controls.nbp.setSystolicValue(slideDifference);						
+						});
+
+						// linked hr
+						$(".control-slider-1.linked-hr").attr({
 							min: controls.heartRate.minValue,
 							max: controls.heartRate.maxValue,
-							step: controls.heartRate.increment,
-							slide: function(event, ui) {
-								$('.strip-value.new.linked-hr').val(ui.value);
-								controls.nbp.previousReportedHRValue = ui.value;
+							step: controls.heartRate.increment
+						}).val(controls.nbp.reportedHRValue);
+						
+						// bind controls
+						controls.nbp.slideBarLinkedHR = $(".control-slider-1.linked-hr").slider({
+							create: function() {
+								$('.ui-slider').css({
+									'margin': '0'
+								});
 							}
+						});
+						
+						// change in linked hr value value
+						$(".control-slider-1.linked-hr").change(function() {
+							var slideDifference =  $(this).val() - $('.strip-value.new.linked-hr').val();
+							controls.nbp.previousReportedHRValue = $(this).val();
 						});
 						
 						// set disabled linkd hr control
 						$('#nbp-control-coupled-hr').prop('checked', controls.nbp.linkedHR);
-						controls.nbp.linkedHRControl();
+						//controls.nbp.linkedHRControl();
 						$('.strip-value.current.linked-hr').val($('.strip-value.new.linked-hr').val());
 						
 						// bind change in new value
@@ -751,18 +749,7 @@
 													'margin': '0 auto'
 													});
 						$('.volume-setting').html(controls.leftLung.value);
-						
-						// volume control
-						controls.leftLung.slideBar = $("#volume-slider").slider({
-							value: controls.leftLung.value,
-							min: controls.leftLung.minValue,
-							max: controls.leftLung.maxValue,
-							step: controls.leftLung.increment,
-							slide: function(event, ui) {
-								simmgr.sendChange({'set:respiration:left_lung_sound_volume': ui.value});
-								$('.volume-setting').html(ui.value);
-							}
-						});
+						modal.initLungSoundSlider('left');
 						
 						// init mute button
 						$('#mute-volume').prop('checked', controls.leftLung.mute);
@@ -811,18 +798,7 @@
 													'margin': '0 auto'
 													});
 						$('.volume-setting').html(controls.rightLung.value);
-						
-						// volume control
-						controls.rightLung.slideBar = $("#volume-slider").slider({
-							value: controls.rightLung.value,
-							min: controls.rightLung.minValue,
-							max: controls.rightLung.maxValue,
-							step: controls.rightLung.increment,
-							slide: function(event, ui) {
-								simmgr.sendChange({'set:respiration:right_lung_sound_volume': ui.value});
-								$('.volume-setting').html(ui.value);
-							}
-						});
+						modal.initLungSoundSlider('right');
 						
 						// mute button
 						$('#mute-volume').prop('checked', controls.rightLung.mute);
@@ -872,16 +848,27 @@
 													});
 						$('.volume-setting').html(controls.heartSound.value);
 						
-						// volume control
-						controls.heartSound.slideBar = $("#volume-slider").slider({
-							value: controls.heartSound.value,
+						// add step, min and max
+						$("#volume-slider").attr({
 							min: controls.heartSound.minValue,
 							max: controls.heartSound.maxValue,
 							step: controls.heartSound.increment,
-							slide: function(event, ui) {
-								simmgr.sendChange({'set:cardiac:heart_sound_volume': ui.value});
-								$('.volume-setting').html(ui.value);
+						}).val(controls.heartSound.value);
+						
+						// bind controls
+						controls.heartSound.slideBar = $("#volume-slider").slider({
+							create: function() {
+								$('.ui-slider').css({
+									'margin': '0'
+								});
+								$(this).css('display', 'none');
+								$('.ui-slider-track').css('margin', '5px 0 0 15px');
 							}
+						});
+						
+						$('#volume-slider').change(function() {
+							simmgr.sendChange({'set:cardiac:heart_sound_volume': $(this).val()});
+							$('.volume-setting').html($(this).val());
 						});
 						
 						// mute button
@@ -1032,4 +1019,64 @@
 			$('#modal-content').empty();
 			$('#modal .close_modal').show();
 		},
+		
+		initSingleSlider: function(controlType) {
+			if(typeof controls[controlType] == 'undefined') {
+				controlType = 'awRR';
+			}
+			
+			// add step, min and max
+			$('.control-slider-1').attr({
+				'step': controls[controlType].increment,
+				'min': controls[controlType].minValue,
+				'max': controls[controlType].maxValue
+			}).val(controls[controlType].value);
+			
+			// bind controls
+			controls[controlType].slideBar = $(".control-slider-1").slider({
+				create: function() {
+					$('.ui-slider').css({
+						'margin': '0'
+					});
+				}
+			});
+		}, 
+		
+		initLungSoundSlider: function(lungSelect) {
+			if(typeof lungSelect == 'undefined') {
+				lungSelect = 'left';
+			}
+			
+			if(lungSelect != 'left' && lungSelect != 'right') {
+				lungSelect = 'left';
+			}
+			
+			// add step, min and max
+			$("#volume-slider").attr({
+				'min': controls[lungSelect + 'Lung'].minValue,
+				'max': controls[lungSelect + 'Lung'].maxValue,
+				'step': controls[lungSelect + 'Lung'].increment
+			}).val(controls[lungSelect + 'Lung'].value);
+			
+			// bind controls
+			controls[lungSelect + 'Lung'].slideBar = $("#volume-slider").slider({
+				create: function() {
+					$('.ui-slider').css({
+						'margin': '0'
+					});
+					$(this).css('display', 'none');
+					$('.ui-slider-track').css('margin', '5px 0 0 15px');
+				}
+			});
+			
+			$('#volume-slider').change(function() {
+				if(lungSelect == 'left') {
+					simmgr.sendChange({'set:respiration:left_lung_sound_volume': $(this).val()});
+				} else if(lungSelect == 'right') {
+					simmgr.sendChange({'set:respiration:right_lung_sound_volume': $(this).val()});
+				}
+				$('.volume-setting').html($(this).val());
+			});
+
+		}
 	}

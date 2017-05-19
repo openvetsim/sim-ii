@@ -32,7 +32,7 @@
 				rate = $('.strip-value.new').val();
 				time = $('.transfer-time').val();
 //				controls.heartRate.setHeartRateValue(rate );
-				controls.heartRate.slideBar.slider("value", controls.heartRate.value);
+				controls.heartRate.slideBar.slider("refresh");
 				
 				simmgr.sendChange( { 'set:cardiac:rate' : rate, 'set:cardiac:transfer_time' : time } );
 			},
@@ -81,7 +81,7 @@
 				} else if(newValue > controls.heartRate.maxValue) {
 					$('.strip-value.new').val(controls.heartRate.maxValue);
 				}
-				controls.heartRate.slideBar.slider("value", $('.strip-value.new').val());
+				controls.heartRate.slideBar.slider("refresh");
 			},
 			
 			displayValue: function() {
@@ -197,7 +197,7 @@
 				time = $('.transfer-time').val();
 				
 				// set controls and update new value
-				controls.awRR.slideBar.slider("value", controls.awRR.value);
+				controls.awRR.slideBar.slider("refresh");
 				simmgr.sendChange( { 'set:respiration:rate' : rate, 'set:respiration:transfer_time' : time } );
 			},
 			
@@ -216,7 +216,7 @@
 				} else if(newValue > controls.awRR.maxValue) {
 					$('.strip-value.new').val(controls.awRR.maxValue);
 				}
-				controls.awRR.slideBar.slider("value", $('.strip-value.new').val());
+				controls.awRR.slideBar.slider("refresh");
 			}
 		},
 		
@@ -330,7 +330,7 @@
 				} else if(newValue > controls.SpO2.maxValue) {
 					$('.strip-value.new').val(controls.SpO2.maxValue);
 				}
-				controls.SpO2.slideBar.slider("value", $('.strip-value.new').val());
+				controls.SpO2.slideBar.slider("refresh");
 			},
 			
 			displayValue: function(){
@@ -364,7 +364,7 @@
 				} else if(newValue > controls.etCO2.maxValue) {
 					$('.strip-value.new').val(controls.etCO2.maxValue);
 				}
-				controls.etCO2.slideBar.slider("value", $('.strip-value.new').val());
+				controls.etCO2.slideBar.slider("refresh");
 			},
 			
 			displayValue: function() {
@@ -413,7 +413,7 @@
 				} else if(newValue > controls.Tperi.maxValue) {
 					$('.strip-value.new').val(controls.Tperi.maxValue);
 				}
-				controls.Tperi.slideBar.slider("value", $('.strip-value.new').val());
+				controls.Tperi.slideBar.slider("refresh");
 			},
 			
 			displayValue: function() {
@@ -551,7 +551,7 @@
 					} else if(newValue > controls.nbp.maxSystolicValue) {
 						$('.strip-value.new.systolic').val(controls.nbp.maxSystolicValue);
 					}
-					controls.nbp.slideBarSystolic.slider("value", $('.strip-value.new.systolic').val());
+					controls.nbp.slideBarSystolic.slider("refresh");
 				} else if(type == 'diastolic') {
 					newValue = parseInt($('.strip-value.new.diastolic').val());
 					if(newValue < controls.nbp.minDiastolicValue || isNaN(newValue) == true) {
@@ -559,7 +559,7 @@
 					} else if(newValue > controls.nbp.maxDiastolicValue) {
 						$('.strip-value.new.diastolic').val(controls.nbp.maxDiastolicValue);
 					}
-					controls.nbp.slideBarDiastolic.slider("value", $('.strip-value.new.diastolic').val());
+					controls.nbp.slideBarDiastolic.slider("refresh");
 				}
 			},
 			
@@ -570,7 +570,7 @@
 				} else if(newValue > controls.heartRate.maxValue) {
 					$('.strip-value.new.linked-hr').val(controls.heartRate.maxValue);
 				}
-				controls.nbp.slideBarLinkedHR.slider("value", $('.strip-value.new.linked-hr').val());
+				controls.nbp.slideBarLinkedHR.slider("refresh");
 				controls.nbp.reportedHRValue = $('.strip-value.new.linked-hr').val();
 				if(controls.nbp.linkedHR == true) {
 					controls.nbp.previousReportedHRValue = $('.strip-value.new.linked-hr').val();
@@ -636,7 +636,7 @@
 					controls.nbp.reportedHRValue = controls.nbp.previousReportedHRValue;
 				}
 				$('input.strip-value.new.linked-hr').val(controls.nbp.reportedHRValue);
-				controls.nbp.slideBarLinkedHR.slider("value", controls.nbp.reportedHRValue);
+				controls.nbp.slideBarLinkedHR.slider("refresh");
 				
 				$('input.strip-value.new.linked-hr').prop('disabled', controls.nbp.linkedHR);
 				controls.nbp.slideBarLinkedHR.slider('option', 'disabled', controls.nbp.linkedHR);
