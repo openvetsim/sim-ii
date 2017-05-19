@@ -61,7 +61,13 @@
 				<!-- <p id="mute-volume-title" class="clearer">Mute</p> -->
 				<p id="volume-title">- Volume + (<span class="volume-setting"></span>)</p>
 				<!-- <input type="checkbox" id="mute-volume" class="clearer"> -->
-				<div id="volume-slider"></div>
+				
+				<!-- Old slider
+				<div id="volume-slider"></div> -->
+				
+				<!-- New slider -->
+				<input value="0" id="volume-slider" class="strip-value new control-slider-1 float-left lung" data-highlight="true">		
+				
 			</div>
 			<div class="clearer"></div>
 		</div>

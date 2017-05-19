@@ -94,6 +94,10 @@ error_reporting(E_ALL);
 	// version
 	define('VERSION_MAJOR', 1);
 	define('VERSION_MINOR', 0);
+	
+	// mobilized
+//	define('MOBILIZED', FALSE);
+	define('MOBILIZED', TRUE);
 		
 	/************************************/
 	// requires for global classes

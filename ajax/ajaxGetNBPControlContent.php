@@ -22,8 +22,8 @@
 			<p class="modal-input-label new-value">New</p>
 			<a class="control-incr-decr-rate decr-rate systolic" href="javascript: void(2);"><<</a>
 			<input value="0" class="strip-value current systolic" readonly="readonly" disabled="disabled">
-			<div class="control-slider-1 systolic"></div>
-			<input value="0" class="strip-value new systolic">
+			<!-- <div class="control-slider-1 systolic"></div> -->
+			<input value="0" class="strip-value control-slider-1 new systolic" data-highlight="true">
 			<a class="control-incr-decr-rate incr-rate systolic" href="javascript: void(2);">>></a>
 			<div class="clearer"></div>
 		</div>
@@ -34,8 +34,8 @@
 			<p class="modal-input-label new-value">New</p>
 			<a class="control-incr-decr-rate decr-rate diastolic" href="javascript: void(2);"><<</a>
 			<input value="0" class="strip-value current diastolic" readonly="readonly" disabled="disabled">
-			<div class="control-slider-1 diastolic"></div>
-			<input value="0" class="strip-value new diastolic">
+			<!-- <div class="control-slider-1 diastolic"></div> -->
+			<input value="0" class="strip-value new control-slider-1 diastolic" data-highlight="true">
 			<a class="control-incr-decr-rate incr-rate diastolic" href="javascript: void(2);">>></a>
 			<div class="clearer"></div>
 		</div>
@@ -51,8 +51,8 @@
 			<p class="modal-input-label new-value">New</p>
 			<a class="control-incr-decr-rate decr-rate linked-hr" href="javascript: void(2);"><<</a>
 			<input value="0" class="strip-value current linked-hr" readonly="readonly" disabled="disabled">
-			<div class="control-slider-1 linked-hr"></div>
-			<input value="0" class="strip-value new linked-hr">
+			<!-- <div class="control-slider-1 linked-hr"></div> -->
+			<input value="0" class="control-slider-1 strip-value new linked-hr" data-highlight="true">
 			<a class="control-incr-decr-rate incr-rate linked-hr" href="javascript: void(2);">>></a>
 			<div class="clearer"></div>
 		</div>
