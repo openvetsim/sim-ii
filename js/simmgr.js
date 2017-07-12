@@ -42,13 +42,13 @@ var simmgr = {
 			{
 				simmgr.running = 1;
 				simmgr.timer = setTimeout(function() { simmgr.getStatus(); }, simmgr.interval );
-				$(this).text("Stop");
+				$(this).text("Stop Status Updates");
 			}
-			else
+			else 
 			{
 				simmgr.running = 0;
 				clearTimeout(simmgr.timer );
-				$(this).text("Start");
+				$(this).text("Start Status Updates");
 			}
 		});
 		
@@ -664,6 +664,7 @@ var simmgr = {
 						// normalize result, see if there was a change
 						var newScenarioState = response.scenario.state.toUpperCase();
 						if(scenario.currentScenarioState != scenario.scenarioState[newScenarioState]) {
+console.log("New scenario state");
 							switch(newScenarioState) {
 								case 'STOPPED':
 									scenario.currentScenarioState = scenario.scenarioState.STOPPED;

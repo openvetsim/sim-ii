@@ -22,7 +22,8 @@ var scenario = {
 //		simmgr.sendChange( {'set:scenario:state' : 'terminate'} );
 //		scenario.stopScenario();
 //console.log(this.currentScenarioState);
-		
+console.log("Scenario Init");		
+console.log("Current Scenario State: " + this.currentScenarioState);		
 		// bind change of scenario
 //		$('#scenario-select select').change(function() {
 //			$('#scenario-name-display').html($(this).children('option:selected').html());

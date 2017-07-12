@@ -4,7 +4,8 @@
 
 <?php
 		if(MOBILIZED) {
-			echo '<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />';
+//			echo '<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />';
+			echo '<link rel="stylesheet" href="' . BROWSER_CSS . 'jquery.mobile-1.4.5.min.css" />';
 			echo '<link rel="stylesheet" href="' . BROWSER_CSS . 'mobilize.css" />';
 		}
 ?>
@@ -22,7 +23,7 @@
 		<?php
 			// php defines in JS
 			require_once(SERVER_INCLUDES."phpDefinesToJs.php");
-			$ts = date("%s");
+			$ts = date("U");
 		?>
 
 		<script type="text/javascript" src="scripts/jquery/2.2.1/jquery.min.js"></script>
@@ -35,16 +36,16 @@
 		}
 ?>
 		
-		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>menu.js?v=<?= $date ?>"></script>
-		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>chart.js?v=<?= $date ?>"></script>
-		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>controls.js?v=<?= $date ?>"></script>
-		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>modal.js?v=<?= $date ?>"></script>
-		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>buttons.js?v=<?= $date ?>"></script>
-		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>events.js?v=<?= $date ?>"></script>
-		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>profile.js?v=<?= $date ?>"></script>
-		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>scenario.js?v=<?= $date ?>"></script>
-		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>media.js?v=<?= $date ?>"></script>
-		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>log.js?v=<?= $date ?>"></script>
-		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>user.js?v=<?= $date ?>"></script>		
-		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>simmgr.js?v=<?= $date ?>"></script>
+		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>menu.js?v=<?= $ts ?>"></script>
+		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>chart.js?v=<?= $ts ?>"></script>
+		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>controls.js?v=<?= $ts ?>"></script>
+		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>modal.js?v=<?= $ts ?>"></script>
+		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>buttons.js?v=<?= $ts ?>"></script>
+		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>events.js?v=<?= $ts ?>"></script>
+		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>profile.js?v=<?= $ts ?>"></script>
+		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>scenario.js?v=<?= $ts ?>"></script>
+		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>media.js?v=<?= $ts ?>"></script>
+		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>log.js?v=<?= $ts ?>"></script>
+		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>user.js?v=<?= $ts ?>"></script>		
+		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>simmgr.js?v=<?= $ts ?>"></script>
 		
