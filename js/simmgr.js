@@ -85,12 +85,17 @@ var simmgr = {
 				{
 					if ( ( typeof(response.cardiac.rate) != "undefined" ) && ( response.cardiac.rate != controls.heartRate.value ) && controls.cpr.inProgress == false )
 					{
+console.log('New heart rate: ' + response.cardiac.rate);
 						controls.heartRate.setHeartRateValue(response.cardiac.rate );
 						if(response.cardiac.rhythm == 'vtach3') {
 							// pre calculate R on T based on heart rate
 							chart.initVtach3();
 						}
 						chart.updateCardiac(response.cardiac );
+						chart.status.cardiac.synch == false;
+						chart.ekg.patternIndex = 0;
+						clearTimeout(controls.heartRate.beatTimeout);
+						controls.heartRate.setSynch();
 					}
 					
 					// cardiac nbp
@@ -205,8 +210,17 @@ var simmgr = {
 					}
 					
 					// pulse strength
-					if(typeof(response.cardiac.pulse_strength) != "undefined") {
-						controls.pulseStrength.value = response.cardiac.pulse_strength;
+					if(typeof(response.cardiac.left_femoral_pulse_strength) != "undefined") {
+						controls.pulseStrength.value = response.cardiac.left_femoral_pulse_strength;
+					}
+					if(typeof(response.cardiac.right_femoral_pulse_strength) != "undefined") {
+//						controls.pulseStrength.value = response.cardiac.right_femoral_pulse_strength;
+					}
+					if(typeof(response.cardiac.left_dorsal_pulse_strength) != "undefined") {
+//						controls.pulseStrength.value = response.cardiac.left_dorsal_pulse_strength;
+					}
+					if(typeof(response.cardiac.right_dorsal_pulse_strength) != "undefined") {
+//						controls.pulseStrength.value = response.cardiac.right_dorsal_pulse_strength;
 					}
 					
 					/***** heart rhythm *****/

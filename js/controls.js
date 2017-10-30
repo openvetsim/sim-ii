@@ -1,23 +1,25 @@
 	var controls = {
 		heartRate: {
 			value: 75,
-			minValue: 10,
+			minValue: 0,
 			maxValue: 300,
 			slideBar: '',
 			increment: 1,
 			delay: 1,
 			rOnTMinValue: 180,
-			normalMinValue: 10,
+			normalMinValue: 0,
 			
-			beatITimeout: 0,
+			beatTimeout: 0,
 			
 			modalUnitsLabel: 'BPM',
 			
 			init: function() {
 				if ( ! ( simmgr.isLocalDisplay() ) )
 				{
-					clearTimeout(controls.heartRate.beatTimeout);
-					controls.heartRate.beatTimeout = setTimeout(controls.heartRate.setSynch, Math.round((60 / controls.heartRate.value) * 1000));
+					if(controls.heartRate.value != 0) {
+						clearTimeout(controls.heartRate.beatTimeout);
+						controls.heartRate.beatTimeout = setTimeout(controls.heartRate.setSynch, Math.round((60 / controls.heartRate.value) * 1000) * controls.heartRate.delay);						
+					}
 				}
 				controls.heartRate.displayValue();
 			},
@@ -64,11 +66,13 @@
 					}
 				}
 				
-				if ( ! ( simmgr.isLocalDisplay() ) )
+				if ( ! ( simmgr.isLocalDisplay() ))
 				{
 					if(chart.status.cardiac.vpcSynch == false) {
-						controls.heartRate.beatTimeout = setTimeout(controls.heartRate.setSynch, Math.round((60 / controls.heartRate.value) * 1000) * controls.heartRate.delay);
+						clearTimeout(controls.heartRate.beatTimeout);
+						controls.heartRate.beatTimeout = setTimeout(controls.heartRate.setSynch, Math.round((60 / controls.heartRate.value) * 1000) * controls.heartRate.delay);						
 					} else {
+						clearTimeout(controls.heartRate.beatTimeout);
 						controls.heartRate.beatTimeout = setTimeout(controls.heartRate.setSynch, (Math.round((60 / controls.heartRate.value) * 1000)) + (chart.ekg.vpcDelay * controls.heartRhythm.vpcCount));
 					}
 				}

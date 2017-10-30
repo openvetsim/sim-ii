@@ -359,15 +359,15 @@
 						modal.bindCloseModal();
 						
 						// bind change in control
-//						$('.modal-button.apply').click(function() {
-//							controls.chestRise.active = $('select.chest-rise option:selected').val()
-//							modal.closeModal();
-//						});
+						$('.modal-button.apply').click(function() {
+							simmgr.sendChange({'set:respiration:chest_movement': ($('select.chest-rise').children('option:selected').val() == 'true') ? 1 : 0});
+							modal.closeModal();
+						});
 
 						// bind change in checst movement
 						$('select.chest-rise').change(function() {
-							var chestMovement = ($(this).children('option:selected').val() == 'true') ? 1 : 0;
-							simmgr.sendChange({'set:respiration:chest_movement': chestMovement});
+//							var chestMovement = ($(this).children('option:selected').val() == 'true') ? 1 : 0;
+//							simmgr.sendChange({'set:respiration:chest_movement': chestMovement});
 						});
 					
 					}
@@ -393,8 +393,15 @@
 						
 						// bind change
 						$('input.pulse-strength').change(function() {
-							simmgr.sendChange({'set:cardiac:pulse_strength': $(this).val()});
+//							simmgr.sendChange({'set:cardiac:pulse_strength': $(this).val()});
 						});
+						
+						// bind change in control
+						$('.modal-button.apply').click(function() {
+							simmgr.sendChange({'set:cardiac:left_femoral_pulse_strength': $('input.pulse-strength:checked').val()});
+							modal.closeModal();
+						});
+
 					}
 				}
 			});
@@ -673,20 +680,28 @@
 						});
 						
 						// volume control
+						$("#volume-slider").attr({
+							'min': controls.vocals.minValue,
+							'max': controls.vocals.maxValue,
+							'step': controls.vocals.increment
+						}).val(controls.vocals.value);
+						$('.volume-setting').html($('#volume-slider').val());
+						
+						// bind controls
 						controls.vocals.slideBar = $("#volume-slider").slider({
-							value: controls.vocals.value,
-							min: controls.vocals.minValue,
-							max: controls.vocals.maxValue,
-							step: controls.vocals.increment,
-							slide: function(event, ui) {
-//								controls.vocals.value = ui.value;
-
-								// set volume control
-								simmgr.sendChange({'set:vocals:volume': ui.value});
-								// set volume as percentage
-								controls.vocals.audio.volume = ui.value / 10;
+							create: function() {
+								$('.ui-slider').css({
+									'margin': '0'
+								});
+								$(this).css('display', 'none');
+								$('.ui-slider-track').css('margin', '5px 0 0 15px');
 							}
 						});
+						
+						$('#volume-slider').change(function() {
+							$('.volume-setting').html($(this).val());
+						});
+
 						
 						// mute button
 						$('#mute-volume').prop('checked', controls.vocals.mute);
@@ -766,13 +781,21 @@
 							}
 							$('#mute-volume').prop('checked', controls.leftLung.mute);
 							controls.leftLung.displayMute();							
-							simmgr.sendChange({'set:respiration:left_lung_sound_mute': (controls.leftLung.mute == true) ? 1 : 0});						
+//							simmgr.sendChange({'set:respiration:left_lung_sound_mute': (controls.leftLung.mute == true) ? 1 : 0});						
 						});
 						
 						// change of sound select
 						$('#sound-select').change(function() {
 							controls.leftLung.fileName = $(this).children('option:selected').val();
-							simmgr.sendChange({'set:respiration:left_lung_sound': controls.leftLung.fileName});						
+//							simmgr.sendChange({'set:respiration:left_lung_sound': controls.leftLung.fileName});						
+						});
+						
+						// bind change to apply button
+						$('button.apply').click(function() {
+							simmgr.sendChange({'set:respiration:left_lung_sound_mute': (controls.leftLung.mute == true) ? 1 : 0});						
+							simmgr.sendChange({'set:respiration:left_lung_sound': $('#sound-select').children('option:selected').val()});												
+							simmgr.sendChange({'set:respiration:left_lung_sound_volume': $('#volume-slider').val()});
+							modal.closeModal();
 						});
 						
 						modal.bindCloseModal();
@@ -815,13 +838,21 @@
 							}
 							$('#mute-volume').prop('checked', controls.rightLung.mute);
 							controls.rightLung.displayMute();							
-							simmgr.sendChange({'set:respiration:right_lung_sound_mute': (controls.rightLung.mute == true) ? 1 : 0});						
+//							simmgr.sendChange({'set:respiration:right_lung_sound_mute': (controls.rightLung.mute == true) ? 1 : 0});						
 						});
 						
 						// change of sound select
 						$('#sound-select').change(function() {
 							controls.rightLung.fileName = $(this).children('option:selected').val();
-							simmgr.sendChange({'set:respiration:right_lung_sound': controls.rightLung.fileName});						
+//							simmgr.sendChange({'set:respiration:right_lung_sound': controls.rightLung.fileName});						
+						});
+						
+						// bind change to apply button
+						$('button.apply').click(function() {
+							simmgr.sendChange({'set:respiration:right_lung_sound_mute': (controls.rightLung.mute == true) ? 1 : 0});						
+							simmgr.sendChange({'set:respiration:right_lung_sound': $('#sound-select').children('option:selected').val()});												
+							simmgr.sendChange({'set:respiration:right_lung_sound_volume': $('#volume-slider').val()});
+							modal.closeModal();
 						});
 						
 						modal.bindCloseModal();
@@ -867,7 +898,7 @@
 						});
 						
 						$('#volume-slider').change(function() {
-							simmgr.sendChange({'set:cardiac:heart_sound_volume': $(this).val()});
+//							simmgr.sendChange({'set:cardiac:heart_sound_volume': $(this).val()});
 							$('.volume-setting').html($(this).val());
 						});
 						
@@ -885,16 +916,23 @@
 								controls.heartSound.mute = false;							
 							}
 							$('#mute-volume').prop('checked', controls.heartSound.mute);
-							simmgr.sendChange({'set:cardiac:heart_sound_mute': (controls.heartSound.mute == true) ? 1 : 0});
+//							simmgr.sendChange({'set:cardiac:heart_sound_mute': (controls.heartSound.mute == true) ? 1 : 0});
 							controls.heartSound.displayMute();
-							
 						});
 						
 						// change of sound select
 						$('#sound-select').change(function() {
-							simmgr.sendChange({'set:cardiac:heart_sound': $(this).children('option:selected').val()});
+//							simmgr.sendChange({'set:cardiac:heart_sound': $(this).children('option:selected').val()});
 						});
 						
+						// bind change to apply button
+						$('button.apply').click(function() {
+							simmgr.sendChange({'set:cardiac:heart_sound_volume': $('#volume-slider').val()});
+							simmgr.sendChange({'set:cardiac:heart_sound_mute': (controls.heartSound.mute == true) ? 1 : 0});
+							simmgr.sendChange({'set:cardiac:heart_sound': $('#sound-select').children('option:selected').val()});
+							modal.closeModal();
+						});
+
 						modal.bindCloseModal();
 					}
 				}
@@ -1071,9 +1109,9 @@
 			
 			$('#volume-slider').change(function() {
 				if(lungSelect == 'left') {
-					simmgr.sendChange({'set:respiration:left_lung_sound_volume': $(this).val()});
+//					simmgr.sendChange({'set:respiration:left_lung_sound_volume': $(this).val()});
 				} else if(lungSelect == 'right') {
-					simmgr.sendChange({'set:respiration:right_lung_sound_volume': $(this).val()});
+//					simmgr.sendChange({'set:respiration:right_lung_sound_volume': $(this).val()});
 				}
 				$('.volume-setting').html($(this).val());
 			});
