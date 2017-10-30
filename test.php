@@ -5,10 +5,10 @@
 FB::log('Initialized!');
 	
 	
-	$cleanArray['UserFirstName'] = 'Dan';
-	$cleanArray['UserLastName'] = 'Fletcher';
-	$cleanArray['UserEmail'] = 'dan.fletcher@cornell.edu';
-	$cleanArray['UserPassWord'] = 'dandev';
+	$cleanArray['UserFirstName'] = 'admin';
+	$cleanArray['UserLastName'] = '';
+	$cleanArray['UserEmail'] = 'admin';
+	$cleanArray['UserPassWord'] = 'admin';
 	$cleanArray['UserSalt'] = adminClass::generateSalt();
 
 $result = dbClass::dbInsertQueryResult(modelClass::createInsertQuery('Users', $cleanArray));

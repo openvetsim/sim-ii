@@ -295,7 +295,7 @@
 			if(controls.cpr.inProgress == true) {
 				chart.ekg.rateIndex = 0;				
 			} else if ( cardiac.rate <= 0  ) {
-				chart.ekg.rhythmIndex = 'asystole';	// Flatline
+//				chart.ekg.rhythmIndex = 'asystole';	// Flatline
 			} else if(chart.ekg.rhythmIndex == 'sinus') {
 				if( cardiac.rate <= 75 ) {
 					chart.ekg.rateIndex = 0;
@@ -362,6 +362,8 @@
 			chart.heartRate = cardiac.rate;
 			controls.heartRate.value = cardiac.rate;
 //console.log(cardiac );
+console.log(cardiac.rate);
+console.log(chart.ekg.rhythmIndex);
 		},
 		initStrip: function(stripType) {
 			chart[stripType].canvas = document.getElementById(chart[stripType].id);
@@ -408,7 +410,7 @@
 					// increment pointers
 					chart.ekg.patternIndex++;				
 				} else if(chart.ekg.rhythmIndex == 'sinus' || chart.ekg.rhythmIndex == 'vtach1' || chart.ekg.rhythmIndex == 'vtach2') {
-					if(chart.status.cardiac.synch == false && chart.ekg.patternIndex == 0) {
+					if((chart.status.cardiac.synch == false && chart.ekg.patternIndex == 0) || controls.heartRate.value == 0) {
 						// either generate random noise or VPC if required
 						if(chart.status.cardiac.vpcSynch == true) {
 							// see if we generate vpc for this sinus cycle

@@ -26,11 +26,11 @@
 				<option value="true"' . $chestRiseOnSelect . '>Chest Rise On</option>
 			</select>
 		</div>
-		<!-- <hr / class="modal-divider">
+		<hr / class="modal-divider">
 		<div class="control-modal-div">
 			<button class="red-button modal-button apply">Apply</button>
 			<button class="red-button modal-button cancel">Cancel</button>
-		</div> -->
+		</div>
 	';
 
 
