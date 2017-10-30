@@ -59,7 +59,16 @@
 				
 				simmgr.init();
 				
-
+				$('#closeButton').click(function(){ 
+					$(this).text("Closing" );
+					$.ajax({
+						url: '/cgi-bin/quitvitals.php',
+						type: 'post'
+					})
+					.done(function( data, textStatus, jqXHR ) {
+						$('#outputDiv').html(data );
+					});
+				});
 
 			});
 		</script>
@@ -128,5 +137,7 @@
 			</div>
 			<button id="startStopButton">Stop</button>
 			<a href='vitals.php?v=1'><button>Refresh</button></a>
+			<!--<button id="closeButton">Close</button>
+			<div id='outputDiv'></div>-->
 </body>
 </html>
