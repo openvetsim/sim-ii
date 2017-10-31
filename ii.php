@@ -200,8 +200,17 @@ console.log(controls['awRR'].increment);
 					<a id="vocals-dog-control-title" href="javascript: void(2)" onclick="modal.vocals(); return false;">Vocals</a>
 					<a class="sound-mute" id="vocals-mute" href="javascript: void(2)" onclick="modal.vocals(); return false;"><img src="<?= BROWSER_IMAGES; ?>sound_mute.png"></a>
 				</div>
-				<div id="pulse-dog-control" class="dog-control">
-					<a id="pulse-dog-control-title" href="javascript: void(2)" onclick="modal.pulseStrength(); return false;">Pulse Strength</a>
+				<div id="left-femoral-pulse-dog-control" class="dog-control">
+					<a id="left-femoral-pulse-dog-control-title" href="javascript: void(2)" onclick="modal.pulseStrength('left', 'femoral'); return false;">Pulse Strength</a>
+				</div>
+				<div id="right-femoral-pulse-dog-control" class="dog-control">
+					<a id="right-femoral-pulse-dog-control-title" href="javascript: void(2)" onclick="modal.pulseStrength('right', 'femoral'); return false;">Pulse Strength</a>
+				</div>
+				<div id="left-dorsal-pulse-dog-control" class="dog-control">
+					<a id="left-dorsal-pulse-dog-control-title" href="javascript: void(2)" onclick="modal.pulseStrength('left', 'dorsal'); return false;">Pulse Strength</a>
+				</div>
+				<div id="right-dorsal-pulse-dog-control" class="dog-control">
+					<a id="right-dorsal-pulse-dog-control-title" href="javascript: void(2)" onclick="modal.pulseStrength('right', 'dorsal'); return false;">Pulse Strength</a>
 				</div>
 				<div id="left-lung-dog-control" class="dog-control">
 					<a id="left-lung-dog-control-title" href="javascript: void(2)" onclick="modal.leftLung(); return false;">Left Lung</a>

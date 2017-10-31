@@ -85,7 +85,6 @@ var simmgr = {
 				{
 					if ( ( typeof(response.cardiac.rate) != "undefined" ) && ( response.cardiac.rate != controls.heartRate.value ) && controls.cpr.inProgress == false )
 					{
-console.log('New heart rate: ' + response.cardiac.rate);
 						controls.heartRate.setHeartRateValue(response.cardiac.rate );
 						if(response.cardiac.rhythm == 'vtach3') {
 							// pre calculate R on T based on heart rate
@@ -782,7 +781,7 @@ console.log("New scenario state");
 					chart.updateCardiac(response.cardiac);
 				}
 				
-				/************ pulse **************/
+				/************ pulse palpation **************/
 				if(typeof(response.pulse.position) != "undefined" && response.pulse.position != controls.pulse.position) {
 					controls.pulse.position = response.pulse.position;
 					controls.pulse.setPalpateColor();
@@ -790,6 +789,20 @@ console.log("New scenario state");
 				if(typeof(response.pulse.pressure) != "undefined" && response.pulse.pressure != controls.pulse.pressure) {
 					controls.pulse.pressure = response.pulse.pressure;
 					controls.pulse.setPalpateColor();
+				}
+				
+				/************ pulse strength **************/
+				if(typeof(response.cardiac.left_femoral_pulse_strength) != "undefined" && response.cardiac.left_femoral_pulse_strength != controls.pulseStrength.left.femoral.value) {
+					controls.pulseStrength.left.femoral.value = response.cardiac.left_femoral_pulse_strength;
+				}
+				if(typeof(response.cardiac.right_femoral_pulse_strength) != "undefined" && response.cardiac.right_femoral_pulse_strength != controls.pulseStrength.right.femoral.value) {
+					controls.pulseStrength.right.femoral.value = response.cardiac.right_femoral_pulse_strength;
+				}
+				if(typeof(response.cardiac.left_dorsal_pulse_strength) != "undefined" && response.cardiac.left_dorsal_pulse_strength != controls.pulseStrength.left.dorsal.value) {
+					controls.pulseStrength.left.dorsal.value = response.cardiac.left_dorsal_pulse_strength;
+				}
+				if(typeof(response.cardiac.right_dorsal_pulse_strength) != "undefined" && response.cardiac.right_dorsal_pulse_strength != controls.pulseStrength.right.dorsal.value) {
+					controls.pulseStrength.right.dorsal.value = response.cardiac.right_dorsal_pulse_strength;
 				}
 			},
 

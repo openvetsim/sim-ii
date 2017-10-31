@@ -277,7 +277,9 @@
 			
 			setPalpateColor: function() {
 				var palpateColor = 'transparent';
-				if(this.position == this.PULSE_POSITION_LEFT_FEMORAL) {
+				
+				// icon is an aggregate of any pulse position being palpated
+				if(this.position != this.PULSE_POSITION_NONE) {
 					switch(parseInt(this.pressure)) {
 						case this.PULSE_TOUCH_LIGHT:
 							palpateColor = 'yellow';

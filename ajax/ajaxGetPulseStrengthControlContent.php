@@ -11,14 +11,21 @@
 		exit();
 	}
 	
-	$title = dbClass::valuesFromPost('ModalTitle');
-	$controlTitle = dbClass::valuesFromPost('ControlTitle');
 	$pulseStrength = dbClass::valuesFromPost('PulseStrength');
+	$side = dbClass::valuesFromPost('s');
+	$pulseType = dbClass::valuesFromPost('p');
+	
+	if($side != 'left' && $side != 'right') {
+		$side = 'left';
+	}
+	if($pulseType != 'femoral' && $pulseType != 'dorsal') {
+		$pulseType = 'femoral';
+	}
 
 	$content = '
-		<h1 id="modal-title">' . $title . '</h1>
+		<h1 id="modal-title">' . ucfirst($side) . ' ' . ucfirst($pulseType) . ' Pulse Control</h1>
 		<hr / class="modal-divider">
-		<h2 class="modal-section-title">' . $controlTitle . '</h2>
+		<h2 class="modal-section-title">Pulse Strength</h2>
 		<div class="control-modal-div pulse-strength">
 			<p class="modal-section-title pulse-strength-label clearer">None</p>
 			<p class="modal-section-title pulse-strength-label">Weak</p>

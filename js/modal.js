@@ -375,12 +375,12 @@
 			});
 		},
 
-		pulseStrength: function() {
+		pulseStrength: function(side, pulseType) {
 			$.ajax({
 				url: BROWSER_AJAX + 'ajaxGetPulseStrengthControlContent.php',
 				type: 'post',
 				async: false,
-				data: {ModalTitle: 'Control Pulse Strength', ControlTitle: "Pulse Strength", PulseStrength: controls.pulseStrength.value},
+				data: {s: side, p: pulseType, PulseStrength: controls.pulseStrength[side][pulseType].value},
 				dataType: 'json',
 				success: function(response) {
 					if(response.status == AJAX_STATUS_OK) {
@@ -389,7 +389,7 @@
 						
 						// set checkbox
 						$('input.pulse-strength').prop('checked', false);
-						$('input.pulse-strength[value=' + controls.pulseStrength.value + ']').prop('checked', true);
+						$('input.pulse-strength[value=' + controls.pulseStrength[side][pulseType].value + ']').prop('checked', true);
 						
 						// bind change
 						$('input.pulse-strength').change(function() {
@@ -398,7 +398,26 @@
 						
 						// bind change in control
 						$('.modal-button.apply').click(function() {
-							simmgr.sendChange({'set:cardiac:left_femoral_pulse_strength': $('input.pulse-strength:checked').val()});
+							if(side == 'left') {
+								if(pulseType == 'femoral') {
+									simmgr.sendChange({'set:cardiac:left_femoral_pulse_strength': $('input.pulse-strength:checked').val()});
+								} else {
+									simmgr.sendChange({'set:cardiac:left_dorsal_pulse_strength': $('input.pulse-strength:checked').val()});								
+								}
+							} else if(side == 'right') {
+								if(pulseType == 'femoral') {
+									simmgr.sendChange({'set:cardiac:right_femoral_pulse_strength': $('input.pulse-strength:checked').val()});
+								} else {
+									simmgr.sendChange({'set:cardiac:right_dorsal_pulse_strength': $('input.pulse-strength:checked').val()});								
+								}							
+							}
+							/*
+							const params = [];
+							obj = {['set:cardiac:' + side + '_' + pulseType + '_pulse_strength'] : $('input.pulse-strength:checked').val()};
+							params.push(obj);
+console.dir(params);
+							simmgr.sendChange({params});
+							*/
 							modal.closeModal();
 						});
 
@@ -700,6 +719,7 @@
 						
 						$('#volume-slider').change(function() {
 							$('.volume-setting').html($(this).val());
+							simmgr.sendChange({'set:vocals:volume': $(this).val()});								
 						});
 
 						
