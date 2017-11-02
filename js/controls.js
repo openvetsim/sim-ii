@@ -268,6 +268,11 @@
 			position: 0,
 			pressure: 0,
 			
+			left_femoral: 0,
+			right_femoral: 0,
+			left_dorsal: 0,
+			right_dorsal: 0,
+			
 			init: function() {
 				this.position = this.PULSE_POSITION_NONE;
 				this.pressure = this.PULSE_TOUCH_NONE;
@@ -278,9 +283,16 @@
 			setPalpateColor: function() {
 				var palpateColor = 'transparent';
 				
+				var palpateValue = Math.max(
+										parseInt(controls.pulse.left_femoral), 
+										parseInt(controls.pulse.right_femoral), 
+										parseInt(controls.pulse.left_dorsal), 
+										parseInt(controls.pulse.right_dorsal)
+									);
+				
 				// icon is an aggregate of any pulse position being palpated
-				if(this.position != this.PULSE_POSITION_NONE) {
-					switch(parseInt(this.pressure)) {
+				if(palpateValue != this.PULSE_POSITION_LIGHT) {
+					switch(palpateValue) {
 						case this.PULSE_TOUCH_LIGHT:
 							palpateColor = 'yellow';
 							break;
@@ -297,6 +309,28 @@
 				}
 				$('#button-palpate').css('background-color', palpateColor);
 				return;
+			},
+			
+			setPulseLabelColor: function(position, value) {
+				var labelColor = '';
+				switch(value) {
+					case '0':
+						labelColor = '#000000';
+						break;
+					case '1':
+						labelColor = '#B3B300';
+						break;
+					case '2':
+						labelColor = 'green';
+						break;
+					case '3':
+					case '4':
+						labelColor = 'red';
+						break;
+					default:
+						break;
+				}
+				$('#' + position + '-pulse-dog-control-title').css('color', labelColor);
 			}
 		},
 		
@@ -353,7 +387,7 @@
 		etCO2: {
 			value: 34,
 			minValue: 0,
-			maxValue: 150,
+			maxValue: 100,
 			slideBar: '',
 			increment: 1,
 			

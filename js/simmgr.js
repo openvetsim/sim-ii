@@ -213,13 +213,13 @@ var simmgr = {
 						controls.pulseStrength.value = response.cardiac.left_femoral_pulse_strength;
 					}
 					if(typeof(response.cardiac.right_femoral_pulse_strength) != "undefined") {
-//						controls.pulseStrength.value = response.cardiac.right_femoral_pulse_strength;
+						controls.pulseStrength.value = response.cardiac.right_femoral_pulse_strength;
 					}
 					if(typeof(response.cardiac.left_dorsal_pulse_strength) != "undefined") {
-//						controls.pulseStrength.value = response.cardiac.left_dorsal_pulse_strength;
+						controls.pulseStrength.value = response.cardiac.left_dorsal_pulse_strength;
 					}
 					if(typeof(response.cardiac.right_dorsal_pulse_strength) != "undefined") {
-//						controls.pulseStrength.value = response.cardiac.right_dorsal_pulse_strength;
+						controls.pulseStrength.value = response.cardiac.right_dorsal_pulse_strength;
 					}
 					
 					/***** heart rhythm *****/
@@ -782,6 +782,7 @@ console.log("New scenario state");
 				}
 				
 				/************ pulse palpation **************/
+/*
 				if(typeof(response.pulse.position) != "undefined" && response.pulse.position != controls.pulse.position) {
 					controls.pulse.position = response.pulse.position;
 					controls.pulse.setPalpateColor();
@@ -790,6 +791,28 @@ console.log("New scenario state");
 					controls.pulse.pressure = response.pulse.pressure;
 					controls.pulse.setPalpateColor();
 				}
+*/
+				if(typeof(response.pulse.left_femoral) != "undefined" && response.pulse.left_femoral != controls.pulse.left_femoral) {
+					controls.pulse.left_femoral = response.pulse.left_femoral;
+					controls.pulse.setPulseLabelColor('left-femoral', controls.pulse.left_femoral);
+					controls.pulse.setPalpateColor();
+				}
+				if(typeof(response.pulse.right_femoral) != "undefined" && response.pulse.right_femoral != controls.pulse.right_femoral) {
+					controls.pulse.right_femoral = response.pulse.right_femoral;
+					controls.pulse.setPulseLabelColor('right-femoral', controls.pulse.right_femoral);
+					controls.pulse.setPalpateColor();
+				}
+				if(typeof(response.pulse.left_dorsal) != "undefined" && response.pulse.left_dorsal != controls.pulse.left_dorsal) {
+					controls.pulse.left_dorsal = response.pulse.left_dorsal;
+					controls.pulse.setPulseLabelColor('left-dorsal', controls.pulse.left_dorsal);
+					controls.pulse.setPalpateColor();
+				}
+				if(typeof(response.pulse.right_dorsal) != "undefined" && response.pulse.right_dorsal != controls.pulse.right_dorsal) {
+					controls.pulse.right_dorsal = response.pulse.right_dorsal;
+					controls.pulse.setPulseLabelColor('right-dorsal', controls.pulse.right_dorsal);
+					controls.pulse.setPalpateColor();
+				}
+
 				
 				/************ pulse strength **************/
 				if(typeof(response.cardiac.left_femoral_pulse_strength) != "undefined" && response.cardiac.left_femoral_pulse_strength != controls.pulseStrength.left.femoral.value) {

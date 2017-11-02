@@ -107,6 +107,7 @@
 			activeCount: 0,			// Count of updates since sync
 			halfCount: 100,			// Count to middle of period, for start of Exhale
 			stopFlag: false,		// stop flag
+			phase3Count: 0			// count of phase 3 cycles (250 msec per cycle)
 		},
 		
 		cursorWidth: 10,			// width of cursor in pixels
@@ -580,7 +581,10 @@ console.log(chart.ekg.rhythmIndex);
 			} else if ( ( profile.isVitalsMonitor == false ) || ( controls.CO2.leadsConnected == true ) ) {
 				if(chart.status.resp.synch == true ) {	// Restart Cycle
 					chart.resp.patternIndex = 0;
-					chart.resp.rhythmIndex = 0;
+//					chart.resp.rhythmIndex = 0;
+					chart.resp.rhythmIndex = 1;
+					chart.resp.complete = false;
+					
 					// Calculate the half point count
 					chart.resp.halfCount = (controls.inhalation_duration.value / chart.resp.drawInterval)/2;
 					chart.resp.activeCount = 0;
@@ -591,6 +595,7 @@ console.log(chart.ekg.rhythmIndex);
 						y = chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.patternIndex] * -1;
 					}
 					chart.status.resp.synch = false;
+					chart.resp.phase3Count = 0;
 				}
 				else {
 					if(chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.patternIndex] > chart.displayETCO2.max) {
@@ -603,18 +608,23 @@ console.log(chart.ekg.rhythmIndex);
 
 					if(chart.resp.patternIndex >= chart.resp.length) {
 						switch ( chart.resp.rhythmIndex ) {
-							case 0:	// Inhillation
+							case 0:	// Inhalation
 								chart.resp.rhythmIndex = 1;
 								break;
 							case 1: // Hold In
-								if ( chart.resp.activeCount >= chart.resp.halfCount ) {
+								if ( chart.resp.complete == false ){
 									chart.resp.rhythmIndex = 2;
 								}
 								break;
-							case 2: // Exhillation
+							case 2: // Exhalation
 								chart.resp.rhythmIndex = 3;
 								break;
 							case 3: // Hold Out
+								chart.resp.phase3Count++;
+								if(chart.resp.phase3Count >= 4 || controls.inhalation_duration.value < 2000 ) {
+									chart.resp.rhythmIndex = 0;
+									chart.resp.complete = true;
+								}
 								break;
 						}
 						chart.resp.patternIndex = 0;
