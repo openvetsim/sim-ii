@@ -107,7 +107,8 @@
 			activeCount: 0,			// Count of updates since sync
 			halfCount: 100,			// Count to middle of period, for start of Exhale
 			stopFlag: false,		// stop flag
-			phase3Count: 0			// count of phase 3 cycles (250 msec per cycle)
+			phase3Timer: 0,			// timer hold,
+			phase3Complete: false	// flag to track 2 second timeout
 		},
 		
 		cursorWidth: 10,			// width of cursor in pixels
@@ -581,8 +582,7 @@ console.log(chart.ekg.rhythmIndex);
 			} else if ( ( profile.isVitalsMonitor == false ) || ( controls.CO2.leadsConnected == true ) ) {
 				if(chart.status.resp.synch == true ) {	// Restart Cycle
 					chart.resp.patternIndex = 0;
-//					chart.resp.rhythmIndex = 0;
-					chart.resp.rhythmIndex = 1;
+					chart.resp.rhythmIndex = 2;
 					chart.resp.complete = false;
 					
 					// Calculate the half point count
@@ -612,18 +612,19 @@ console.log(chart.ekg.rhythmIndex);
 								chart.resp.rhythmIndex = 1;
 								break;
 							case 1: // Hold In
-								if ( chart.resp.complete == false ){
-									chart.resp.rhythmIndex = 2;
-								}
 								break;
 							case 2: // Exhalation
 								chart.resp.rhythmIndex = 3;
+								chart.resp.phase3Complete = false;
+								clearTimeout(chart.resp.phase3Timer);
+								chart.resp.phase3Timer = setTimeout(function() {
+									chart.resp.phase3Complete = true;
+								}, 1500);
+//								chart.resp.activeCount = 0;
 								break;
 							case 3: // Hold Out
-								chart.resp.phase3Count++;
-								if(chart.resp.phase3Count >= 4 || controls.inhalation_duration.value < 2000 ) {
+								if(chart.resp.activeCount++ >= chart.resp.halfCount || chart.resp.phase3Complete == true) {
 									chart.resp.rhythmIndex = 0;
-									chart.resp.complete = true;
 								}
 								break;
 						}
