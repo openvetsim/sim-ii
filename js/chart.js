@@ -84,7 +84,9 @@
 			stopFlag: false,			// stop flag 
 			beepValue: 0,			// value to beep at
 			beepFlag: false,
-			vpcSynchDelay: 0		// delay added in to synh if VPC is generated
+			vpcSynchDelay: 0,		// delay added in to synh if VPC is generated
+			pixelCount: 0,			// count in pixel ticks (drawInterval) of current period (incrementing)
+			periodCount: 0			// number of pixel counts in current period
 		},
 		
 		// respiration strip parameters
@@ -98,17 +100,25 @@
 			yOffset: 0,				// yOffset of trace
 			xOffsetLeft: 10,		// left xOffset of trace
 			xOffsetRight: 0,		// right xOffset of trace
-			rhythmIndex: 0,			// index of current rhythm being displayed
-			length: 0,				// variable to hold length of pattern
+			rhythmIndex: 'low',			// index of current rhythm being displayed
+			length: 10,				// variable to hold length of pattern
 			patternIndex: 0,		// index of currently displayed pixel in pattern
 			lastY: 0,				// variable to save last displayed Y coordinate of pattern
 			xPos: 0,				// current x position on strip
-			drawInterval: 25,		// interval in milli-sec to display pixels
+			drawInterval: 50,		// interval in milli-sec to display pixels
 			activeCount: 0,			// Count of updates since sync
 			halfCount: 100,			// Count to middle of period, for start of Exhale
 			stopFlag: false,		// stop flag
-			phase3Timer: 0,			// timer hold,
-			phase3Complete: false	// flag to track 2 second timeout
+			phaseTimer: 0,			// timer hold,
+			inhalationPerCent: 0.1,	// percent of AWRR that ETCO2 is low
+			exhalationPerCent:	0.1, // percent of AWRR that ETCO2 is high
+			ETCO2MaxDuration: 2000,	// max duration of ETCO2 high in msec
+			inhalationDuration: 0,	// duration of inhalation in msec
+			exhalationDuration: 0,	// duration of exhalation in msec
+			patternComplete: false,	// flag for resp pattern complete
+			risePatternIndex: 4,	// pattern index for resp based on awRR
+			pixelCount: 0,			// count in pixel ticks (drawInterval) of current period (incrementing)
+			periodCount: 0			// number of pixel counts in current period
 		},
 		
 		cursorWidth: 10,			// width of cursor in pixels
@@ -193,16 +203,25 @@
 			
 			// sinus
 			chart.ekg.rhythm['sinus'][0] = [
-				4, 3, 4, 6, 7, 7, 6, 4, 2, 1, 1, 1, 2, 2, 2, 3, 17, 52, 64, 26, -3, -5, -2, 0, 1, 2, 3, 4, 4, 5, 6, 7, 8, 10, 11, 13, 15, 16, 17, 17, 16, 14, 10, 7, 4, 2, 1, 0, 0, 1, 1 // Up to 75
+				4, 3, 4, 6, 7, 7, 6, 4, 2, 1, 
+				1, 1, 2, 2, 2, 3, 17, 52, 64, 26,
+				-3, -5, -2, 0, 1, 2, 3, 4, 4, 5, 
+				6, 7, 8, 10, 11, 13, 15, 16, 17, 17, 
+				16, 14, 10, 7, 4, 2, 1, 0, 0, 1, 
+				1 // Up to 75
 			];
 			chart.ekg.rhythm['sinus'][1] = [
-				4, 3, 6, 7, 4, 2, 1, 2, 3, 17, 64, 26, -5, -2, 0, 2, 4, 5, 6,  10, 11, 15, 16, 17, 16, 10, 4, 1, 0, 1 // Up to 140
+				4, 3, 6, 7, 4, 2, 1, 2, 3, 17, 
+				64, 26, -5, -2, 0, 2, 4, 5, 6,  10, 
+				11, 15, 16, 17, 16, 10, 4, 1, 0, 1 // Up to 140
 			];
 			chart.ekg.rhythm['sinus'][2] = [
-				4, 3, 7, 4, 1, 3, 35, 64, -5, -2, 4, 6, 11, 15, 17, 10, 4, 1 // Up to 230
+				4, 3, 7, 4, 1, 3, 35, 64, -5, -2, 
+				4, 6, 11, 15, 17, 10, 4, 1 // Up to 230
 			];
 			chart.ekg.rhythm['sinus'][3] = [
-				3, 7, 1, 3, 35, 64, -5, 4, 11, 17, 4, 1 // Up to 300
+				3, 7, 1, 3, 35, 64, -5, 4, 11, 17, 
+				4, 1 // Up to 300
 			];
 			
 			
@@ -235,36 +254,44 @@
 			chart.initStrip('resp');
 			
 			// init rhythm patterns
-			/*
-			chart.resp.rhythm[1] = [ 
-				0,1,2,4,8,16,24,28,30,31,
-				32,33,34,35,36,37,38,39,40,41,42,43,44,45,
-				44,43,42,41,40,35,31,30,28,24,16,8,4,2,1,
-				0,
-			];
-			chart.resp.rhythm[2] = [ 
-				0,1,2,4,8,16,24,28,30,31,32,32,32,32,32,32,32,
-				32,32,32,32,32,
-				32,32,32,32,32,
-				32,32,32,32,32,
-				32,32,32,32,32,31,25,15,8,0,0,0,0,0
-			];
-			chart.resp.rhythm[0] = [ 
-				0,1,2,4,8,16,24,28,30,31,32,32,31,25,15,8,0,0
-			];
-			*/
-			chart.resp.rhythm[0] = [	// Inhale
+			chart.resp.rhythm['high-to-low'] = new Array;
+			chart.resp.rhythm['low-to-high'] = new Array;
+			chart.resp.rhythm['high-to-low'][0] = [	
 				60,52,44,36,28,24,20,15,8,0
 			];
-			chart.resp.rhythm[1] = [	// Hold In
-				0,0,0,0,0,0,0,0,0,0
+			chart.resp.rhythm['high-to-low'][1] = [	
+				60,44,36,20,8,0
 			];
-			chart.resp.rhythm[2] = [	// Exhale
+			chart.resp.rhythm['high-to-low'][2] = [	
+				44,36,20,8
+			];
+			chart.resp.rhythm['high-to-low'][3] = [	
+				40, 20
+			];
+			chart.resp.rhythm['high-to-low'][4] = [	
+				30
+			];
+			chart.resp.rhythm['low'] = [	
+				0,0
+			];
+			chart.resp.rhythm['low-to-high'][0] = [	
 				0,8,15,20,24,28,36,44,52,60
 			];
+			chart.resp.rhythm['low-to-high'][1] = [	
+				0,8,20,36,44,60
+			];
+			chart.resp.rhythm['low-to-high'][2] = [	
+				8,20,36,44
+			];
+			chart.resp.rhythm['low-to-high'][3] = [	
+				20, 40
+			];
+			chart.resp.rhythm['low-to-high'][4] = [	
+				30
+			];
 
-			chart.resp.rhythm[3] = [	// Hold Out
-				62,62,62,62,62,62,62,62,62,62
+			chart.resp.rhythm['high'] = [	
+				62,62
 			];
 			
 			chart.resp.manualBreathPattern = [	// approximate 300 msec waveform
@@ -273,7 +300,7 @@
 			];
 			
 			// get max value
-			chart.resp.max = chart.resp.rhythm[3].max();
+			chart.resp.max = chart.resp.rhythm['high'].max();
 			
 			// get max displayed value
 			chart.getETC02MaxDisplay();
@@ -299,13 +326,13 @@
 			} else if ( cardiac.rate <= 0  ) {
 //				chart.ekg.rhythmIndex = 'asystole';	// Flatline
 			} else if(chart.ekg.rhythmIndex == 'sinus') {
-				if( cardiac.rate <= 75 ) {
+				if( cardiac.rate <= 73 ) {
 					chart.ekg.rateIndex = 0;
 				}
 				else if( cardiac.rate <= 121 ) {
 					chart.ekg.rateIndex = 1;
 				}
-				else if( cardiac.rate <= 230 ) {
+				else if( cardiac.rate <= 220 ) {
 					chart.ekg.rateIndex = 2;
 				}
 				else {
@@ -364,8 +391,8 @@
 			chart.heartRate = cardiac.rate;
 			controls.heartRate.value = cardiac.rate;
 //console.log(cardiac );
-console.log(cardiac.rate);
-console.log(chart.ekg.rhythmIndex);
+//console.log(cardiac.rate);
+//console.log(chart.ekg.rhythmIndex);
 		},
 		initStrip: function(stripType) {
 			chart[stripType].canvas = document.getElementById(chart[stripType].id);
@@ -488,12 +515,25 @@ console.log(chart.ekg.rhythmIndex);
 				
 				// clear out sync flag
 				if(chart.status.cardiac.synch == true) {
+					if( (chart.ekg.periodCount > 0) && (parseInt(controls.heartRate.value) > parseInt(simmgr.cardiacResponse.rate)) ) {
+						chart.updateCardiacRate();
+					} else {
 					chart.status.cardiac.synch = false;
+					}
+					
+					// reset tick count
+					chart.ekg.pixelCount = 0;
+				} else {
+					chart.ekg.pixelCount++;
+					if( (chart.ekg.periodCount > 0) && (chart.ekg.pixelCount >= chart.ekg.periodCount) ) {
+						chart.updateCardiacRate();
+					}
 				}
 				
 				// are we beyond pattern?
 				if(chart.ekg.patternIndex >= chart.ekg.length) {
 					chart.ekg.patternIndex = 0;
+					
 /*					
 					// if vpc's are required, set vpc synch flag, set vcpCount, get ready to generate VPC waveform
 					if(chart.ekg.rhythmIndex == 'sinus' && controls.heartRhythm.vpcResponse != "none") {
@@ -561,7 +601,7 @@ console.log(chart.ekg.rhythmIndex);
 			// Create the 'cursor' by clearing out a 10px wide section in front of the pixel
 			chart.drawCursor('resp');
 	
-//console.log(chart.ekg.patternIndex)
+//console.log('awrrBeatTimeout: ' + controls.awRR.beatTimeout)
 			
 			if(controls.manualRespiration.inProgress == true) {
 				if(controls.manualRespiration.manualBreathIndex >= chart.resp.manualBreathPattern.length) {
@@ -581,13 +621,11 @@ console.log(chart.ekg.rhythmIndex);
 				y = 0;
 			} else if ( ( profile.isVitalsMonitor == false ) || ( controls.CO2.leadsConnected == true ) ) {
 				if(chart.status.resp.synch == true ) {	// Restart Cycle
+					chart.resp.pixelCount = 0;
 					chart.resp.patternIndex = 0;
-					chart.resp.rhythmIndex = 2;
-					chart.resp.complete = false;
+					chart.resp.patternComplete = false;
+					chart.resp.rhythmIndex = 'low';	// start pattern with pattern low...start timer of inhalation
 					
-					// Calculate the half point count
-					chart.resp.halfCount = (controls.inhalation_duration.value / chart.resp.drawInterval)/2;
-					chart.resp.activeCount = 0;
 					chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex].length;
 					if(chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.patternIndex] > chart.displayETCO2.max) {
 						y = chart.displayETCO2.max * -1;
@@ -595,40 +633,67 @@ console.log(chart.ekg.rhythmIndex);
 						y = chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.patternIndex] * -1;
 					}
 					chart.status.resp.synch = false;
-					chart.resp.phase3Count = 0;
+					
+					// set timer for inhalation duration
+					clearTimeout(chart.resp.phaseTimer);
+					chart.resp.phaseTimer = setTimeout(function() {
+						chart.resp.rhythmIndex = 'low-to-high';
+						chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.risePatternIndex].length;
+						chart.resp.patternIndex = 0;
+						chart.resp.phaseTimer = 0;
+					}, chart.resp.inhalationDuration);
 				}
 				else {
-					if(chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.patternIndex] > chart.displayETCO2.max) {
-						y = chart.displayETCO2.max * -1;
+					if(chart.resp.rhythmIndex == 'high-to-low' || chart.resp.rhythmIndex == 'low-to-high') {
+						y = chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.risePatternIndex][chart.resp.patternIndex] * -1;
 					} else {
 						y = chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.patternIndex] * -1;
 					}
+					
+					// check that y is not over max value
+					if(y < (chart.displayETCO2.max * -1)) {
+						y = chart.displayETCO2.max * -1;
+					}
+					
+					chart.resp.pixelCount++;
 					chart.resp.patternIndex++;
 					chart.resp.activeCount++;
-
 					if(chart.resp.patternIndex >= chart.resp.length) {
+						
+						chart.resp.patternIndex = 0;
 						switch ( chart.resp.rhythmIndex ) {
-							case 0:	// Inhalation
-								chart.resp.rhythmIndex = 1;
+							case 'high-to-low':	// Depletion of CO2 (high to low)
+								chart.resp.patternComplete = true;
+								chart.resp.rhythmIndex = 'low';
+								chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex].length;
 								break;
-							case 1: // Hold In
+							case 'low': // Hold In (pattern low)
+								// load in new pattern if periodCount > 0 and pixel count exceeds periodcount
+								if(chart.resp.patternComplete && chart.resp.periodCount > 0) {
+//console.log('pattern Complete');
+//console.log('Period Count: ' + chart.resp.periodCount);
+//									if( chart.resp.periodCount > 0 ) {
+										chart.updateRespRate();
+										chart.resp.patternComplete = false;
+//									}
+								}
+								
 								break;
-							case 2: // Exhalation
-								chart.resp.rhythmIndex = 3;
-								chart.resp.phase3Complete = false;
-								clearTimeout(chart.resp.phase3Timer);
-								chart.resp.phase3Timer = setTimeout(function() {
-									chart.resp.phase3Complete = true;
-								}, 1500);
-//								chart.resp.activeCount = 0;
+							case 'low-to-high': // Exhalation (low to high)
+								chart.resp.rhythmIndex = 'high';
+								chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex].length;
 								break;
-							case 3: // Hold Out
-								if(chart.resp.activeCount++ >= chart.resp.halfCount || chart.resp.phase3Complete == true) {
-									chart.resp.rhythmIndex = 0;
+							case 'high': // Hold Out (hold high)
+								if(chart.resp.phaseTimer == 0) {
+									chart.resp.phaseTimer = setTimeout(function() {
+										chart.resp.rhythmIndex = 'high-to-low';		// start exhalation (rise in CO2)
+										chart.resp.phaseTimer = 0;
+										chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.risePatternIndex].length;
+										chart.resp.patternIndex = 0;
+									}, chart.resp.exhalationDuration);
 								}
 								break;
 						}
-						chart.resp.patternIndex = 0;
 					}
 				}
 			}
@@ -761,5 +826,55 @@ console.log(chart.ekg.rhythmIndex);
 				
 				return ( (chart.fibMultiply/4)*(y1 + y2) );
 			}
-		}		
+		},
+
+		updateCardiacRate: function() {
+			controls.heartRate.setHeartRateValue(simmgr.cardiacResponse.rate );
+			if(simmgr.cardiacResponse.rhythm == 'vtach3') {
+				// pre calculate R on T based on heart rate
+				chart.initVtach3();
+			}
+			chart.updateCardiac(simmgr.cardiacResponse);
+			chart.status.cardiac.synch == false;
+			chart.ekg.patternIndex = 0;
+			clearTimeout(controls.heartRate.beatTimeout);
+			controls.heartRate.setSynch();
+		},
+		
+		updateRespRate: function() {
+			controls.awRR.value = simmgr.respResponse.awRR;
+			controls.awRR.displayValue();
+//			clearTimeout(chart.resp.phaseTimer);
+			clearTimeout(controls.awRR.beatTimeout);
+			controls.awRR.setSynch();
+
+			// Calculate the inhalation time
+			if ( simmgr.respResponse.awRR > 0 )
+			{
+				if(typeof(simmgr.respResponse.inhalation_duration) != "undefined") {
+					chart.resp.inhalationDuration = parseInt(simmgr.respResponse.inhalation_duration) - 50;
+				}
+				if(typeof(simmgr.respResponse.exhalation_duration) != "undefined") {
+					chart.resp.exhalationDuration = parseInt(simmgr.respResponse.exhalation_duration) - 50;
+				}
+
+				// rise pattern
+				if(simmgr.respResponse.awRR <= 15) {
+					chart.resp.risePatternIndex = 0;
+				} else if(simmgr.respResponse.awRR <= 15) {
+					chart.resp.risePatternIndex = 1;								
+				} else if(simmgr.respResponse.awRR <= 40) {
+					chart.resp.risePatternIndex = 2;								
+				} else if(simmgr.respResponse.awRR <= 50) {
+					chart.resp.risePatternIndex = 3;								
+				} else {
+					chart.resp.risePatternIndex = 4;
+				}
+			}
+			else
+			{
+				// Default to avoid divide by zero
+				controls.inhalation_duration.value = 400; 
+			}
+		}
 	}

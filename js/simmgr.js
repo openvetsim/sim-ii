@@ -19,6 +19,8 @@ var simmgr = {
 	audioPlayStarted : 0,
 	mediaPlayStarted : 0,
 	timeStamp: 0,
+	cardiacResponse: {},
+	respResponse: {},
 	
 	init : function() {
 		console.log("simmgr: init" );
@@ -85,17 +87,33 @@ var simmgr = {
 				{
 					if ( ( typeof(response.cardiac.rate) != "undefined" ) && ( response.cardiac.rate != controls.heartRate.value ) && controls.cpr.inProgress == false )
 					{
-						controls.heartRate.setHeartRateValue(response.cardiac.rate );
-						if(response.cardiac.rhythm == 'vtach3') {
+						// update saved response record for cardiac params
+						simmgr.cardiacResponse = response.cardiac;
+/*
+						controls.heartRate.setHeartRateValue(simmgr.cardiacResponse.rate );
+						if(simmgr.cardiacResponse.rhythm == 'vtach3') {
 							// pre calculate R on T based on heart rate
 							chart.initVtach3();
 						}
-						chart.updateCardiac(response.cardiac );
+						chart.updateCardiac(simmgr.cardiacResponse );
 						chart.status.cardiac.synch == false;
 						chart.ekg.patternIndex = 0;
 						clearTimeout(controls.heartRate.beatTimeout);
 						controls.heartRate.setSynch();
+*/
+//						chart.updateCardiacRate();
+						
+						// calculate new period count for new rate
+						chart.ekg.periodCount = Math.round(((60 / response.cardiac.rate) * 1000) / chart.ekg.drawInterval);
+//console.log('Pixel: ' + chart.ekg.pixelCount);
+//console.log('Period: ' + chart.ekg.periodCount);
+//console.log('Current rate: ' + controls.heartRate.value);
+//console.log('New rate: ' + simmgr.cardiacResponse.rate);
+					} else {
+						// set period count to 0 to indicate no new rate ready
+						chart.ekg.periodCount = 0;
 					}
+					
 					
 					// cardiac nbp
 					if ( ( typeof(response.cardiac.bps_sys) != "undefined" ) && ( response.cardiac.bps_dia != "undefined" ) )
@@ -120,11 +138,18 @@ var simmgr = {
 						if( response.cardiac.ecg_indicator == 1) {
 							if ( controls.ekg.leadsConnected == false ) {
 								changed = true;
+								if( profile.isVitalsMonitor == true ) {
+									chart.initStrip('ekg');
+								}
 							}
 							controls.ekg.leadsConnected = true;
 						} else {
 							if ( controls.ekg.leadsConnected == true ) {
 								changed = true;
+								if( profile.isVitalsMonitor == true ) {
+									chart.initStrip('ekg');
+									chart.ekg.ctx.clearRect(0, 0, chart.ekg.width + 10, chart.ekg.height);
+								}
 							}
 							controls.ekg.leadsConnected = false;					
 						}
@@ -225,9 +250,15 @@ var simmgr = {
 					/***** heart rhythm *****/
 					// heart ecg pattern selection
 					if(typeof(response.cardiac.rhythm) != "undefined" && controls.heartRhythm.currentRhythm != response.cardiac.rhythm) {
+						// if previous pattern was asystole && heart rate was 0 then set heart rate to 100.
+//						if(controls.heartRhythm.currentRhythm == 'asystole' && response.cardiac.rate == 0) {
+//							simmgr.sendChange({'set:cardiac:rate': 100});
+//						}
+						
 						controls.heartRhythm.currentRhythm = response.cardiac.rhythm;
 						chart.ekg.rhythmIndex = response.cardiac.rhythm;
 						chart.updateCardiac(response.cardiac );
+						controls.heartRate.displayValue();
 						
 						// set minimum heart rate
 						if(response.cardiac.rhythm == 'vtach3') {
@@ -513,21 +544,11 @@ var simmgr = {
 				if(typeof(response.respiration) != "undefined" ) {
 					// awRR
 					if(typeof(response.respiration.awRR) != "undefined") {
-						var respirationRate = response.respiration.awRR;
-						if( respirationRate != controls.awRR.value ) {
-//console.log("recalc" );
-							controls.awRR.value = respirationRate;
-							controls.awRR.displayValue();
-							// Calculate the inhalation time
-							if ( respirationRate > 0 )
-							{
-								controls.inhalation_duration.value = Math.floor((1/(respirationRate/60))*1000);
-							}
-							else
-							{
-								// Default to avoid divide by zero
-								controls.inhalation_duration.value = 400; 
-							}
+						simmgr.respResponse = response.respiration;
+						if( simmgr.respResponse.awRR != controls.awRR.value ) {
+							chart.resp.periodCount = Math.round(((60 / simmgr.respResponse.awRR) * 1000) / chart.resp.drawInterval);
+						} else {
+							chart.resp.periodCount = 0;
 						}
 					}
 					else
@@ -560,11 +581,18 @@ var simmgr = {
 						if( response.respiration.etco2_indicator == 1) {
 							if ( controls.CO2.leadsConnected == false ) {
 								changed = true;
+								if( profile.isVitalsMonitor == true ) {
+									chart.initStrip('resp');
+								}
 							}
 							controls.CO2.leadsConnected = true;
 						} else {
 							if ( controls.CO2.leadsConnected == true ) {
 								changed = true;
+								if( profile.isVitalsMonitor == true ) {
+									chart.initStrip('resp');
+									chart.resp.ctx.clearRect(0, 0, chart.resp.width + 10, chart.resp.height);
+								}
 							}
 							controls.CO2.leadsConnected = false;					
 						}

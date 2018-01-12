@@ -162,9 +162,15 @@
 								if(ecgValue < controls.heartRate.rOnTMinValue) {
 									ecgValue = controls.heartRate.rOnTMinValue;
 								}
+							} else if($(this).children('option:selected').val() != 'asystole' && $(this).children('option:selected').val() != 'vfib') {
+								if(controls.heartRhythm.currentRhythm == 'asystole' || controls.heartRhythm.currentRhythm == 'vfib') {
+									ecgValue = 100;
+								}
 							}
 							controls.heartRhythm.setHeartRhythmModal();
+
 							// bind controls
+							$('.control-slider-1').val(ecgValue);
 							controls.heartRate.slideBar = $(".control-slider-1").slider({
 								value: ecgValue,
 								min: ecgMin,
@@ -175,6 +181,7 @@
 								}
 							});
 							$('.strip-value').val(ecgValue);
+							controls.heartRate.slideBar.slider("refresh");
 						});						
 						
 					}

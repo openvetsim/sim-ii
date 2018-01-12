@@ -90,7 +90,15 @@
 			
 			displayValue: function() {
 				if ( ( profile.isVitalsMonitor == false ) || ( controls.ekg.leadsConnected == true ) ) {
-					$('#vs-heartRhythm a.display-rate').html(controls.heartRate.value + '<span class="vs-upper-label"> bpm</span>');
+					if(controls.heartRhythm.currentRhythm == 'asystole' || controls.heartRhythm.currentRhythm == 'vfib') {
+						if(profile.isVitalsMonitor == true) {
+							$('#vs-heartRhythm a.display-rate').html('---<span class="vs-upper-label"> bpm</span>');						
+						} else {
+							$('#vs-heartRhythm a.display-rate').html('0<span class="vs-upper-label"> bpm</span>');
+						}
+					} else {
+						$('#vs-heartRhythm a.display-rate').html(controls.heartRate.value + '<span class="vs-upper-label"> bpm</span>');
+					}
 				}
 				else {
 					$('#vs-heartRhythm a.display-rate').html('---<span class="vs-upper-label"> bpm</span>');
