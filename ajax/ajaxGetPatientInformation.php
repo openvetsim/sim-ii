@@ -16,9 +16,10 @@
 	}
 	
 	$profileArray = $_POST['profile'];
+	$directory = dbClass::valuesFromPost('dir');
 	
 	// resize image
-	$imageSizeArray = getImageSize(SERVER_SCENARIOS_PATIENTS .  $profileArray['image']);
+	$imageSizeArray = getImageSize(SERVER_SCENARIOS . $directory . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR .  $profileArray['image']);
 	if($imageSizeArray !== FALSE) {
 		// check width, max = 300px
 		if($imageSizeArray[0] >= $imageSizeArray[1]) {
@@ -31,7 +32,8 @@
 	$content = '
 		<div id="patient-info">
 			<h1>Patient Information</h1>
-			<img src="' . BROWSER_SCENARIOS_PATIENTS .  $profileArray['image'] . '" ' . $cssContent . '>			<table>
+			<img src="' . BROWSER_SCENARIOS . $directory . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR .  $profileArray['image'] . '" ' . $cssContent . '>
+			<table>
 				<tr>
 					<td>Species:</td>
 					<td>' . $profileArray['species'] . '</td>

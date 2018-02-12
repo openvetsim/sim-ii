@@ -52,7 +52,7 @@
 						url: BROWSER_AJAX + 'ajaxGetPatientInformation.php',
 						type: 'post',
 						async: false,
-						data: {profile: scenario.scenarioProfile.summary},
+						data: {profile: scenario.scenarioProfile.summary, dir: scenario.currentScenarioFileName},
 						dataType: 'json',
 						success: function(response) {
 							profile.removePatientInfo();
