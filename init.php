@@ -84,6 +84,12 @@ error_reporting(E_ALL);
 	define('FILE_TRANSFER_FAIL', 2);
 	define('FILE_MISSING_FILE', 3);
 	define('FILE_SYSTEM_ERROR', 4);
+	define('FILE_SCENARIO_ERROR', 5);
+	define('FILE_EXTRACT_ZIP_OK', 6);
+	define('FILE_EXTRACT_ZIP_FAIL', 7);
+	define('FILE_SCENARIO_INVALID', 8);
+	define('FILE_SCENARIO_DUP', 9);
+	define('SHOW_SCENARIO_MANAGER', 10);
 	
 	// AJAX defines
 	// AJAX Constants
@@ -98,6 +104,9 @@ error_reporting(E_ALL);
 	// mobilized
 //	define('MOBILIZED', FALSE);
 	define('MOBILIZED', TRUE);
+	
+	// define temp directory for scenario
+	define('TMP_SCENARIO_DIR', '/var/www/html/temp/');
 		
 	/************************************/
 	// requires for global classes

@@ -631,7 +631,7 @@ console.dir(params);
 						$('#vocal-list li a span').each(function() {
 							if($(this).parent().attr('data-filename') == controls.vocals.fileName) {
 								$(this).addClass('selected');
-								controls.vocals.audio.src = BROWSER_SCENARIOS_VOCALS + controls.vocals.fileName;
+								controls.vocals.audio.src = BROWSER_SCENARIOS + scenario.currentScenarioFileName + '/vocals/' + controls.vocals.fileName;
 								controls.vocals.audio.loop = false;
 							}
 						});
@@ -647,7 +647,7 @@ console.dir(params);
 							controls.vocals.fileName = $(this).attr('data-filename');
 							$('#vocal-list li a span').removeClass('selected');
 							$(this).children('span').addClass('selected');
-							controls.vocals.audio.src = BROWSER_SCENARIOS_VOCALS + controls.vocals.fileName;
+							controls.vocals.audio.src = BROWSER_SCENARIOS + scenario.currentScenarioFileName + '/vocals/' + controls.vocals.fileName;
 							simmgr.sendChange({
 								'set:vocals:filename': controls.vocals.fileName
 							});
@@ -657,7 +657,7 @@ console.dir(params);
 							controls.vocals.fileName = $(this).attr('data-filename');
 							$('#vocal-list li a span').removeClass('selected');
 							$(this).children('span').addClass('selected');
-							controls.vocals.audio.src = BROWSER_SCENARIOS_VOCALS + controls.vocals.fileName;
+							controls.vocals.audio.src = BROWSER_SCENARIOS + scenario.currentScenarioFileName + '/vocals/' + controls.vocals.fileName;
 							controls.vocals.audio.load();
 							controls.vocals.audio.addEventListener('ended', simmgr.endAudio );
 							controls.vocals.audio.play();
@@ -1032,6 +1032,31 @@ console.dir(params);
 				}
 			});
 		},
+		
+		manageScenarios: function() {
+			$.ajax({
+				url: BROWSER_AJAX + 'ajaxGetScenarioTableContent.php',
+				type: 'post',
+				async: false,
+				dataType: 'json',
+				success: function(response) {
+					if(response.status == AJAX_STATUS_OK) {
+						modal.showModal(response);
+						$('#modal .container').css('width', '900px');
+						$('#modal .container .control-modal-div').css('width', '900px');
+						$('#modal-content').css('margin-top', '0');
+						modal.bindCloseModal();
+						
+						$('#scenario-file-select').change(function() {
+							$('#scenario-submit').trigger("click");	
+							modal.closeModalFast();
+							modal.ajaxWait();
+						});
+					}
+				}
+			});
+		},
+
 
 		/********************* Utils for modals *******************/
 
@@ -1056,7 +1081,7 @@ console.dir(params);
 		
 		ajaxWait: function() {
 			$('#modal .close_modal').hide();
-			$('#modal #modal-content').append('<img class="image_modal modal_content" src="' + BROWSER_THEME_IMAGES + 'ajax_loader.gif" alt="Product Image">');
+			$('#modal #modal-content').append('<img class="image_modal modal_content" src="' + BROWSER_IMAGES + 'ajax_loader.gif" alt="Product Image">');
 			$('#modal .container').width(modal.textWidth);
 			$('#modal .container').css({
 										'height': '150px',

@@ -7,12 +7,11 @@
 				return
 			}
 			
-			
 			// set up background image for animal silhouette from profile
 			if(profile.isVitalsMonitor == false ) {
 				if ( typeof scenario.scenarioProfile.avatar != 'undefined') {
 					$('#mannequin').css({
-						'background-image': 'url(' + BROWSER_PROFILES_IMAGES + scenario.scenarioProfile.avatar['filename'] + ')',
+						'background-image': 'url(' + BROWSER_SCENARIOS + scenario.currentScenarioFileName + '/images/' + scenario.scenarioProfile.avatar['filename'] + ')',
 						'background-repeat': 'no-repeat',
 						'background-position': 'center center',
 						'background-size': scenario.scenarioProfile.avatar['width_pct'] + '% ' +  scenario.scenarioProfile.avatar['height_pct'] + '%'

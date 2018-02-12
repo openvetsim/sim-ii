@@ -3,7 +3,6 @@ var media = {
 	mediaIsDisplayed: false,
 	
 	init: function() {
-console.log('here');
 		media.clearMedia();
 		// bind event of scenario button
 		$('#media-button').unbind().click(function() {

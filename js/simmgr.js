@@ -425,7 +425,7 @@ var simmgr = {
 								else {
 									// Play current sound
 									simmgr.audioPlayStarted = 1;
-									controls.vocals.audio.src = BROWSER_SCENARIOS_VOCALS + controls.vocals.fileName;
+									controls.vocals.audio.src = BROWSER_SCENARIOS + scenario.currentScenarioFileName + '/vocals/' + controls.vocals.fileName;
 									controls.vocals.audio.load();
 									controls.vocals.audio.play();
 								}
@@ -442,20 +442,6 @@ var simmgr = {
 						}
 						// End Local Display Only
 					}
-					$('#vocal-list li a').dblclick(function() {
-							controls.vocals.fileName = $(this).attr('data-filename');
-							$('#vocal-list li a span').removeClass('selected');
-							$(this).children('span').addClass('selected');
-							controls.vocals.audio.src = BROWSER_SCENARIOS_VOCALS + controls.vocals.fileName;
-							controls.vocals.audio.load();
-							controls.vocals.audio.addEventListener('ended', simmgr.endAudio );
-							controls.vocals.audio.play();
-							simmgr.sendChange({
-								'set:vocals:filename': controls.vocals.fileName,
-								'set:vocals:play': 1
-							});
-
-						});
 				}
 				
 				/************ media **************/
@@ -482,7 +468,7 @@ var simmgr = {
 									// Create a window the full size of the image. Scale down to fit in screen (if larger)
 									$('#media-video').remove();
 									$('#media-overlay').remove();
-									$('body').append("<img id='media-overlay' src='"+BROWSER_SCENARIOS_MEDIA+controls.media.fileName+"'>" );
+									$('body').append("<img id='media-overlay' src='"+ BROWSER_SCENARIOS + scenario.currentScenarioFileName + '/media/' + controls.media.fileName + "'>" );
 									$('#media-overlay').on('load', function() {
 										var margintop = 0;
 										var marginleft = 0;
@@ -518,7 +504,7 @@ var simmgr = {
 										vheight=480;
 									}
 									$('body').append("<video id='media-overlay' width='"+vwidth+"' height='"+vheight+"' "+vcontrol+" ><source src='"
-											+BROWSER_SCENARIOS_MEDIA+controls.media.fileName+
+											+ BROWSER_SCENARIOS + scenario.currentScenarioFileName + '/media/' + controls.media.fileName +
 											"' type='video/"+fileExt+"'>Browser does not support this video tag ("+fileExt+")</video>");
 									var margintop = ($(window).height() - (vheight+200) ) / 2;
 									if ( margintop < 0 ) {

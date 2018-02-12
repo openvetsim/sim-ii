@@ -1,5 +1,9 @@
+<html>
+	<body>
+		<p>Test Page</p>
+		<pre>
 <?php
-
+/*
 	require_once('init.php');
 
 FB::log('Initialized!');
@@ -14,7 +18,7 @@ FB::log('Initialized!');
 $result = dbClass::dbInsertQueryResult(modelClass::createInsertQuery('Users', $cleanArray));
 	
 //FB::log(adminClass::isAdminLoginValid('dweiner@twcny.rr.com', 'daviddev'));
-
+*/
 /*
 	$result = $db->dbQueryResult("
 									SELECT * FROM Admin 
@@ -23,4 +27,13 @@ $result = dbClass::dbInsertQueryResult(modelClass::createInsertQuery('Users', $c
 	$row = $db->dbGetRowAssocClean($result);
 */
 //FB::log(hash('sha256', 'davedev'.$salt.PEPPER));
+
+		$iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator("/var/www/html/temp"));
+
+				foreach($iterator as $item) {
+					print_r($item );
+				}
 ?>
+		</pre>
+	</body>
+</html>

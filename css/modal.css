@@ -210,12 +210,36 @@
 	}
 	
 	/* user table */
+	#scenario-add {
+		float: left;
+	}
+	#scenario-select {
+		float: left;
+		clear: both;
+		margin: 0 0 10px 0;
+	}
+	
 	#user-table{
 		width: 850px;
 	}
+		#user-table.scenario{
+			border-collapse: collapse;
+			margin-top: 20px;
+		}
 	#user-table td.col-50{
 		width: 50px;
 	}
+		#user-table.scenario td{
+			border: 1px solid gray;
+			padding: 0 5px 0 5px;
+		}
+		#user-table.scenario td.scenario{
+			text-align: left;
+			padding: 0 5px 0 5px;
+		}
+		#user-table.scenario td.user-header{
+			border: none;
+		}
 	#user-table td.col-100{
 		width: 100px;
 	}

@@ -23,6 +23,9 @@
 		exit();			
 	}
 	
+	// update path to scenario
+	$fileName = $fileName . DIRECTORY_SEPARATOR . 'main';
+	
 	$scenarioProfileArray = scenarioXML::getScenarioProfileArray($fileName);
 	if($scenarioProfileArray === FALSE) {
 		$returnVal['status'] = AJAX_STATUS_FAIL;

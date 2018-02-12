@@ -160,13 +160,16 @@ a:hover {
 			ul#main-nav li > a {
 				color: #aaaaaa;
 			}
+				ul#main-nav li > a:hover {
+					color: #FFF;
+				}
 
 	ul.sub-nav {
 		display: none;
 		width: 100%;
 		position: absolute;
-		top: 28px;
-		width: 200px;
+		top: 17px;
+		width: 225px;
 		left: -13px;
 		z-index: 200;
 	}
@@ -174,6 +177,7 @@ a:hover {
 			margin: 0 0 0 3px;
 			clear: both;
 			float: left;
+			width: 115px;
 			height: 20px;
 			background-color: #B31B1B;
 			padding: 5px 15px 5px 10px;
@@ -183,13 +187,16 @@ a:hover {
 			}
 
 			ul#main-nav ul.sub-nav li > a:hover{
-				color: #999999;
+				color: #FFF;
 			}
 			
 	ul#main-nav li a.event-link {
 		margin: 0;
 		color: #AAAAAA;
 	}
+		ul#main-nav li a.event-link:hover {
+			color: #FFF;
+		}
 			
 /* Scenario Select Control */
 .scenario-button {

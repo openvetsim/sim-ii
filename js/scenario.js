@@ -143,5 +143,25 @@ console.log("Current Scenario State: " + this.currentScenarioState);
 				$('#scenario-select select').val(scenario.currentScenarioFileName);
 			}
 		});
-	}	
+	},
+
+	deleteScenario: function(scenarioDir) {
+		if(confirm("Are you sure you want to delete this scenario?") == true) {
+			window.location = "ii.php?ddir=" + scenarioDir;
+		}
+	},
+	
+	addScenario: function(scenarioDir) {
+		$.ajax({
+			url: BROWSER_AJAX + 'ajaxAddScenario.php',
+			type: 'post',
+			async: false,
+			data: {sd: scenarioDir},
+			dataType: 'json',
+			success: function(response) {
+				window.location = "ii.php?ddir=x...";
+			}
+		});
+	
+	}
 }
