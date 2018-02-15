@@ -17,7 +17,7 @@ var media = {
 		var mediaOptionContent = '';
 		var mediaSelected = '';
 		
-		if(typeof scenario.scenarioMedia != 'undefined') {
+		if(typeof scenario.scenarioMedia.file != 'undefined') {
 			for(var index = 0; index < scenario.scenarioMedia.file.length; index++) {
 				if(scenario.scenarioMedia.file[index]['url'] == media.currentMediaFileName) {
 					mediaSelected = ' selected="selected" ';
@@ -25,7 +25,7 @@ var media = {
 					mediaSelected = '';			
 				}
 				mediaOptionContent += '<option value="' + scenario.scenarioMedia.file[index]['url'] + '" ' + mediaSelected + '>' + scenario.scenarioMedia.file[index]['title'] + '</option>';
-			}
+			}			
 		}
 		$('#media-select > select').html(mediaOptionContent);
 	},

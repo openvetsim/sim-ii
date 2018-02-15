@@ -9,6 +9,7 @@
 			if(file_exists($filePath) === FALSE) {
 				return FALSE;
 			} else {
+				libxml_use_internal_errors(true);
 				$simpleXMLObj = simplexml_load_file($filePath);
 				return json_decode(json_encode($simpleXMLObj), TRUE);
 			}
@@ -45,18 +46,24 @@
 			$scenarioArray = self::getScenarioArray($fileName);
 			if($scenarioArray === FALSE || count($scenarioArray['media']) == 0) {
 				return FALSE;
-			} else {
-				return $scenarioArray['media'];
+			} else if(!array_key_exists('0', $scenarioArray['media']['file']) === TRUE) {
+				$tmp = $scenarioArray['media']['file'];
+				unset($scenarioArray['media']['file']);
+				$scenarioArray['media']['file'][0] = $tmp;
 			}
+			return $scenarioArray['media'];
 		}
 		
 		static public function getScenarioVocalsArray($fileName) {
 			$scenarioArray = self::getScenarioArray($fileName);
 			if($scenarioArray === FALSE || count($scenarioArray['vocals']) == 0) {
 				return FALSE;
-			} else {
-				return $scenarioArray['vocals'];
+			} else if(!array_key_exists('0', $scenarioArray['vocals']['file']) === TRUE) {
+				$tmp = $scenarioArray['vocals']['file'];
+				unset($scenarioArray['vocals']['file']);
+				$scenarioArray['vocals']['file'][0] = $tmp;
 			}
+			return $scenarioArray['vocals'];
 		}
 	}
 ?>

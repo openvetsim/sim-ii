@@ -107,6 +107,9 @@ var simmgr = {
 						chart.ekg.periodCount = Math.round(((60 / response.cardiac.rate) * 1000) / chart.ekg.drawInterval);
 //console.log('Pixel: ' + chart.ekg.pixelCount);
 //console.log('Period: ' + chart.ekg.periodCount);
+						if(controls.heartRate.value == 0) {
+							chart.updateCardiacRate();
+						}
 //console.log('Current rate: ' + controls.heartRate.value);
 //console.log('New rate: ' + simmgr.cardiacResponse.rate);
 					} else {
@@ -416,6 +419,7 @@ var simmgr = {
 					if(typeof(response.vocals.play) != "undefined") {
 						controls.vocals.play = response.vocals.play;
 						// Local Display Only section
+
 						if ( simmgr.isLocalDisplay() ) {
 							if(response.vocals.play == 1) {
 								// First, prevent replay
@@ -531,8 +535,14 @@ var simmgr = {
 					// awRR
 					if(typeof(response.respiration.awRR) != "undefined") {
 						simmgr.respResponse = response.respiration;
+//console.log('respiration: ' + simmgr.respResponse.awRR);
+//console.log('respiration: ' + controls.awRR.value);
 						if( simmgr.respResponse.awRR != controls.awRR.value ) {
-							chart.resp.periodCount = Math.round(((60 / simmgr.respResponse.awRR) * 1000) / chart.resp.drawInterval);
+							if(controls.awRR.value == 0) {
+								chart.updateRespRate();
+							} else {
+								chart.resp.periodCount = Math.round(((60 / simmgr.respResponse.awRR) * 1000) / chart.resp.drawInterval);
+							}
 						} else {
 							chart.resp.periodCount = 0;
 						}
