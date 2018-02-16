@@ -58,6 +58,16 @@
 			delayPtr: 0
 		},
 
+		// cpr status constants
+		// delay stop in msec
+		CPR_DELAY_NONE: 0,			// no delay in progress for cpr display of HR '----' 
+		CPR_DELAY_START: 1,			// start delay for cpr display of HR '----' 
+		CPR_DELAY_STOP: 2,			// stop delay for cpr display of HR '----' 
+		CPR_ACTIVE: 2,				// active cpr display of HR '----'
+		CPR_DELAY_IN: 3000,			// delay start in msec
+		CPR_DELAY_OUT: 3000,		// delay stop in msec
+		cprDelayTimer: 0,			// timer for cpr delay
+		
 		// ekg strip parameters
 		ekg: {
 			width: 0,				// width of strip in pixels
@@ -86,7 +96,8 @@
 			beepFlag: false,
 			vpcSynchDelay: 0,		// delay added in to synh if VPC is generated
 			pixelCount: 0,			// count in pixel ticks (drawInterval) of current period (incrementing)
-			periodCount: 0			// number of pixel counts in current period
+			periodCount: 0,			// number of pixel counts in current period
+			cprHRDisplayStatus: 0 	// status of hr display {CPR_DELAY_NONE || CPR_DELAY_START || CPR_DELAY_STOP || CPR_ACTIVE}
 		},
 		
 		// respiration strip parameters

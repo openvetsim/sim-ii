@@ -39,6 +39,36 @@
 				simmgr.sendChange( { 'set:cardiac:rate' : rate, 'set:cardiac:transfer_time' : time } );
 			},
 			
+			updateCPRDisplay: function() {
+				if(profile.isVitalsMonitor == false) {
+					return;
+				}
+
+				// see where we are in cycle
+				if(controls.cpr.inProgress == false) {
+					// if we are in active state then start timer
+					if(chart.ekg.cprHRDisplayStatus == chart.CPR_ACTIVE) {
+						chart.ekg.cprHRDisplayStatus = chart.CPR_DELAY_STOP;
+						chart.cprDelayTimer = setTimeout(function() {
+							chart.ekg.cprHRDisplayStatus = chart.CPR_DELAY_NONE;
+							controls.heartRate.displayValue();
+						}, chart.CPR_DELAY_OUT);
+					} else {
+						// else clear out timer and do nothing, did not complete delay
+						clearTimeout(chart.cprDelayTimer);
+					}
+				} else {
+					// CPR now active
+					if(chart.ekg.cprHRDisplayStatus == chart.CPR_DELAY_NONE) {
+						chart.ekg.cprHRDisplayStatus = chart.CPR_DELAY_START
+						chart.cprDelayTimer = setTimeout(function() {
+							chart.ekg.cprHRDisplayStatus = chart.CPR_ACTIVE;
+							controls.heartRate.displayValue();
+						}, chart.CPR_DELAY_IN);
+					}
+				}
+			},
+			
 			setSynch: function() {
 				// if afib, then get randomized delay, else delay multiplier is 1.0
 				if(controls.heartRhythm.currentRhythm == 'afib') {
@@ -96,6 +126,8 @@
 						} else {
 							$('#vs-heartRhythm a.display-rate').html('0<span class="vs-upper-label"> bpm</span>');
 						}
+					} else if(chart.ekg.cprHRDisplayStatus == chart.CPR_ACTIVE && profile.isVitalsMonitor == true) {
+						$('#vs-heartRhythm a.display-rate').html('---<span class="vs-upper-label"> bpm</span>');
 					} else {
 						$('#vs-heartRhythm a.display-rate').html(controls.heartRate.value + '<span class="vs-upper-label"> bpm</span>');
 					}

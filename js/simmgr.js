@@ -797,9 +797,16 @@ console.log("New scenario state");
 								}
 							}
 						}
+						
+						// stop timer for cpr HR display
+						controls.heartRate.updateCPRDisplay();
+
 					} else {
 						controls.cpr.inProgress = true;
 						$('#vs-trace-1').attr('onclick', 'javascript:void(2);');
+						
+						// start timer for cpr HR display
+						controls.heartRate.updateCPRDisplay();
 					}
 					controls.cpr.setCPRState();
 					chart.updateCardiac(response.cardiac);
