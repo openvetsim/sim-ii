@@ -34,30 +34,64 @@
 			<h1>Patient Information</h1>
 			<img src="' . BROWSER_SCENARIOS . $directory . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR .  $profileArray['image'] . '" ' . $cssContent . '>
 			<table>
+	';
+	if(isset($profileArray['species']) === TRUE) {
+		$content .= '
 				<tr>
 					<td>Species:</td>
 					<td>' . $profileArray['species'] . '</td>
 				</tr>
+		';
+	}
+	if(isset($profileArray['breed']) === TRUE) {
+		$content .= '
 				<tr>
 					<td>Breed:</td>
 					<td>' . $profileArray['breed'] . '</td>
 				</tr>
+		';
+	}
+	if(isset($profileArray['age']) === TRUE) {
+		$content .= '
 				<tr>
-					<td>Gender:</td>
-					<td>' . $profileArray['gender'] . '</td>
+					<td>Age:</td>
+					<td>' . $profileArray['age'] . '</td>
 				</tr>
+		';
+	}
+	if(isset($profileArray['sex']) === TRUE) {
+		$content .= '
+				<tr>
+					<td>Sex:</td>
+					<td>' . $profileArray['sex'] . '</td>
+				</tr>
+		';
+	}
+	if(isset($profileArray['weight']) === TRUE) {
+		$content .= '
 				<tr>
 					<td>Weight:</td>
 					<td>' . $profileArray['weight'] . '</td>
 				</tr>
+		';
+	}
+	if(isset($profileArray['complaint']) === TRUE) {
+		$content .= '
 				<tr>
 					<td>Complaint:</td>
-					<td>' . $profileArray['symptoms'] . '</td>
+					<td>' . $profileArray['complaint'] . '</td>
 				</tr>
+		';
+	}
+	if(isset($profileArray['description']) === TRUE) {
+		$content .= '
 				<tr>
 					<td>Description:</td>
 					<td>' . $profileArray['description'] . '</td>
 				</tr>
+		';
+	}
+	$content .= '
 			</table>	
 		</div>
 	';
