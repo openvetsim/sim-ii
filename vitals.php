@@ -87,7 +87,10 @@
     font-family: Verdana, sans-serif;
     font-size: 11pt;
     text-align: left;
-  }		
+  }
+  .dbgNote {
+	font-size: 9px;
+  }
 	</style>
 	
 </head>
@@ -137,7 +140,6 @@
 			</div>
 			<button id="startStopButton">Stop</button>
 			<a href='vitals.php?v=1'><button>Refresh</button></a>
-			<!--<button id="closeButton">Close</button>
-			<div id='outputDiv'></div>-->
+			<!--<button id="closeButton">Close</button>-->
 </body>
 </html>

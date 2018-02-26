@@ -11,10 +11,12 @@
 */
 
 var simmgr = {
-	timer : 0,
+	statusTimer : 0,
+	quickTimer : 0,
 	breathCount : 0,
 	pulseCount : 0,
-	interval : 500,
+	quickInterval : 500,
+	statusInterval : 1000,
 	running : 0,
 	audioPlayStarted : 0,
 	mediaPlayStarted : 0,
@@ -28,13 +30,11 @@ var simmgr = {
 		// Set the interval faster if the client is the local vitals display
 		if ( simmgr.isLocalDisplay() )
 		{
-			simmgr.interval = 50;
+			simmgr.quickInterval = 15;
 		}
-		else
-		{
-			simmgr.interval = 500;
-		}
-		simmgr.timer = setTimeout(function() { simmgr.getStatus(); }, simmgr.interval );
+
+		simmgr.quickTimer = setTimeout(function() { simmgr.getQuickStatus(); }, simmgr.quickInterval );
+		simmgr.statusTimer = setTimeout(function() { simmgr.getStatus(); }, simmgr.statusInterval );
 		simmgr.running = 1;
 		
 		// bind demo button to start and stop polling of sim mgr
@@ -43,19 +43,58 @@ var simmgr = {
 			if ( txt == "Start Status Updates" )
 			{
 				simmgr.running = 1;
-				simmgr.timer = setTimeout(function() { simmgr.getStatus(); }, simmgr.interval );
+				simmgr.quickTimer = setTimeout(function() { simmgr.getQuickStatus(); }, simmgr.quickInterval );
+				simmgr.statusTimer = setTimeout(function() { simmgr.getStatus(); }, simmgr.statusInterval );
 				$(this).text("Stop Status Updates");
 			}
 			else 
 			{
 				simmgr.running = 0;
-				clearTimeout(simmgr.timer );
+				clearTimeout(simmgr.quickTimer );
+				clearTimeout(simmgr.statusTimer );
 				$(this).text("Start Status Updates");
 			}
 		});
 		
 		// This call will periodically tap the server to prevent PHP session timeouts.
 		simmgr.tapHost();
+	},
+	
+	getQuickStatus : function () {
+		// get unique time stamp
+		simmgr.timeStamp = new Date().getTime();
+		
+		$.ajax({
+			url: BROWSER_CGI + 'simstatus.cgi',
+			type: 'get',
+			dataType: 'json',
+			data: { qstat : simmgr.timeStamp },
+			success: function(response,  textStatus, jqXHR ) {
+				if ( simmgr.isLocalDisplay() )
+				{
+					if ( response.respiration.breathCount != simmgr.breathCount )
+					{
+						simmgr.breathCount  = response.respiration.breathCount;
+						controls.awRR.setSynch();
+					}
+					if ( response.cardiac.pulseCount != simmgr.pulseCount )
+					{
+						simmgr.pulseCount = response.cardiac.pulseCount;
+						controls.heartRate.setSynch();
+					}
+				}
+			},
+
+			error: function( jqXHR,  textStatus,  errorThrown){
+				console.log("error: "+textStatus+" : "+errorThrown );
+			},
+			complete: function(jqXHR,  textStatus ){
+				if ( simmgr.running == 1 )
+				{
+					simmgr.quickTimer = setTimeout(function() { simmgr.getQuickStatus(); }, simmgr.quickInterval );
+				}
+			}
+		});			
 	},
 	
 	getStatus : function () {
@@ -72,11 +111,19 @@ var simmgr = {
 				{
 					if ( response.respiration.breathCount != simmgr.breathCount )
 					{
+						if ( ( response.respiration.breathCount - simmgr.breathCount ) > 1 )
+						{
+							$("#outputDiv1").text("Resp "+ response.respiration.breathCount+" : "+simmgr.breathCount );
+						}
 						simmgr.breathCount  = response.respiration.breathCount;
 						controls.awRR.setSynch();
 					}
 					if ( response.cardiac.pulseCount != simmgr.pulseCount )
 					{
+						if ( ( response.cardiac.pulseCount - simmgr.pulseCount ) > 1 )
+						{
+							$("#outputDiv2").text("Heart "+ response.cardiac.pulseCount+" : "+simmgr.pulseCount );
+						}
 						simmgr.pulseCount = response.cardiac.pulseCount;
 						controls.heartRate.setSynch();
 					}
@@ -867,7 +914,7 @@ console.log("New scenario state");
 			complete: function(jqXHR,  textStatus ){
 				if ( simmgr.running == 1 )
 				{
-					simmgr.timer = setTimeout(function() { simmgr.getStatus(); }, simmgr.interval );
+					simmgr.statusTimer = setTimeout(function() { simmgr.getStatus(); }, simmgr.statusInterval );
 				}
 			}
 		});			
