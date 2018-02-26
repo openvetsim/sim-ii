@@ -634,7 +634,7 @@
 				if(chart.status.resp.synch == true ) {	// Restart Cycle
 					chart.resp.pixelCount = 0;
 					chart.resp.patternIndex = 0;
-					chart.resp.patternComplete = false;
+					chart.resp.patternComplete = true;
 					chart.resp.rhythmIndex = 'low';	// start pattern with pattern low...start timer of inhalation
 					
 					chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex].length;
@@ -669,8 +669,7 @@
 					chart.resp.pixelCount++;
 					chart.resp.patternIndex++;
 					chart.resp.activeCount++;
-					if(chart.resp.patternIndex >= chart.resp.length) {
-						
+					if(chart.resp.patternIndex >= chart.resp.length) {						
 						chart.resp.patternIndex = 0;
 						switch ( chart.resp.rhythmIndex ) {
 							case 'high-to-low':	// Depletion of CO2 (high to low)
@@ -681,8 +680,8 @@
 							case 'low': // Hold In (pattern low)
 								// load in new pattern if periodCount > 0 and pixel count exceeds periodcount
 								if(chart.resp.patternComplete && chart.resp.periodCount > 0) {
-//console.log('pattern Complete');
-//console.log('Period Count: ' + chart.resp.periodCount);
+// console.log('pattern Complete');
+// console.log('Period Count: ' + chart.resp.periodCount);
 //									if( chart.resp.periodCount > 0 ) {
 										chart.updateRespRate();
 										chart.resp.patternComplete = false;
@@ -853,6 +852,7 @@
 		},
 		
 		updateRespRate: function() {
+//console.log("updateRespRate", simmgr.respResponse.awRR );
 			controls.awRR.value = simmgr.respResponse.awRR;
 			controls.awRR.displayValue();
 //			clearTimeout(chart.resp.phaseTimer);

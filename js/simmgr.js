@@ -535,13 +535,14 @@ var simmgr = {
 					// awRR
 					if(typeof(response.respiration.awRR) != "undefined") {
 						simmgr.respResponse = response.respiration;
-//console.log('respiration: ' + simmgr.respResponse.awRR);
-//console.log('respiration: ' + controls.awRR.value);
+//console.log('New respiration: ' + simmgr.respResponse.awRR);
+//console.log('Old respiration: ' + controls.awRR.value);
 						if( simmgr.respResponse.awRR != controls.awRR.value ) {
 							if(controls.awRR.value == 0) {
 								chart.updateRespRate();
 							} else {
 								chart.resp.periodCount = Math.round(((60 / simmgr.respResponse.awRR) * 1000) / chart.resp.drawInterval);
+// console.log("New period count: " + chart.resp.periodCount);
 							}
 						} else {
 							chart.resp.periodCount = 0;
