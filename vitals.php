@@ -14,9 +14,19 @@
     <?php require_once(SERVER_INCLUDES . "header.php"); ?>
 	<script type="text/javascript">
         function zoom( set ) {
-			setVal = set+"%";
-            document.body.style.zoom = setVal ;
-			console.log("Zoom: "+setVal ) 
+            var setScale = set / 100;
+			$('body').css({ 
+				'transform'                : 'scale('+setScale+')',
+				'transform-origin'         : '0 0',
+				'-moz-transform-origin'    : '0 0',         // Firefox
+				'-ms-transform-origin'     : '0 0',         // IE
+				'-webkit-transform-origin' : '0 0',         // Opera/Safari
+				'-moz-transform'           : 'scale('+setScale+')', // Firefox
+				'-ms-transform'            : 'scale('+setScale+')', // IE
+				'-webkit-transform'        : 'scale('+setScale+')'  // Opera/Safari
+			});
+//          document.body.style.zoom = setVal ;
+// console.log("Zoom: "+setVal ) 
         }
 			$(document).ready(function() {
 				

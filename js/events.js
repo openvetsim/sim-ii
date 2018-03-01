@@ -46,19 +46,29 @@
 			$("#event-monitor").scrollTop(1000);
 			
 			// bind comments
-			$('#comment-input').unbind().focus(function() {
+			$('#comment-input').focus(function() {
 				if($(this).val() == events.defaultComment) {
 					$(this).val('');
 				}
 			});
-			
+
 			$('#comment-button').unbind().click(function() {
 				if($('#comment-input').val() == '' || $('#comment-input').val() == events.defaultComment) {
 					modal.showText('Please enter a comment');
-				} else {
+				} else if($('#comment-input').val() != events.defaultComment) {
 					simmgr.sendChange({'set:event:comment': $('#comment-input').val()});
+					$('#comment-input').blur().val(events.defaultComment);
 				}
-				$('#comment-input').val(events.defaultComment);
+			});
+
+
+			$('#comment-input').keypress(function(evt) {
+				if(evt.which === null) {
+					return;
+				} else if(evt.which == 13) {
+					$('#comment-button').trigger('click');
+				}
+				evt.which = null;
 			});
 		},
 		

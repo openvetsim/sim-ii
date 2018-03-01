@@ -809,10 +809,10 @@
 			
 			setCPRState: function() {
 				if(controls.cpr.inProgress == false) {
-					$('a.cpr-link').html('Start CPR');
+					$('a.cpr-link').html('Start Comps');
 					$('#button-cpr').attr('src', BROWSER_IMAGES + 'empty.png');
 				} else {
-					$('a.cpr-link').html('Stop CPR');					
+					$('a.cpr-link').html('Stop Comps');					
 					$('#button-cpr').attr('src', BROWSER_IMAGES + 'heart.png');
 				}
 			}

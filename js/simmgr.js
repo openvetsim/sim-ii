@@ -501,10 +501,11 @@ var simmgr = {
 					if(typeof(response.media.filename) != "undefined") {
 						controls.media.fileName = response.media.filename;
 					}
-					if(typeof(response.media.play) !== 'undefined' )
+					if(typeof(response.media.play) !== 'undefined' && profile.isVitalsMonitor)
 					{
 						if ( ( response.media.play == 1 ) && ( simmgr.mediaPlayStarted == 0 ) )
 						{
+
 							// Start new media display. Base action on file type
 							var fileName = controls.media.fileName;
 							var fileExt = fileName.split('.')[fileName.split('.').length - 1].toLowerCase();
@@ -533,7 +534,15 @@ var simmgr = {
 										if (iWidth < bWidth) {
 											marginleft = (bWidth - iWidth) / 2;
 										}
-										$('#media-overlay').css({'margin-left': marginleft + 'px', 'margin-top' : margintop + 'px' } );
+//										$('#media-overlay').css({'margin-left': marginleft + 'px', 'margin-top' : margintop + 'px' } );
+
+										$('#media-overlay').css({
+											'margin-left': '100px',
+											'margin-top': '10px',
+											'max-height': 'none',
+											'max-width': 'none',
+											'height': ($('#vsm').height() - 50) + 'px'
+										});
 									});
 									$('#media-overlay').draggable();
 									break;
