@@ -506,7 +506,6 @@ a:hover {
 #patient-info {
 	width: 600px;
 	background-color: white;
-	position: fixed;
 	top: 10px;
 	cursor: move;
 	color: black;
