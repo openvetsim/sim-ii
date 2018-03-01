@@ -13,38 +13,42 @@
   <head>
     <?php require_once(SERVER_INCLUDES . "header.php"); ?>
 	<script type="text/javascript">
-        function zoom( set ) {
-            var setScale = set / 100;
-			$('body').css({ 
-				'transform'                : 'scale('+setScale+')',
-				'transform-origin'         : '0 0',
-				'-moz-transform-origin'    : '0 0',         // Firefox
-				'-ms-transform-origin'     : '0 0',         // IE
-				'-webkit-transform-origin' : '0 0',         // Opera/Safari
-				'-moz-transform'           : 'scale('+setScale+')', // Firefox
-				'-ms-transform'            : 'scale('+setScale+')', // IE
-				'-webkit-transform'        : 'scale('+setScale+')'  // Opera/Safari
-			});
-//          document.body.style.zoom = setVal ;
-// console.log("Zoom: "+setVal ) 
-        }
-			$(document).ready(function() {
-				
+			function doWindowScale() {			
 				// Resize Chart based on Window Size
 				// Chart is 650 x 400 with 11px on left and 1px left, right and bottom
-				Wwidth = $(window).width();
-				Wheight = $(window).height();
+				var Wwidth = $(window).width();
+				var Wheight = $(window).height();
 				console.log("Screen size ", Wwidth, Wheight );
 				// Calculate max scale for width and height
-				zoomW = ( ( Wwidth - 40 ) / 650 ) * 100;
-				zoomH = ( ( Wheight - 40 ) / 400 ) * 100;
+				var zoomW = ( ( Wwidth - 40 ) / (650) ) * 100;
+				var zoomH = ( ( Wheight - 40 ) / (400) ) * 100;
+				var zoomSet;
 				
 				if ( zoomW > zoomH )
 					zoomSet = zoomH;
 				else
 					zoomSet = zoomW;
 				
-				zoom(zoomSet);
+				var setScale = zoomSet / 100;
+				$('#vsm').css({ 
+					'transform'                : 'scale('+setScale+')',
+					'transform-origin'         : '0 0',
+					'-moz-transform-origin'    : '0 0',         // Firefox
+					'-ms-transform-origin'     : '0 0',         // IE
+					'-webkit-transform-origin' : '0 0',         // Opera/Safari
+					'-moz-transform'           : 'scale('+setScale+')', // Firefox
+					'-ms-transform'            : 'scale('+setScale+')', // IE
+					'-webkit-transform'        : 'scale('+setScale+')'  // Opera/Safari
+				});
+	//          document.body.style.zoom = setVal ;
+				console.log("Transform: "+setScale ) 
+			}
+			$( window ).resize(function() {
+				doWindowScale();
+			});
+			
+			$(document).ready(function() {				
+				doWindowScale();
 				
 				// init profile data
 				scenario.loadScenario();
@@ -101,12 +105,26 @@
   .dbgNote {
 	font-size: 9px;
   }
+
+  #vsm {
+	float-left ii-border;
+	position: relative;
+  }
+  #theButtons {
+	position: absolute;
+	bottom: -10px;
+	right: 10px;
+  }
+  #theButtons button {
+	font-size: 10px;
+	line-height: normal;
+  }
 	</style>
 	
 </head>
 
 <body>
-			<div id="vsm" class="float-left ii-border">
+			<div id="vsm">
 				<h1>VS Monitor</h1>
 				<div id="vs-left-col">
 					<canvas id="vs-trace-1" class="vs-trace" width="500" height="125" onclick="modal.heartRhythm(); return false;"></canvas>
@@ -145,11 +163,12 @@
 						<a id="display-nbp-hr" class="alt-control-rate color-red" href="javascript: void(0)" onclick="modal.nbp(); return false;"><span style="font-size: 24px;">PR</span> <span id="displayed-reportedHR">75</span></a>
 					</div>
 				</div>
-				
-
+				<div id="theButtons">
+					<button id="startStopButton">Stop</button>
+					<a href='vitals.php?v=1'><button>Refresh</button></a>
+				</div>
 			</div>
-			<button id="startStopButton">Stop</button>
-			<a href='vitals.php?v=1'><button>Refresh</button></a>
+			
 			<!--<button id="closeButton">Close</button>-->
 </body>
 </html>
