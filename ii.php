@@ -275,11 +275,11 @@ console.log(controls['awRR'].increment);
 					<li class="logout">
 						<a href="javascript: void(2);" onclick="modal.manageScenarios();" class="event-link" id="scenario-click">Scenarios</a>						
 					</li>
-					<li class="logout">
+					<!-- <li class="logout">
 						<a href="../../editor/editor.php"  class="event-link breath-link">Editor</a>						
-					</li>
+					</li> -->
 					<li class="logout">
-						<a href="javascript: void(2);"  class="event-link cpr-link">Start Compressions</a>						
+						<a href="javascript: void(2);"  class="event-link cpr-link">Start Comps</a>						
 					</li>
 					<li class="logout">
 						<a href="javascript: void(2);"  class="event-link breath-link">Manual Breath</a>						
