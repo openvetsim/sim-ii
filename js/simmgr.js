@@ -40,19 +40,19 @@ var simmgr = {
 		// bind demo button to start and stop polling of sim mgr
 		$("#startStopButton").click(function(){
 			var txt = $(this).text();
-			if ( txt == "Start Status Updates" )
+			if ( txt == "Start" )
 			{
 				simmgr.running = 1;
 				simmgr.quickTimer = setTimeout(function() { simmgr.getQuickStatus(); }, simmgr.quickInterval );
 				simmgr.statusTimer = setTimeout(function() { simmgr.getStatus(); }, simmgr.statusInterval );
-				$(this).text("Stop Status Updates");
+				$(this).text("Stop");
 			}
 			else 
 			{
 				simmgr.running = 0;
 				clearTimeout(simmgr.quickTimer );
 				clearTimeout(simmgr.statusTimer );
-				$(this).text("Start Status Updates");
+				$(this).text("Start");
 			}
 		});
 		
@@ -534,15 +534,15 @@ var simmgr = {
 										if (iWidth < bWidth) {
 											marginleft = (bWidth - iWidth) / 2;
 										}
-//										$('#media-overlay').css({'margin-left': marginleft + 'px', 'margin-top' : margintop + 'px' } );
+										$('#media-overlay').css({'margin-left': marginleft + 'px', 'margin-top' : margintop + 'px' } );
 
-										$('#media-overlay').css({
-											'margin-left': '100px',
-											'margin-top': '10px',
-											'max-height': 'none',
-											'max-width': 'none',
-											'height': ($('#vsm').height() - 50) + 'px'
-										});
+//										$('#media-overlay').css({
+//											'margin-left': '100px',
+//											'margin-top': '10px',
+//											'max-height': 'none',
+//											'max-width': 'none',
+//											'height': ($('#vsm').height() - 50) + 'px'
+//										});
 									});
 									$('#media-overlay').draggable();
 									break;
