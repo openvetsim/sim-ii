@@ -59,7 +59,15 @@
 							$('body').append(response.html);
 							$('#patient-info').draggable().css({
 								'left': '10px',
-	//							'margin-left': (Math.floor($('#patient-info').width() / 2) * -1) + 'px'
+	//							'margin-left': (Math.floor($('#patient-info').width() / 2) * -1) + 'px',
+								'transform'                : 'scale('+windowScaleFactor+')',
+								'transform-origin'         : '0 0',
+								'-moz-transform-origin'    : '0 0',         // Firefox
+								'-ms-transform-origin'     : '0 0',         // IE
+								'-webkit-transform-origin' : '0 0',         // Opera/Safari
+								'-moz-transform'           : 'scale('+windowScaleFactor+')', // Firefox
+								'-ms-transform'            : 'scale('+windowScaleFactor+')', // IE
+								'-webkit-transform'        : 'scale('+windowScaleFactor+')'  // Opera/Safari
 							});
 
 						}

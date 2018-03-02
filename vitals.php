@@ -13,6 +13,8 @@
   <head>
     <?php require_once(SERVER_INCLUDES . "header.php"); ?>
 	<script type="text/javascript">
+			var windowScaleFactor = 1;
+			
 			function doWindowScale() {			
 				// Resize Chart based on Window Size
 				// Chart is 650 x 400 with 11px on left and 1px left, right and bottom
@@ -29,19 +31,18 @@
 				else
 					zoomSet = zoomW;
 				
-				var setScale = zoomSet / 100;
+				windowScaleFactor = zoomSet / 100;
 				$('#vsm').css({ 
-					'transform'                : 'scale('+setScale+')',
+					'transform'                : 'scale('+windowScaleFactor+')',
 					'transform-origin'         : '0 0',
 					'-moz-transform-origin'    : '0 0',         // Firefox
 					'-ms-transform-origin'     : '0 0',         // IE
 					'-webkit-transform-origin' : '0 0',         // Opera/Safari
-					'-moz-transform'           : 'scale('+setScale+')', // Firefox
-					'-ms-transform'            : 'scale('+setScale+')', // IE
-					'-webkit-transform'        : 'scale('+setScale+')'  // Opera/Safari
+					'-moz-transform'           : 'scale('+windowScaleFactor+')', // Firefox
+					'-ms-transform'            : 'scale('+windowScaleFactor+')', // IE
+					'-webkit-transform'        : 'scale('+windowScaleFactor+')'  // Opera/Safari
 				});
-	//          document.body.style.zoom = setVal ;
-				console.log("Transform: "+setScale ) 
+				console.log("Transform: "+windowScaleFactor );
 			}
 			$( window ).resize(function() {
 				doWindowScale();
@@ -104,11 +105,6 @@
   }
   .dbgNote {
 	font-size: 9px;
-  }
-
-  #vsm {
-	float-left ii-border;
-	position: relative;
   }
   #theButtons {
 	position: absolute;
