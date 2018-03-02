@@ -246,6 +246,8 @@
 			},
 			
 			setSynch: function() {
+//console.log('pixelCount: ' + chart.resp.pixelCount);
+//console.log('periodCount: ' + chart.resp.periodCount);
 				chart.status.resp.synch = true;
 				if ( ! ( simmgr.isLocalDisplay() ) )
 				{

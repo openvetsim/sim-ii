@@ -668,7 +668,7 @@
 					
 					chart.resp.pixelCount++;
 					chart.resp.patternIndex++;
-					chart.resp.activeCount++;
+					
 					if(chart.resp.patternIndex >= chart.resp.length) {						
 						chart.resp.patternIndex = 0;
 						switch ( chart.resp.rhythmIndex ) {
@@ -676,17 +676,23 @@
 								chart.resp.patternComplete = true;
 								chart.resp.rhythmIndex = 'low';
 								chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex].length;
+if (chart.resp.periodCount > 0) {
+	chart.updateRespRate();
+}
+										
+
 								break;
 							case 'low': // Hold In (pattern low)
 								// load in new pattern if periodCount > 0 and pixel count exceeds periodcount
 								if(chart.resp.patternComplete && chart.resp.periodCount > 0) {
+									chart.resp.patternComplete = false;
+//									chart.updateRespRate();
+// console.log('pixelCount: ' + chart.resp.pixelCount);
+								}
 // console.log('pattern Complete');
 // console.log('Period Count: ' + chart.resp.periodCount);
 //									if( chart.resp.periodCount > 0 ) {
-										chart.updateRespRate();
-										chart.resp.patternComplete = false;
 //									}
-								}
 								
 								break;
 							case 'low-to-high': // Exhalation (low to high)
@@ -705,6 +711,9 @@
 								break;
 						}
 					}
+//					if(chart.resp.pixelCount > chart.resp.periodCount) {
+//console.log('diff');
+//					}
 				}
 			}
 			else {
