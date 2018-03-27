@@ -343,10 +343,10 @@
 			} else if ( cardiac.rate <= 0  ) {
 //				chart.ekg.rhythmIndex = 'asystole';	// Flatline
 			} else if(chart.ekg.rhythmIndex == 'sinus') {
-				if( cardiac.rate <= 73 ) {
+				if( cardiac.rate <= 65 ) {
 					chart.ekg.rateIndex = 0;
 				}
-				else if( cardiac.rate <= 121 ) {
+				else if( cardiac.rate <= 115 ) {
 					chart.ekg.rateIndex = 1;
 				}
 				else if( cardiac.rate <= 220 ) {
