@@ -638,6 +638,9 @@
 				y = 0;
 			} else if ( ( profile.isVitalsMonitor == false ) || ( controls.CO2.leadsConnected == true ) ) {
 				if(chart.status.resp.synch == true ) {	// Restart Cycle
+					if(simmgr.isLocalDisplay() && chart.resp.rhythmIndex == 'low') {
+						chart.updateRespRate();
+					}
 					chart.resp.pixelCount = 0;
 					chart.resp.patternIndex = 0;
 					chart.resp.patternComplete = true;
