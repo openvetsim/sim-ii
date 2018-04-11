@@ -66,7 +66,7 @@
 			}
 				#vs-heartRhythm {
 					color: green;
-					margin-bottom: 45px;
+					margin-bottom: 57px;
 					height: 30px;
 				}
 				#vs-awRR {
@@ -105,7 +105,7 @@
 		.alt-control.awRR {
 			width: 140px;
 			position: absolute;
-			top: 215px;
+			top: 220px;
 			right: 8px;
 		}
 		.alt-control.SpO2 {

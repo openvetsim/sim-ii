@@ -77,6 +77,7 @@
 			color: 'green',			// color of trace (either hex or html color)
 			rhythm: new Array,		// array of digitized rhythms
 			yOffset: 0,				// yOffset of trace
+			yDisplayOffset: 5,		// display y offset
 			xOffsetLeft: 10,		// left xOffset of trace
 			xOffsetRight: 0,		// right xOffset of trace
 			rhythmIndex: '',		// index of current rhythm being displayed
@@ -109,6 +110,7 @@
 			color: 'white',			// color of trace (either hex or html color)
 			rhythm: new Array,		// array of digitized rhythms
 			yOffset: 0,				// yOffset of trace
+			yDisplayOffset: 5,		// display y offset
 			xOffsetLeft: 10,		// left xOffset of trace
 			xOffsetRight: 0,		// right xOffset of trace
 			rhythmIndex: 'low',			// index of current rhythm being displayed
@@ -334,6 +336,7 @@
 			
 			// start the pattern
 			chart.resp.interval = setInterval(chart.drawRespPixel, chart.resp.drawInterval, "resp");
+console.log("ekg y offset: " + chart.ekg.yOffset);
 		},
 		
 		// Passed the cardiac data from simmgr status
@@ -574,7 +577,7 @@
 				y = 0;
 			}
 			
-			y += chart.ekg.yOffset;
+			y += chart.ekg.yOffset + chart.ekg.yDisplayOffset;
 			
 			// create stroke
 			chart.ekg.ctx.lineWidth = 2;
@@ -729,7 +732,7 @@ if (chart.resp.periodCount > 0) {
 				y = 0;
 			}
 			
-			y += chart.resp.yOffset;
+			y += chart.resp.yOffset + chart.resp.yDisplayOffset;
 			// create stroke
 			chart.resp.ctx.lineWidth = 2;
 			if ( ( profile.isVitalsMonitor == false ) || ( controls.CO2.leadsConnected == true ) )
