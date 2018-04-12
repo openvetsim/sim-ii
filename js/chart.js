@@ -439,6 +439,10 @@ console.log("ekg y offset: " + chart.ekg.yOffset);
 		},
 		
 		drawEkgPixel: function() {
+			if(scenario.currentScenarioState == scenario.scenarioState.PAUSED && profile.isVitalsMonitor) {
+				return;
+			}
+			
 			var y;
 
 			// Create the 'cursor' by clearing out a 10px wide section in front of the pixel
@@ -616,6 +620,10 @@ console.log("ekg y offset: " + chart.ekg.yOffset);
 		
 		
 		drawRespPixel: function() {
+			if(scenario.currentScenarioState == scenario.scenarioState.PAUSED && profile.isVitalsMonitor) {
+				return;
+			}
+
 			var y;
 
 			// Create the 'cursor' by clearing out a 10px wide section in front of the pixel

@@ -608,6 +608,14 @@ var simmgr = {
 					{
 						console.log("no respiration awRR" );
 					}
+					
+					// modal awRR rate (may be different from disp;ayed awRR due to manual breaths)
+					if(typeof(response.respiration.rate) != "undefined") {
+						if( response.respiration.rate != controls.awRR.modalRate ) {
+							controls.awRR.modalRate = response.respiration.rate;
+						}
+					}
+					
 					// spo2
 					if(typeof(response.respiration.spo2) != "undefined") {
 						var spo2Rate = response.respiration.spo2;
@@ -758,7 +766,6 @@ var simmgr = {
 						// normalize result, see if there was a change
 						var newScenarioState = response.scenario.state.toUpperCase();
 						if(scenario.currentScenarioState != scenario.scenarioState[newScenarioState]) {
-console.log("New scenario state");
 							switch(newScenarioState) {
 								case 'STOPPED':
 									scenario.currentScenarioState = scenario.scenarioState.STOPPED;
@@ -767,6 +774,7 @@ console.log("New scenario state");
 									} else {
 										controls.nbp.displayNIBPDashes();
 									}
+console.log("New scenario state STOPPED");
 									break;
 								
 								case 'PAUSED':
@@ -775,6 +783,7 @@ console.log("New scenario state");
 										scenario.pauseScenario();
 									}
 									profile.removePatientInfo();
+console.log("New scenario state PAUSED");
 									break;
 								
 								case 'RUNNING':
@@ -783,6 +792,7 @@ console.log("New scenario state");
 										scenario.continueScenario();
 									}
 									profile.removePatientInfo();
+console.log("New scenario state RUNNING");
 									break;
 								
 								default:

@@ -46,7 +46,10 @@ console.log("Current Scenario State: " + this.currentScenarioState);
 		// init terminate button
 		$('#scenario-terminate-button').css({'background-color': buttons.disconnectColor, 
 									border: '1px solid ' + buttons.disconnectColor
-									}).html('Terminate Scenario').hide();
+									}).html('Terminate Scenario');
+		if(scenario.currentScenarioState == scenario.scenarioState.STOPPED) {
+			$('#scenario-terminate-button').hide();
+		}
 									
 		$('#scenario-terminate-button').unbind().click(function() {
 			simmgr.sendChange( {'set:scenario:state' : 'Terminate'} );

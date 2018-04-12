@@ -194,7 +194,7 @@
 				url: BROWSER_AJAX + 'ajaxGetSingleControlContent.php',
 				type: 'post',
 				async: false,
-				data: {ModalTitle: 'Set Respiration Rate (awRR)', ControlTitle: "Respiration Rate", ModalUnits: controls.awRR.modalUnitsLabel},
+				data: {ModalTitle: 'Set Respiration Rate', ControlTitle: "Respiration Rate", ModalUnits: controls.awRR.modalUnitsLabel},
 				dataType: 'json',
 				success: function(response) {
 					if(response.status == AJAX_STATUS_OK) {
@@ -203,7 +203,7 @@
 
 						modal.initSingleSlider('awRR');
 						
-						$('.strip-value').val(controls.awRR.value);
+						$('.strip-value').val(controls.awRR.modalRate);
 						
 						// bind apply button
 						$('.modal-button.apply').click(function() {
@@ -1115,12 +1115,21 @@ console.dir(params);
 				controlType = 'awRR';
 			}
 			
-			// add step, min and max
+			// if awrr then use modal rate
+			if(controlType == 'awRR') {
+				// set value
+				$('.control-slider-1').val(controls.awRR.modalRate);
+			} else {
+				// set value
+				$('.control-slider-1').val(controls[controlType].value);			
+			}
+			
+			// set min and max
 			$('.control-slider-1').attr({
 				'step': controls[controlType].increment,
 				'min': controls[controlType].minValue,
 				'max': controls[controlType].maxValue
-			}).val(controls[controlType].value);
+			});		
 			
 			// bind controls
 			controls[controlType].slideBar = $(".control-slider-1").slider({

@@ -205,6 +205,7 @@
 			slideBar: '',
 			beatTimeout: 0,
 			increment: 1,
+			modalRate: 30,
 			
 			modalUnitsLabel: 'BPM',
 			
