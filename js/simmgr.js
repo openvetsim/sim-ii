@@ -15,7 +15,7 @@ var simmgr = {
 	quickTimer : 0,
 	breathCount : 0,
 	pulseCount : 0,
-	quickInterval : 500,
+	quickInterval : 200,
 	statusInterval : 1000,
 	running : 0,
 	audioPlayStarted : 0,
@@ -70,13 +70,16 @@ var simmgr = {
 			dataType: 'json',
 			data: { qstat : simmgr.timeStamp },
 			success: function(response,  textStatus, jqXHR ) {
+				if ( response.respiration.breathCount != simmgr.breathCount )
+				{
+					simmgr.breathCount = response.respiration.breathCount;
+					simmgr.respResponse.inhalation_duration = response.respiration.inhalation_duration;
+					simmgr.respResponse.exhalation_duration = response.respiration.exhalation_duration;
+					simmgr.respResponse.rate = response.respiration.rate;
+					controls.awRR.setSynch();
+				}
 				if ( simmgr.isLocalDisplay() )
 				{
-					if ( response.respiration.breathCount != simmgr.breathCount )
-					{
-						simmgr.breathCount  = response.respiration.breathCount;
-						controls.awRR.setSynch();
-					}
 					if ( response.cardiac.pulseCount != simmgr.pulseCount )
 					{
 						simmgr.pulseCount = response.cardiac.pulseCount;
@@ -109,6 +112,7 @@ var simmgr = {
 			success: function(response,  textStatus, jqXHR ) {
 				if ( simmgr.isLocalDisplay() )
 				{
+/*
 					if ( response.respiration.breathCount != simmgr.breathCount )
 					{
 						if ( ( response.respiration.breathCount - simmgr.breathCount ) > 1 )
@@ -118,6 +122,7 @@ var simmgr = {
 						simmgr.breathCount  = response.respiration.breathCount;
 						controls.awRR.setSynch();
 					}
+*/
 					if ( response.cardiac.pulseCount != simmgr.pulseCount )
 					{
 						if ( ( response.cardiac.pulseCount - simmgr.pulseCount ) > 1 )
@@ -591,25 +596,30 @@ var simmgr = {
 					// awRR
 					if(typeof(response.respiration.awRR) != "undefined") {
 						simmgr.respResponse = response.respiration;
-//console.log('New respiration: ' + simmgr.respResponse.awRR);
-//console.log('Old respiration: ' + controls.awRR.value);
-						if( simmgr.respResponse.awRR != controls.awRR.value ) {
-							if(controls.awRR.value == 0) {
-								chart.updateRespRate();
-							} else {
-								chart.resp.periodCount = Math.round(((60 / simmgr.respResponse.awRR) * 1000) / chart.resp.drawInterval);
-// console.log("New period count: " + chart.resp.periodCount);
-							}
-						} else {
-							chart.resp.periodCount = 0;
+						if(typeof simmgr.respResponse.awRR != "undefined") {
+							controls.awRR.value = simmgr.respResponse.awRR;
 						}
+						controls.awRR.displayValue();
+
+// console.log('New respiration: ' + simmgr.respResponse.awRR);
+// console.log('Old respiration: ' + controls.awRR.value);
+//						if( simmgr.respResponse.awRR != controls.awRR.value ) {
+//							if(controls.awRR.value == 0) {
+//								chart.updateRespRate();
+//							} else {
+//								chart.resp.periodCount = Math.round(((60 / simmgr.respResponse.awRR) * 1000) / chart.resp.drawInterval);
+// console.log("New period count: " + chart.resp.periodCount);
+//							}
+//						} else {
+ //							chart.resp.periodCount = 0;
+//						}
 					}
 					else
 					{
 						console.log("no respiration awRR" );
 					}
 					
-					// modal awRR rate (may be different from disp;ayed awRR due to manual breaths)
+					// modal awRR rate (may be different from displayed awRR due to manual breaths)
 					if(typeof(response.respiration.rate) != "undefined") {
 						if( response.respiration.rate != controls.awRR.modalRate ) {
 							controls.awRR.modalRate = response.respiration.rate;

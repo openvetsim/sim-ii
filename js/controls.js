@@ -247,13 +247,16 @@
 			},
 			
 			setSynch: function() {
-//console.log('pixelCount: ' + chart.resp.pixelCount);
-//console.log('periodCount: ' + chart.resp.periodCount);
+// console.log('pixelCount: ' + chart.resp.pixelCount);
+// console.log('periodCount: ' + chart.resp.periodCount);
+// console.log(Math.round((60 / controls.awRR.value) * 1000));
+// console.log(controls.awRR.value);
 				chart.status.resp.synch = true;
-				if ( ! ( simmgr.isLocalDisplay() ) )
-				{
-					controls.awRR.beatTimeout = setTimeout(controls.awRR.setSynch, Math.round((60 / controls.awRR.value) * 1000));
-				}
+				return;
+//				if ( ! ( simmgr.isLocalDisplay() ) )
+//				{
+//					controls.awRR.beatTimeout = setTimeout(controls.awRR.setSynch, Math.round((60 / controls.awRR.value) * 1000));
+//				}
 			},
 			
 			validateNewValue: function() {
