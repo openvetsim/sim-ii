@@ -103,7 +103,7 @@
 			vpcSynchDelayCount: 0,		
 									// count of delay added in to synch if VPC is generated
 			vpcSynchDelay: 0,		// calculated delay
-			vpcAdvanceDelay: 350,	// advance delay of vpc pulse * 1000. (i.e. 250 = 25% of heart rate to advance pulse).
+			vpcAdvanceDelay: 700,	// advance delay of vpc pulse * 1000. (i.e. 700 = 70% of heart rate to advance pulse or 1.4X of base HR).
 		},
 		
 		// respiration strip parameters
@@ -422,7 +422,7 @@
 					// calculate length of VPC
 					chart.ekg.vpcLength = chart.ekg.rhythm[controls.heartRhythm.vpc][chart.ekg.vpcRateIndex].length;
 					
-					// calculate vpc synch delay 1.4X of heart rate (or 70%)
+					// calculate vpc synch delay 1.4X of heart rate (or 70%) minus width of sinus pulse
 					chart.ekg.vpcSynchDelay = Math.floor(((60 / cardiac.rate) * chart.ekg.vpcAdvanceDelay) / chart.ekg.drawInterval);
 
 					// set these 2 params to kick off a series of VPC's.
@@ -555,7 +555,12 @@
 								if(chart.ekg.vpcPatternIndex >= chart.ekg.vpcLength) {
 									chart.ekg.vpcPatternIndex = 0;
 									chart.ekg.vpcCount--;
-									chart.ekg.vpcSynchDelayCount = chart.ekg.vpcSynchDelay;
+									
+									// reset synch delay minus width of vpc pattern
+									chart.ekg.vpcSynchDelayCount = chart.ekg.vpcSynchDelay - chart.ekg.length;
+console.log("vpc delay: " +  chart.ekg.vpcSynchDelay);
+console.log("calc vpc delay: " +  chart.ekg.vpcSynchDelayCount);
+console.log("ekg length: " +  chart.ekg.length);
 								}
 							}
 						} else {

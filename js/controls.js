@@ -1,6 +1,7 @@
 	var controls = {
 		heartRate: {
 			value: 75,
+			avg_rate: 0,			// rolling average as reported by sim mgr
 			minValue: 0,
 			maxValue: 300,
 			slideBar: '',
@@ -107,7 +108,7 @@
 					// flag that we are going to do a vpc pulse
 					chart.status.cardiac.vpcSynch = true;
 					chart.ekg.vpcCount = controls.heartRhythm.vpcCount;
-					chart.ekg.vpcSynchDelayCount = chart.ekg.vpcSynchDelay;
+					chart.ekg.vpcSynchDelayCount = 0;
 					chart.ekg.vpcPatternIndex = 0;
 					return;
 				}
@@ -123,7 +124,7 @@
 						// flag that we are going to do a vpc pulse
 						chart.status.cardiac.vpcSynch = true;
 						chart.ekg.vpcCount = controls.heartRhythm.vpcCount;
-						chart.ekg.vpcSynchDelayCount = chart.ekg.vpcSynchDelay;
+						chart.ekg.vpcSynchDelayCount = chart.ekg.vpcSynchDelay - chart.ekg.length;
 						chart.ekg.vpcPatternIndex = 0;
 					} else {
 						chart.status.cardiac.vpcSynch = false;
@@ -160,7 +161,7 @@
 					} else if(chart.ekg.cprHRDisplayStatus == chart.CPR_ACTIVE && profile.isVitalsMonitor == true) {
 						$('#vs-heartRhythm a.display-rate').html('---<span class="vs-upper-label"> bpm</span>');
 					} else {
-						$('#vs-heartRhythm a.display-rate').html(controls.heartRate.value + '<span class="vs-upper-label"> bpm</span>');
+						$('#vs-heartRhythm a.display-rate').html(controls.heartRate.avg_rate + '<span class="vs-upper-label"> bpm</span>');
 					}
 				}
 				else {

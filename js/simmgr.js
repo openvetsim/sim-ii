@@ -182,6 +182,12 @@ var simmgr = {
 						chart.ekg.periodCount = 0;
 					}
 					
+					// avg rate
+					if(typeof(response.cardiac.avg_rate) != "undefined" && response.cardiac.avg_rate != controls.heartRate.avg_rate) {
+						controls.heartRate.avg_rate = response.cardiac.avg_rate;
+						controls.heartRate.displayValue();
+					}
+					
 					
 					// cardiac nbp
 					if ( ( typeof(response.cardiac.bps_sys) != "undefined" ) && ( response.cardiac.bps_dia != "undefined" ) )
