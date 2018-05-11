@@ -558,9 +558,6 @@
 									
 									// reset synch delay minus width of vpc pattern
 									chart.ekg.vpcSynchDelayCount = chart.ekg.vpcSynchDelay - chart.ekg.length;
-console.log("vpc delay: " +  chart.ekg.vpcSynchDelay);
-console.log("calc vpc delay: " +  chart.ekg.vpcSynchDelayCount);
-console.log("ekg length: " +  chart.ekg.length);
 								}
 							}
 						} else {
