@@ -15,6 +15,7 @@ var simmgr = {
 	quickTimer : 0,
 	breathCount : 0,
 	pulseCount : 0,
+	pulseCountVpc: 0,
 	quickInterval : 200,
 	statusInterval : 1000,
 	running : 0,
@@ -84,6 +85,18 @@ var simmgr = {
 					{
 						simmgr.pulseCount = response.cardiac.pulseCount;
 						controls.heartRate.setSynch();
+						
+						// kill vpc if any
+						chart.status.cardiac.vpcSynch = false;
+						chart.ekg.vpcCount = 0;
+					}
+					
+					if ( response.cardiac.pulseCountVpc != simmgr.pulseCountVpc )
+					{
+						simmgr.pulseCountVpc = response.cardiac.pulseCountVpc;
+						
+						// kick off vpc cycle...always will happen for local display
+						controls.heartRate.isVPCCycle();
 					}
 				}
 			},
@@ -369,19 +382,19 @@ var simmgr = {
 						if(response.cardiac.vpc != 'none') {
 							var responseArray = response.cardiac.vpc.split("-");
 							
-							controls.heartRhythm.vpcCount = responseArray[1];
-							if(responseArray[0] == 1) {
-								controls.heartRhythm.vpc = "vtach1";
+							if( !(simmgr.isLocalDisplay()) ) {
+								controls.heartRhythm.vpcCount = responseArray[1];
 							} else {
-								controls.heartRhythm.vpc = "vtach2";							
+								controls.heartRhythm.vpcCount = 1;							
+							}
+							if(responseArray[0] == 1) {
+								controls.heartRhythm.vpc = "vpc1";
+							} else {
+								controls.heartRhythm.vpc = "vpc2";							
 							}
 							
-							// set vpc pattern length
-							chart.ekg.vpcLength = chart.ekg.rhythm[controls.heartRhythm.vpc][1].length;
-							
-							// calculate vpc delay
-							chart.ekg.vpcDelay = chart.ekg.vpcLength * chart.ekg.drawInterval;
-							simmgr.sendChange( { 'set:cardiac:vpc_delay' :  chart.ekg.vpcDelay} );
+							// init params
+							chart.updateCardiac(response.cardiac);
 						} else {
 							controls.heartRhythm.vpcCount = 0;
 						}

@@ -79,15 +79,56 @@
 				} else {
 					controls.heartRate.delay = 1.0;
 				}
-			
-				chart.status.cardiac.synch = true;
 				
-				// vpc?
+				// see if we are in a vpc cycle
+				if(chart.ekg.rhythmIndex == 'sinus' && !(simmgr.isLocalDisplay())) {
+					if(chart.ekg.vpcCount == 0) {
+						// skip synch for just completed VPC, set count to -1 to flag action
+						chart.ekg.vpcCount = -1;
+					} else if(chart.ekg.vpcCount == -1) {
+						// see if we need to flag a new vpc, -1 indicated vpc has been completed and synch has been skipped.
+						chart.status.cardiac.synch = true;
+						controls.heartRate.isVPCCycle();
+					}
+				} else {
+					chart.status.cardiac.synch = true;
+				}
+					
+				if ( ! ( simmgr.isLocalDisplay() ))
+				{
+					clearTimeout(controls.heartRate.beatTimeout);
+					controls.heartRate.beatTimeout = setTimeout(controls.heartRate.setSynch, Math.round((60 / controls.heartRate.value) * 1000) * controls.heartRate.delay);						
+				}
+			},
+			
+			isVPCCycle: function() {
+				// vpc?  This is called after each cardiac synch
+				if (simmgr.isLocalDisplay()) {
+					// flag that we are going to do a vpc pulse
+					chart.status.cardiac.vpcSynch = true;
+					chart.ekg.vpcCount = controls.heartRhythm.vpcCount;
+					chart.ekg.vpcSynchDelayCount = chart.ekg.vpcSynchDelay;
+					chart.ekg.vpcPatternIndex = 0;
+					return;
+				}
+
+				// are we in the middle of a vpc?
+				if(chart.status.cardiac.vpcSynch == true) {
+					return;
+				}
+				
+				// set up the start for doing a vpc cycle
 				if(controls.heartRhythm.vpcCount > 0 && controls.heartRhythm.currentRhythm == 'sinus') {
 					if(controls.heartRhythm.vpcFrequencyArray[controls.heartRhythm.vpcFrequencyIndex] == 1) {
 						// flag that we are going to do a vpc pulse
 						chart.status.cardiac.vpcSynch = true;
-						chart.ekg.vpcCount = 0;
+						chart.ekg.vpcCount = controls.heartRhythm.vpcCount;
+						chart.ekg.vpcSynchDelayCount = chart.ekg.vpcSynchDelay;
+						chart.ekg.vpcPatternIndex = 0;
+					} else {
+						chart.status.cardiac.vpcSynch = false;
+						chart.ekg.vpcCount = -1;					
+						chart.ekg.vpcSynchDelayCount = 0;
 					}
 					
 					controls.heartRhythm.vpcFrequencyIndex++;
@@ -95,17 +136,7 @@
 						controls.heartRhythm.vpcFrequencyIndex = 0;
 					}
 				}
-				
-				if ( ! ( simmgr.isLocalDisplay() ))
-				{
-					if(chart.status.cardiac.vpcSynch == false) {
-						clearTimeout(controls.heartRate.beatTimeout);
-						controls.heartRate.beatTimeout = setTimeout(controls.heartRate.setSynch, Math.round((60 / controls.heartRate.value) * 1000) * controls.heartRate.delay);						
-					} else {
-						clearTimeout(controls.heartRate.beatTimeout);
-						controls.heartRate.beatTimeout = setTimeout(controls.heartRate.setSynch, (Math.round((60 / controls.heartRate.value) * 1000)) + (chart.ekg.vpcDelay * controls.heartRhythm.vpcCount));
-					}
-				}
+
 			},
 			
 			validateNewValue: function() {
@@ -142,7 +173,7 @@
 			currentRhythm: '',
 			pea: false,
 			arrest: false,
-			vpc: 'vtach1',			// vpc rhythm to be generated {'vtach1', 'vtach2'}
+			vpc: 'vpc1',			// vpc rhythm to be generated {'vpc1', 'vpc2'}
 			vpcResponse: 'none',	// actual vpc response from simmgr {'none', '1-1', '1-2', etc...}
 			vpcFrequency: 10,
 			vfibAmplitude: 'low',

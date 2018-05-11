@@ -84,10 +84,6 @@
 			rateIndex: 0,			// index of pattern for current heart rate
 			length: 0,				// variable to hold length of pattern
 			patternIndex: 0,		// index of currently displayed pixel in pattern
-			vpcLength: 0,			// length of current vpc pattern
-			vpcPatternIndex: 0,		// index of currently displayed pixel in vpc pattern
-			vpcDelay: 0,			// delay im millisec of how long sinus complex is extended
-			vpcCount: 0,			// count of how many vpc's have been generated
 			lastY: 0,				// variable to save last displayed Y coordinate of pattern
 			xPos: 0,				// current x position on strip
 			drawInterval: 15,		// interval in milli-sec to display pixels
@@ -95,10 +91,19 @@
 			stopFlag: false,			// stop flag 
 			beepValue: 0,			// value to beep at
 			beepFlag: false,
-			vpcSynchDelay: 0,		// delay added in to synh if VPC is generated
 			pixelCount: 0,			// count in pixel ticks (drawInterval) of current period (incrementing)
 			periodCount: 0,			// number of pixel counts in current period
-			cprHRDisplayStatus: 0 	// status of hr display {CPR_DELAY_NONE || CPR_DELAY_START || CPR_DELAY_STOP || CPR_ACTIVE}
+			cprHRDisplayStatus: 0, 	// status of hr display {CPR_DELAY_NONE || CPR_DELAY_START || CPR_DELAY_STOP || CPR_ACTIVE}
+			
+			// vpc params
+			vpcRateIndex: 0,		// index for VPC pattern for current heart rate
+			vpcLength: 0,			// length of current vpc pattern
+			vpcPatternIndex: 0,		// index of currently displayed pixel in vpc pattern
+			vpcCount: 0,			// count of how many vpc's have been generated
+			vpcSynchDelayCount: 0,		
+									// count of delay added in to synch if VPC is generated
+			vpcSynchDelay: 0,		// calculated delay
+			vpcAdvanceDelay: 350,	// advance delay of vpc pulse * 1000. (i.e. 250 = 25% of heart rate to advance pulse).
 		},
 		
 		// respiration strip parameters
@@ -156,6 +161,8 @@
 			chart.ekg.rhythm.vtach1 = new Array;
 			chart.ekg.rhythm.vtach2 = new Array;
 			chart.ekg.rhythm.vtach3 = new Array;  // place holder since vtach 3 is half sine
+			chart.ekg.rhythm.vpc1 = new Array;
+			chart.ekg.rhythm.vpc2 = new Array;
 			chart.ekg.rhythm.cpr = new Array;  // place holder since cpr is similar to vtach3
 			
 			// init cpr waveform, assume rate will be 120 bpm and waveform is simple 1/2 sinusoidal
@@ -209,6 +216,39 @@
 			];
 			chart.ekg.rhythm['vtach3'][0] = [
 				0, 1, 2, 3
+			];
+			
+			// VPC
+			chart.ekg.rhythm['vpc1'][0] = [
+				8, 8, 11, 21, 40, 56, 63, 67, 55, 37,
+				17, -7, -13, -16, -21, -23, -24, -25, -26, -26,
+				-24, -18, -11, -3, 5, 11, 14, 16, 15, 15,
+				13, 12, 12, 13, 13, 17, 16, 15, 11, 9,
+				9, 8, 8
+			];
+			chart.ekg.rhythm['vpc1'][1] = [
+				8, 11, 21, 40, 56, 63, 67, 55, 37, 17,
+				-7, -13, -16, -23, -26, -24, -18, -11, -3, 5, 
+				11, 9, 8
+			];
+			chart.ekg.rhythm['vpc1'][2] = [
+				8, 21, 40, 56, 63, 67, 37, 17,
+				-7, -13, -26, -18, -11, 
+				11, 8
+			];
+			chart.ekg.rhythm['vpc2'][0] = [
+				0, 0, 0, 0, 0, 1, 2, 3, 3, 4,
+				5, 3, -25, -52, -51, -49, -30, -19, -9, 11, 
+				24, 25, 27, 28, 31, 35, 39, 42, 43, 40, 
+				33, 25, 16, 9, 4, 0, 0, 0, 0, 0 
+			];
+			chart.ekg.rhythm['vpc2'][1] = [
+				0, 1, 2, 3, 4, 5, 3, -25, -52, -30, 
+				-19, -9, 11, 25, 35, 42, 33, 25, 16, 4
+			];
+			chart.ekg.rhythm['vpc2'][2] = [
+				1, 5, 3, -25, -52, -30, 
+				-19, 11, 35, 42, 33, 16, 4
 			];
 			
 			// asystole
@@ -366,7 +406,31 @@
 				}
 				else {
 					chart.ekg.rateIndex = 3;
-				}			
+				}
+
+				if(controls.heartRhythm.vpc != 'none') {
+					if( cardiac.rate <= 65 ) {
+						chart.ekg.vpcRateIndex = 0;
+					}
+					else if( cardiac.rate <= 115 ) {
+						chart.ekg.vpcRateIndex = 1;
+					}
+					else {
+						chart.ekg.vpcRateIndex = 2;
+					}
+
+					// calculate length of VPC
+					chart.ekg.vpcLength = chart.ekg.rhythm[controls.heartRhythm.vpc][chart.ekg.vpcRateIndex].length;
+					
+					// calculate vpc synch delay 1.4X of heart rate (or 70%)
+					chart.ekg.vpcSynchDelay = Math.floor(((60 / cardiac.rate) * chart.ekg.vpcAdvanceDelay) / chart.ekg.drawInterval);
+
+					// set these 2 params to kick off a series of VPC's.
+					chart.ekg.vpcCount = -1;
+					chart.ekg.vpcSynchDelayCount = 0;
+					
+					chart.ekg.vpcPatternIndex = 0;
+				}
 			} else if(chart.ekg.rhythmIndex == 'vfib') {
 				if( cardiac.rate <= 75 ) {
 					chart.ekg.rateIndex = 0;
@@ -472,30 +536,36 @@
 					// increment pointers
 					chart.ekg.patternIndex++;				
 				} else if(chart.ekg.rhythmIndex == 'sinus' || chart.ekg.rhythmIndex == 'vtach1' || chart.ekg.rhythmIndex == 'vtach2') {
-					if((chart.status.cardiac.synch == false && chart.ekg.patternIndex == 0) || controls.heartRate.value == 0) {
-						// either generate random noise or VPC if required
-						if(chart.status.cardiac.vpcSynch == true) {
-							// see if we generate vpc for this sinus cycle
-								// generate VPC
-								y = chart.ekg.rhythm[controls.heartRhythm.vpc][1][chart.ekg.vpcPatternIndex] * -1;
-							
-								// bump vpc pattern index
+					// check if we are doing a vpc.  VPC synch will only get set when the vpc needs to be generated
+					if(chart.status.cardiac.vpcSynch == true && chart.ekg.patternIndex == 0 && chart.status.cardiac.synch == false) {
+						// are there vpc's to generate?
+						if(chart.ekg.vpcCount > 0) {
+							// see if we need to generate the delay
+							if(chart.ekg.vpcSynchDelayCount > 0) {
+								// generate noise
+								y = chart.getEKGNoisePixel();
+// y = -30;
+								chart.ekg.vpcSynchDelayCount--;
+							} else {
+								// generate the pattern
+								y = chart.ekg.rhythm[controls.heartRhythm.vpc][chart.ekg.vpcRateIndex][chart.ekg.vpcPatternIndex] * -1;
 								chart.ekg.vpcPatternIndex++;
+								
+								// are we done with the pattern?
 								if(chart.ekg.vpcPatternIndex >= chart.ekg.vpcLength) {
-									// reset index, check count
 									chart.ekg.vpcPatternIndex = 0;
-									chart.ekg.vpcCount++;
-									if(chart.ekg.vpcCount >= controls.heartRhythm.vpcCount) {
-										chart.status.cardiac.vpcSynch = false;
-									}
+									chart.ekg.vpcCount--;
+									chart.ekg.vpcSynchDelayCount = chart.ekg.vpcSynchDelay;
 								}
-						} else {
-							// generate random noise between range
-							y = Math.floor((Math.random() * chart.ekg.noiseMax));
-							if(y > (chart.ekg.noiseMax / 2)) {
-								y -= (chart.ekg.noiseMax / 2);
 							}
+						} else {
+							chart.status.cardiac.vpcSynch = false;						
+							y = chart.getEKGNoisePixel();
 						}
+
+					} else if((chart.status.cardiac.synch == false && chart.ekg.patternIndex == 0) || controls.heartRate.value == 0) {
+						// see if we are doing a vpc...here is where we would generate noise or the pre-vpc delay
+						y = chart.getEKGNoisePixel();						
 					} else if(chart.status.cardiac.synch == true || chart.ekg.patternIndex > 0) {
 						y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex][chart.ekg.patternIndex] * -1;
 						
@@ -551,14 +621,14 @@
 					if( (chart.ekg.periodCount > 0) && (parseInt(controls.heartRate.value) > parseInt(simmgr.cardiacResponse.rate)) ) {
 						chart.updateCardiacRate();
 					} else {
-					chart.status.cardiac.synch = false;
+						chart.status.cardiac.synch = false;
 					}
 					
 					// reset tick count
 					chart.ekg.pixelCount = 0;
 				} else {
 					chart.ekg.pixelCount++;
-					if( (chart.ekg.periodCount > 0) && (chart.ekg.pixelCount >= chart.ekg.periodCount) ) {
+					if( (chart.ekg.periodCount > 0) && (chart.ekg.pixelCount >= (chart.ekg.periodCount)) ) {
 						chart.updateCardiacRate();
 					}
 				}
@@ -566,24 +636,6 @@
 				// are we beyond pattern?
 				if(chart.ekg.patternIndex >= chart.ekg.length) {
 					chart.ekg.patternIndex = 0;
-					
-/*					
-					// if vpc's are required, set vpc synch flag, set vcpCount, get ready to generate VPC waveform
-					if(chart.ekg.rhythmIndex == 'sinus' && controls.heartRhythm.vpcResponse != "none") {
-						chart.status.cardiac.vpcSynch = true;
-						chart.ekg.vpcPatternIndex = 0;
-						chart.ekg.vpcCount = 0;
-							
-						// bump frequency index
-						controls.heartRhythm.vpcFrequencyIndex++;
-						if(controls.heartRhythm.vpcFrequencyIndex >= controls.heartRhythm.vpcFrequencyLength) {
-							controls.heartRhythm.vpcFrequencyIndex = 0;						
-						}
-
-					} else {
-						chart.status.cardiac.vpcSynch = false;
-					}
-*/
 				}
 			}
 			else {
@@ -918,5 +970,14 @@
 				// assign any value to generate low value
 				chart.resp.periodCount = 50;
 			}
+		},
+		
+		getEKGNoisePixel: function() {
+			// generate random noise between range
+			var y = Math.floor((Math.random() * chart.ekg.noiseMax));
+			if(y > (chart.ekg.noiseMax / 2)) {
+				y -= (chart.ekg.noiseMax / 2);
+			}
+			return y;
 		}
 	}
