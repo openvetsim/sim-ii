@@ -152,7 +152,9 @@
 			
 			displayValue: function() {
 				if ( ( profile.isVitalsMonitor == false ) || ( controls.ekg.leadsConnected == true ) ) {
-					if(controls.heartRhythm.currentRhythm == 'asystole' || controls.heartRhythm.currentRhythm == 'vfib') {
+					if(profile.isVitalsMonitor && controls.heartRate.avg_rate == 0) {
+						$('#vs-heartRhythm a.display-rate').html('---<span class="vs-upper-label"> bpm</span>');
+					} else if(controls.heartRhythm.currentRhythm == 'asystole' || controls.heartRhythm.currentRhythm == 'vfib') {
 						if(profile.isVitalsMonitor == true) {
 							$('#vs-heartRhythm a.display-rate').html('---<span class="vs-upper-label"> bpm</span>');						
 						} else {
@@ -260,9 +262,12 @@
 //					controls.awRR.beatTimeout = setTimeout(controls.awRR.setSynch, Math.round((60 / controls.awRR.value) * 1000));
 				}
 				if ( ( profile.isVitalsMonitor == false ) || ( controls.CO2.leadsConnected == true ) ) {
-					$('.awRR a.alt-control-rate').html(controls.awRR.value + '<span class="vs-lower-label"> bpm</span>');
-				}
-				else {
+					if(profile.isVitalsMonitor &&  controls.awRR.value == 0) {
+						$('.awRR a.alt-control-rate').html('---<span class="vs-lower-label"> bpm</span>');
+					} else {
+						$('.awRR a.alt-control-rate').html(controls.awRR.value + '<span class="vs-lower-label"> bpm</span>');
+					}
+				} else {
 					$('.awRR a.alt-control-rate').html('---<span class="vs-lower-label"> bpm</span>');
 				}
 			},
