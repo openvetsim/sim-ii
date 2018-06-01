@@ -39,8 +39,8 @@
 	<body>
 		<div id="sitewrapper">
 			<div id="admin_header">
-				<img src="<?php echo BROWSER_IMAGES; ?>cuLogo75.gif" alt="logo">
-				<h1>Welcome to the Cornell Vet School Simulation Login.</h1>
+				<img src="<?php echo BROWSER_IMAGES; ?>logo-open-vetsim.gif" alt="logo" style="height: 90px;">
+				<h1>Please login to Open VetSim.</h1>
 			</div>
 			<div class="clearer" id="admin_login">
 				<form method="post" action="#" autocomplete="off">

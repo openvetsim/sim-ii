@@ -3,7 +3,7 @@
 	
 	$status = adminClass::isUserLoggedIn();
 	if($status === FALSE) {
-		header('location: index2.php?sts='.$status );
+		header('location: index.php?sts='.$status );
 	}
 	
 	$userRow = adminClass::getUserRowFromSession();
@@ -12,26 +12,29 @@
 	$sessionID = session_id();
 	
 	// get scenario list
-	$scenarioList = scandir(SERVER_SCENARIOS);
+	$scenarioFolderList = scandir(SERVER_SCENARIOS);
 	$scenarioContent = '';
-	foreach($scenarioList as $key => $scenario) {
-		if(is_dir(SERVER_SCENARIOS . $scenario) === TRUE) {
-			continue;
+	foreach($scenarioFolderList as $key => $scenarioFolder) {
+		if(is_dir(SERVER_SCENARIOS . $scenarioFolder) === TRUE) {
+			if( $scenarioFolder == '.' || $scenarioFolder == '..' || $scenarioFolder == '.git' ) {
+				continue;
+			}
+			
+			if(file_exists(SERVER_SCENARIOS . $scenarioFolder . DIRECTORY_SEPARATOR . 'main.xml') === TRUE) {
+				$scenarioHeader = scenarioXML::getScenarioHeaderArray($scenarioFolder . DIRECTORY_SEPARATOR . 'main');
+				$scenarioContent .= '
+					<option value="' . $scenarioFolder . '">';
+				if ( isset($scenarioHeader['title']['name'] ) && strlen($scenarioHeader['title']['name']) > 0 ) {
+					$scenarioContent .= $scenarioHeader['title']['name'];
+				} else {
+					$scenarioContent .= $scenarioFolder;
+				}
+				$scenarioContent .= '</option>
+				';
+			}
 		}
-		
-		// open file, create scenario dropdown
-		$scenarioFileArray = pathinfo(SERVER_SCENARIOS . $scenario);
-		$scenarioHeader = scenarioXML::getScenarioHeaderArray($scenarioFileArray['filename']);
-		$scenarioContent .= '
-			<option value="' . $scenarioFileArray['filename'] . '">';
-		if ( isset($scenarioHeader['title']['name'] ) && strlen($scenarioHeader['title']['name']) > 0 ) {
-			$scenarioContent .= $scenarioHeader['title']['name'];
-		} else {
-			$scenarioContent .= $scenarioFileArray['filename'];
-		}
-		$scenarioContent .= '</option>
-		';
 	}
+	
 ?>
 <!DOCTYPE html>
 <html>
@@ -132,7 +135,7 @@ console.log(controls['awRR'].increment);
 	<body>
 		<div id="sitewrapper">
 			<div id="admin-nav">
-				<h1>Cornell Vet School Simulator</h1>
+				<h1>Cornell Vet School Simulator - Demo</h1>
 				<h1 class="welcome-title">Welcome <?= $userName; ?></h1>
 				<div class="profile-display scenario">
 					Scenario Name: 
@@ -173,8 +176,11 @@ console.log(controls['awRR'].increment);
 						<a href="index2.php" class="event-link">Logout</a>						
 					</li>
 					<li class="logout">
-						<a href="../../editor/editor.php"  class="event-link breath-link">Editor</a>						
+						<a href="javascript: void(2);" onclick="modal.manageScenarios();" class="event-link" id="scenario-click">Scenarios</a>						
 					</li>
+					<!-- <li class="logout">
+						<a href="../../editor/editor.php"  class="event-link breath-link">Editor</a>						
+					</li> -->
 					<li class="logout">
 						<a href="javascript: void(2);"  class="event-link cpr-link">Start CPR</a>						
 					</li>
@@ -321,11 +327,11 @@ console.log(controls['awRR'].increment);
 		</div>
 		<pre>
 		<?php
+		/*
 			printf("Session ID is %s\n", $sessionID );
 			echo "SID: ".SID."<br>session_id(): ".session_id()."<br>COOKIE: ".$_COOKIE["PHPSESSID"];
 			printf("\n_COOKIE:\n%s\n", print_r($_COOKIE, TRUE ) );
-			
-			// printf("GLOBALS:\n%s\n", print_r($GLOBALS, TRUE ) );
+		*/
 		?>
 		</pre>
 	</body>

@@ -232,7 +232,7 @@ console.log(controls['awRR'].increment);
 	<body>
 		<div id="sitewrapper">
 			<div id="admin-nav">
-				<h1>Cornell Vet School Simulator</h1>
+				<h1>Open VetSim Instructor Interface</h1>
 				<h1 class="welcome-title">Welcome <?= $userName; ?></h1>
 				<div class="profile-display scenario">
 					Scenario Name: 
