@@ -1,5 +1,5 @@
 		<meta charset="UTF-8">
-		<title>Vet School Simulator</title>
+		<title>Open VetSim Instructor Interface</title>
 		<link rel="shortcut icon" href="favicon.ico" />		
 
 <?php

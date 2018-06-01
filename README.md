@@ -1,2 +1,2 @@
 # sim-ii
-Simulator Instructor Interface
+Open VetSim Instructor Interface
