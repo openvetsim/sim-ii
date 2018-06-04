@@ -20,6 +20,8 @@
 				}
 			
 				// set positioning of controls
+				// hide all controls
+				$('.dog-control').hide();
 				$.each(scenario.scenarioProfile.controls.control, function() {
 					var height = $('#' + this.id).height();
 					$('#' + this.id).css('left', this.left + 'px');
@@ -28,6 +30,7 @@
 																	'left': this.left + 'px',
 																	'top': (parseInt(this.top) - 20).toString() + 'px',
 																	});
+					$('#' + this.id).show();
 				});
 
 				// place title

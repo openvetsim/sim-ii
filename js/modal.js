@@ -403,21 +403,58 @@
 //							simmgr.sendChange({'set:cardiac:pulse_strength': $(this).val()});
 						});
 						
+						// volume change
+						// NOTE:  volume in this context is referring to touch sensitivity
+						$('#volume-controls').css({
+													'float': 'none',
+													'margin': '0 auto'
+													});
+						$('.volume-setting').html(controls.pulse[side][pulseType].sensitivity);
+						
+						// add step, min and max
+						$("#volume-slider").attr({
+							min: controls.pulse.volumeMinValue,
+							max: controls.pulse.volumeMaxValue,
+							step: controls.pulse.volumeIncrement,
+						}).val(controls.pulse[side][pulseType].sensitivity);
+						
+						// bind controls
+						controls.pulse.slideBar = $("#volume-slider").slider({
+							create: function() {
+								$('.ui-slider').css({
+									'margin': '0 auto'
+								});
+								$(this).css('display', 'none');
+								$('.ui-slider-track').css('margin', '5px 0 0 15px');
+							}
+						});
+						
+						$('#volume-slider').change(function() {
+//							simmgr.sendChange({'set:cardiac:heart_sound_volume': $(this).val()});
+							$('.volume-setting').html($(this).val());
+						});
+
+						
 						// bind change in control
 						$('.modal-button.apply').click(function() {
 							if(side == 'left') {
 								if(pulseType == 'femoral') {
 									simmgr.sendChange({'set:cardiac:left_femoral_pulse_strength': $('input.pulse-strength:checked').val()});
+									simmgr.sendChange({'set:cardiac:left_femoral_pulse_sensitivity': $('.volume-setting').html()});
 								} else {
 									simmgr.sendChange({'set:cardiac:left_dorsal_pulse_strength': $('input.pulse-strength:checked').val()});								
+									simmgr.sendChange({'set:cardiac:left_dorsal_pulse_sensitivity': $('.volume-setting').html()});
 								}
 							} else if(side == 'right') {
 								if(pulseType == 'femoral') {
 									simmgr.sendChange({'set:cardiac:right_femoral_pulse_strength': $('input.pulse-strength:checked').val()});
+									simmgr.sendChange({'set:cardiac:right_femoral_pulse_sensitivity': $('.volume-setting').html()});
 								} else {
 									simmgr.sendChange({'set:cardiac:right_dorsal_pulse_strength': $('input.pulse-strength:checked').val()});								
+									simmgr.sendChange({'set:cardiac:right_dorsal_pulse_sensitivity': $('.volume-setting').html()});
 								}							
 							}
+							
 							/*
 							const params = [];
 							obj = {['set:cardiac:' + side + '_' + pulseType + '_pulse_strength'] : $('input.pulse-strength:checked').val()};

@@ -198,6 +198,9 @@
 			float: left;
 			margin: -3px 0 0 45px;
 		}
+			#volume-title.sensitivity {
+				margin-left: 30px;
+			}
 		#volume-controls input{
 			float: left;
 			margin: 4px 0px 0 6px;
@@ -207,6 +210,12 @@
 		width: 125px;
 		float: left;
 		margin: 5px 0 0 23px;
+	}
+	
+	#sensitivity-comment {
+		float: left;
+		width: 300px;
+		margin: 5px 0 5px -52px;
 	}
 	
 	/* user table */

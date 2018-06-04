@@ -36,7 +36,16 @@
 			<input type="radio" name="pulse-strength" class="modal-radio pulse-strength" value="medium">
 			<input type="radio" name="pulse-strength" class="modal-radio pulse-strength" value="strong">
 		</div>
-		<hr / class="modal-divider">
+		<hr class=" clearer modal-divider" />
+		<div class="control-modal-div">
+			<div id="volume-controls">
+				<p id="volume-title" class="bold" style="margin-left: 30px;">Touch Sensitivity: <span class="volume-setting">5</span></p>
+				<!-- New slider -->
+				<input value="0" id="volume-slider" class="strip-value new control-slider-1 float-left heart" data-highlight="true">		
+				<p id="sensitivity-comment">0=light touch, 100=heavy touch</p>
+			</div>
+		</div>
+		<hr class=" clearer modal-divider" />
 		<div class="control-modal-div">
 			<button class="red-button modal-button apply">Apply</button>
 			<button class="red-button modal-button cancel">Cancel</button>

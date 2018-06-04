@@ -356,6 +356,30 @@
 			left_dorsal: 0,
 			right_dorsal: 0,
 			
+			left: {
+				femoral: {
+					sensitivity: 50
+				},
+				dorsal: {
+					sensitivity: 50
+				}
+			}, 
+			right: {
+				femoral: {
+					sensitivity: 50
+				},
+				dorsal: {
+					sensitivity: 50
+				}
+			},
+			
+			slideBar: '',
+			
+			volumeMinValue: 0,
+			volumeMaxValue: 100,
+			volumeIncrement: 1,
+			
+			
 			init: function() {
 				this.position = this.PULSE_POSITION_NONE;
 				this.pressure = this.PULSE_TOUCH_NONE;

@@ -309,17 +309,32 @@ var simmgr = {
 					
 					// pulse strength
 					if(typeof(response.cardiac.left_femoral_pulse_strength) != "undefined") {
-						controls.pulseStrength.value = response.cardiac.left_femoral_pulse_strength;
+						controls.pulseStrength.left.femoral.value = response.cardiac.left_femoral_pulse_strength;
 					}
 					if(typeof(response.cardiac.right_femoral_pulse_strength) != "undefined") {
-						controls.pulseStrength.value = response.cardiac.right_femoral_pulse_strength;
+						controls.pulseStrength.right.femoral.value = response.cardiac.right_femoral_pulse_strength;
 					}
 					if(typeof(response.cardiac.left_dorsal_pulse_strength) != "undefined") {
-						controls.pulseStrength.value = response.cardiac.left_dorsal_pulse_strength;
+						controls.pulseStrength.left.dorsal.value = response.cardiac.left_dorsal_pulse_strength;
 					}
 					if(typeof(response.cardiac.right_dorsal_pulse_strength) != "undefined") {
-						controls.pulseStrength.value = response.cardiac.right_dorsal_pulse_strength;
+						controls.pulseStrength.right.dorsal.value = response.cardiac.right_dorsal_pulse_strength;
 					}
+					
+					// pulse sensitivity
+					if(typeof(response.cardiac.left_femoral_pulse_sensitivity) != "undefined") {
+						controls.pulse.left.femoral.sensitivity = response.cardiac.left_femoral_pulse_sensitivity;
+					}
+					if(typeof(response.cardiac.right_femoral_pulse_sensitivity) != "undefined") {
+						controls.pulse.right.femoral.sensitivity = response.cardiac.right_femoral_pulse_sensitivity;
+					}
+					if(typeof(response.cardiac.left_dorsal_pulse_sensitivity) != "undefined") {
+						controls.pulse.left.dorsal.sensitivity = response.cardiac.left_dorsal_pulse_sensitivity;
+					}
+					if(typeof(response.cardiac.right_dorsal_pulse_sensitivity) != "undefined") {
+						controls.pulse.right.dorsal.sensitivity = response.cardiac.right_dorsal_pulse_sensitivity;
+					}
+					
 					
 					/***** heart rhythm *****/
 					// heart ecg pattern selection
