@@ -398,7 +398,7 @@
 				if( cardiac.rate <= 65 ) {
 					chart.ekg.rateIndex = 0;
 				}
-				else if( cardiac.rate <= 115 ) {
+				else if( cardiac.rate <= 100 ) {
 					chart.ekg.rateIndex = 1;
 				}
 				else if( cardiac.rate <= 220 ) {
