@@ -1,5 +1,17 @@
 		<meta charset="UTF-8">
-		<title>Open VetSim Instructor Interface</title>
+		<title>
+<?php
+		$page = basename($_SERVER["SCRIPT_FILENAME"], '.php');
+		if ( strcmp($page, 'vitals' ) == 0 )
+		{
+			echo "Vet School Simulator"; 
+		}
+		else
+		{
+			echo "Open VetSim Instructor Interface";
+		}
+?>
+		</title>
 		<link rel="shortcut icon" href="favicon.ico" />		
 
 <?php
