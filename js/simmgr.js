@@ -810,6 +810,7 @@ var simmgr = {
 						// normalize result, see if there was a change
 						var newScenarioState = response.scenario.state.toUpperCase();
 						if(scenario.currentScenarioState != scenario.scenarioState[newScenarioState]) {
+							$('.logout.debrief').hide();
 							switch(newScenarioState) {
 								case 'STOPPED':
 									scenario.currentScenarioState = scenario.scenarioState.STOPPED;
@@ -819,6 +820,7 @@ var simmgr = {
 										controls.nbp.displayNIBPDashes();
 									}
 console.log("New scenario state STOPPED");
+									$('.logout.debrief').show();
 									break;
 								
 								case 'PAUSED':

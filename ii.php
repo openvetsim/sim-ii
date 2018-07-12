@@ -136,6 +136,9 @@
 			var uploadErrorCode = <?= $uploadErrorCode; ?>;
 var isVitalsMonitor = 0;	// Student Display Flag
 			$(document).ready(function() {
+				// hide debrief menu item
+				$('.logout.debrief').hide();
+				
 				// init menu
 				menu.init();
 				
@@ -271,6 +274,9 @@ console.log(controls['awRR'].increment);
 					</li>
 					<li class="logout">
 						<a href="index.php" class="event-link">Logout</a>						
+					</li>
+					<li class="logout debrief">
+						<a href="/sim-player/player.php" class="event-link">Debrief</a>						
 					</li>
 					<li class="logout">
 						<a href="javascript: void(2);" onclick="modal.manageScenarios();" class="event-link" id="scenario-click">Scenarios</a>						
