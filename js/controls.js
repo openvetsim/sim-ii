@@ -270,6 +270,9 @@
 				} else {
 					$('.awRR a.alt-control-rate').html('---<span class="vs-lower-label"> bpm</span>');
 				}
+				
+				// update etco2 to show '---'
+				controls.etCO2.displayValue();
 			},
 			
 			setRespRate: function() {
@@ -515,7 +518,12 @@
 			},
 			
 			displayValue: function() {
-				if ( ( profile.isVitalsMonitor == false ) || ( controls.CO2.leadsConnected == true ) ) {
+				var awRRHTML = $('.awRR a.alt-control-rate').html();
+				// NOTE: Oct 1, 2018: This change was outstanding on vet.newforce.us. Checked in by TMK
+//console.log('awrr: ' + awRRHTML.includes('---'));				
+				if ( awRRHTML.includes('---') == true ) {
+					$('#vs-etCO2 a').html('---<span class="vs-upper-label"> mmHg</span>');					
+				} else if ( ( profile.isVitalsMonitor == false ) || ( controls.CO2.leadsConnected == true ) ) {
 					$('#vs-etCO2 a').html(controls.etCO2.value + '<span class="vs-upper-label"> mmHg</span>');	
 				}
 				else {
