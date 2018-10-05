@@ -151,7 +151,8 @@
 			},
 			
 			displayValue: function() {
-				if ( ( profile.isVitalsMonitor == false ) || ( controls.ekg.leadsConnected == true ) ) {
+				if ( ( profile.isVitalsMonitor == false ) || 
+					( controls.ekg.leadsConnected == true && controls.cpr.inProgress == false) ) {
 					if(profile.isVitalsMonitor && controls.heartRate.avg_rate == 0) {
 						$('#vs-heartRhythm a.display-rate').html('---<span class="vs-upper-label"> bpm</span>');
 					} else if(controls.heartRhythm.currentRhythm == 'asystole' || controls.heartRhythm.currentRhythm == 'vfib') {
