@@ -149,25 +149,28 @@
 				}
 				controls.heartRate.slideBar.slider("refresh");
 			},
-			
+			blankHR: function () {
+				$('#vs-heartRhythm a.display-rate').html('---<span class="vs-upper-label"> bpm</span>');
+			},
 			displayValue: function() {
-				if ( ( profile.isVitalsMonitor == false ) || ( controls.ekg.leadsConnected == true ) ) {
+				if ( ( profile.isVitalsMonitor == false ) || 
+					( controls.ekg.leadsConnected == true ) ) {
 					if(profile.isVitalsMonitor && controls.heartRate.avg_rate == 0) {
-						$('#vs-heartRhythm a.display-rate').html('---<span class="vs-upper-label"> bpm</span>');
+						
 					} else if(controls.heartRhythm.currentRhythm == 'asystole' || controls.heartRhythm.currentRhythm == 'vfib') {
 						if(profile.isVitalsMonitor == true) {
-							$('#vs-heartRhythm a.display-rate').html('---<span class="vs-upper-label"> bpm</span>');						
+							controls.heartRate.blankHR();				
 						} else {
 							$('#vs-heartRhythm a.display-rate').html('0<span class="vs-upper-label"> bpm</span>');
 						}
 					} else if(chart.ekg.cprHRDisplayStatus == chart.CPR_ACTIVE && profile.isVitalsMonitor == true) {
-						$('#vs-heartRhythm a.display-rate').html('---<span class="vs-upper-label"> bpm</span>');
+						controls.heartRate.blankHR();
 					} else {
 						$('#vs-heartRhythm a.display-rate').html(controls.heartRate.avg_rate + '<span class="vs-upper-label"> bpm</span>');
 					}
 				}
 				else {
-					$('#vs-heartRhythm a.display-rate').html('---<span class="vs-upper-label"> bpm</span>');
+					controls.heartRate.blankHR();
 				}
 			}
 		},
