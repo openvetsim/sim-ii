@@ -39,7 +39,16 @@
 			</tr>
 	';
 	
+	$scenarioNameArray = array();
 	foreach($scenarioList as $scenarioDir) {
+		$fileName = $scenarioDir . DIRECTORY_SEPARATOR . 'main';
+		$scenarioHeaderArray = scenarioXML::getScenarioHeaderArray($fileName);
+		$scenarioNameArray[$scenarioHeaderArray['title']['name']] = $scenarioDir;
+	}
+	ksort($scenarioNameArray);
+
+//	foreach($scenarioList as $scenarioDir) {
+	foreach($scenarioNameArray as $scenarioName => $scenarioDir) {
 		$fileName = $scenarioDir . DIRECTORY_SEPARATOR . 'main';
 		$scenarioHeaderArray = scenarioXML::getScenarioHeaderArray($fileName);
 		
@@ -53,10 +62,6 @@
 			</tr>
 		';
 	}
-
-	
-	
-	
 	
 	$content .= '
 		</table>
