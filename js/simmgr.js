@@ -920,6 +920,9 @@ console.log("New scenario state RUNNING");
 						
 						// start timer for cpr HR display
 						controls.heartRate.updateCPRDisplay();
+						
+						//Clear HR display
+						controls.heartRate.blankHR();
 					}
 					controls.cpr.setCPRState();
 					chart.updateCardiac(response.cardiac);

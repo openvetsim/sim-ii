@@ -173,7 +173,7 @@ console.log(controls['awRR'].increment);
 						Version: <?= VERSION_MAJOR . '.' . VERSION_MINOR; ?>						
 					</li>
 					<li class="logout">
-						<a href="index2.php" class="event-link">Logout</a>						
+						<a href="demo.php" class="event-link">Logout</a>						
 					</li>
 					<li class="logout">
 						<a href="javascript: void(2);" onclick="modal.manageScenarios();" class="event-link" id="scenario-click">Scenarios</a>						

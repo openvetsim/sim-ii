@@ -149,25 +149,28 @@
 				}
 				controls.heartRate.slideBar.slider("refresh");
 			},
-			
+			blankHR: function () {
+				$('#vs-heartRhythm a.display-rate').html('---<span class="vs-upper-label"> bpm</span>');
+			},
 			displayValue: function() {
-				if ( ( profile.isVitalsMonitor == false ) || ( controls.ekg.leadsConnected == true ) ) {
+				if ( ( profile.isVitalsMonitor == false ) || 
+					( controls.ekg.leadsConnected == true && controls.cpr.inProgress == false) ) {
 					if(profile.isVitalsMonitor && controls.heartRate.avg_rate == 0) {
-						$('#vs-heartRhythm a.display-rate').html('---<span class="vs-upper-label"> bpm</span>');
+						
 					} else if(controls.heartRhythm.currentRhythm == 'asystole' || controls.heartRhythm.currentRhythm == 'vfib') {
 						if(profile.isVitalsMonitor == true) {
-							$('#vs-heartRhythm a.display-rate').html('---<span class="vs-upper-label"> bpm</span>');						
+							controls.heartRate.blankHR();				
 						} else {
 							$('#vs-heartRhythm a.display-rate').html('0<span class="vs-upper-label"> bpm</span>');
 						}
 					} else if(chart.ekg.cprHRDisplayStatus == chart.CPR_ACTIVE && profile.isVitalsMonitor == true) {
-						$('#vs-heartRhythm a.display-rate').html('---<span class="vs-upper-label"> bpm</span>');
+						controls.heartRate.blankHR();
 					} else {
 						$('#vs-heartRhythm a.display-rate').html(controls.heartRate.avg_rate + '<span class="vs-upper-label"> bpm</span>');
 					}
 				}
 				else {
-					$('#vs-heartRhythm a.display-rate').html('---<span class="vs-upper-label"> bpm</span>');
+					controls.heartRate.blankHR();
 				}
 			}
 		},
@@ -270,6 +273,9 @@
 				} else {
 					$('.awRR a.alt-control-rate').html('---<span class="vs-lower-label"> bpm</span>');
 				}
+				
+				// update etco2 to show '---'
+				controls.etCO2.displayValue();
 			},
 			
 			setRespRate: function() {
@@ -515,7 +521,12 @@
 			},
 			
 			displayValue: function() {
-				if ( ( profile.isVitalsMonitor == false ) || ( controls.CO2.leadsConnected == true ) ) {
+				var awRRHTML = $('.awRR a.alt-control-rate').html();
+				// NOTE: Oct 1, 2018: This change was outstanding on vet.newforce.us. Checked in by TMK
+//console.log('awrr: ' + awRRHTML.includes('---'));				
+				if ( awRRHTML.includes('---') == true ) {
+					$('#vs-etCO2 a').html('---<span class="vs-upper-label"> mmHg</span>');					
+				} else if ( ( profile.isVitalsMonitor == false ) || ( controls.CO2.leadsConnected == true ) ) {
 					$('#vs-etCO2 a').html(controls.etCO2.value + '<span class="vs-upper-label"> mmHg</span>');	
 				}
 				else {
