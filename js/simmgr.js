@@ -429,6 +429,7 @@ var simmgr = {
 								chart.fibDivide = 4;
 								break;
 							case 'med':
+							case 'medium':
 								chart.fibDivide = 2.5;
 								break;
 							case 'high':

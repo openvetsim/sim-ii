@@ -106,6 +106,7 @@
 	// get scenario list
 	$scenarioFolderList = scandir(SERVER_SCENARIOS);
 	$scenarioContent = '';
+	$scenarioNameArray = array();
 	foreach($scenarioFolderList as $key => $scenarioFolder) {
 		if(is_dir(SERVER_SCENARIOS . $scenarioFolder) === TRUE) {
 			if( $scenarioFolder == '.' || $scenarioFolder == '..' || $scenarioFolder == '.git' ) {
@@ -114,18 +115,24 @@
 			
 			if(file_exists(SERVER_SCENARIOS . $scenarioFolder . DIRECTORY_SEPARATOR . 'main.xml') === TRUE) {
 				$scenarioHeader = scenarioXML::getScenarioHeaderArray($scenarioFolder . DIRECTORY_SEPARATOR . 'main');
-				$scenarioContent .= '
-					<option value="' . $scenarioFolder . '">';
-				if ( isset($scenarioHeader['title']['name'] ) && strlen($scenarioHeader['title']['name']) > 0 ) {
-					$scenarioContent .= $scenarioHeader['title']['name'];
-				} else {
-					$scenarioContent .= $scenarioFolder;
-				}
-				$scenarioContent .= '</option>
-				';
+				$fileName = $scenarioFolder . DIRECTORY_SEPARATOR . 'main';
+				$scenarioHeaderArray = scenarioXML::getScenarioHeaderArray($fileName);
+				$scenarioNameArray[$scenarioHeaderArray['title']['name']] = $scenarioFolder;
 			}
 		}
 	}
+
+	// sort the scenario names
+	ksort($scenarioNameArray);
+			
+	foreach($scenarioNameArray as $scenarioName => $scenarioFolder) {
+		$scenarioContent .= '
+			<option value="' . $scenarioFolder . '">';
+		$scenarioContent .= $scenarioName;
+		$scenarioContent .= '</option>
+		';
+	}
+				
 ?>
 <!DOCTYPE html>
 <html>

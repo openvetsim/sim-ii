@@ -10,23 +10,62 @@
 	$userRow = adminClass::getUserRowFromSession();
 	$userName = $userRow['UserFirstName'] . " " . $userRow['UserLastName'];
 	
-	// flag to click scenario
-	$scenarioClick = 0;
+	$uploadErrorCode = FILE_NO_ERROR;
 	
 	// are deleting a scenario?
 	$deleteScenarioDir = dbClass::valuesFromGet('ddir');
 	if($deleteScenarioDir != '') {
 		if(fileClass::deleteDir(SERVER_SCENARIOS . $deleteScenarioDir)) {
-			$scenarioClick = 1;
+			$uploadErrorCode = SHOW_SCENARIO_MANAGER;
 		} 
 	}
 	
 	// process POST and see if we added a new scenario
-	$dupScenario = 0;
-	$invalidScenario = 0;
-	$tmpFileBaseName = '';
 	$scenarioDir = '';
 	if(isset($_POST['scenario-submit']) === TRUE) {
+		// check for $_FILES error codes
+		$fileUploadError = $_FILES['scenario-file-select']['error'];
+		if($fileUploadError == UPLOAD_ERR_OK) {
+			// delete temp directory
+			fileClass::deleteDir(TMP_SCENARIO_DIR);
+			
+			// make temp directory and unpack archive
+			@mkdir(TMP_SCENARIO_DIR, 0777);
+
+			// attempt to extract the zip
+			$scenarioZip = new ZipArchive;
+			$resource = $scenarioZip->open($_FILES['scenario-file-select']['tmp_name']);
+			if ($resource === TRUE) {
+				$scenarioZip->extractTo(TMP_SCENARIO_DIR);
+				$scenarioZip->close();
+				
+				fileClass::setDirModeRecursive(TMP_SCENARIO_DIR, 0777);
+				$uploadErrorCode = FILE_EXTRACT_ZIP_OK;
+			} else {
+				$uploadErrorCode = FILE_EXTRACT_ZIP_FAIL;
+				fileClass::deleteDir(TMP_SCENARIO_DIR);
+			}			
+		}
+		
+		// validate archive if extract is OK
+		if($uploadErrorCode == FILE_EXTRACT_ZIP_OK) {
+			if(!fileClass::validateScenarioArchive()) {
+				$uploadErrorCode = FILE_SCENARIO_INVALID;				
+				fileClass::deleteDir(TMP_SCENARIO_DIR);
+			} else {
+				// check for duplicate scenario directories
+				$parts = pathinfo($_FILES['scenario-file-select']['name']);
+				if(is_dir(SERVER_SCENARIOS . $parts['filename'])) {
+					$uploadErrorCode = FILE_SCENARIO_DUP;
+					$scenarioDir = $parts['filename'];
+				} else {
+					// move the temp directory to a new scenario
+					fileClass::copyDir(TMP_SCENARIO_DIR, SERVER_SCENARIOS . $parts['filename'] . '/', 0777);
+					fileClass::deleteDir(TMP_SCENARIO_DIR);					
+				}
+			}
+		}
+/*	
 		$parts = pathinfo($_FILES['scenario-file-select']['name']);
 		$ext = $parts['extension'];
 		if($ext == 'zip') {
@@ -61,6 +100,7 @@
 		} else {
 			$invalidScenario = 1;
 		}
+*/
 	}
 	
 	// get scenario list
@@ -93,8 +133,12 @@
 		<?php require_once(SERVER_INCLUDES . "header.php"); ?>
 		
 		<script type="text/javascript">
+			var uploadErrorCode = <?= $uploadErrorCode; ?>;
 var isVitalsMonitor = 0;	// Student Display Flag
 			$(document).ready(function() {
+				// hide debrief menu item
+				$('.logout.debrief').hide();
+				
 				// init menu
 				menu.init();
 				
@@ -165,15 +209,17 @@ console.log(controls['awRR'].increment);
 				controls.cpr.init();
 				controls.manualRespiration.init();
 				
-				if(<?= $scenarioClick; ?> == 1) {
+				if(uploadErrorCode == <?= FILE_EXTRACT_ZIP_OK; ?>) {
 					$('#scenario-click').click();
 				}
 				
 				// duplicate scenario?
-				if(<?= $dupScenario; ?> == 1) {
+				if(uploadErrorCode == <?= FILE_SCENARIO_DUP; ?>) {
 					if(confirm('Duplicate scenario...overwrite?')) {
-						scenario.addScenario('<?= $tmpFileBaseName; ?>', '<?= $scenarioDir; ?>');
+						scenario.addScenario('<?= $scenarioDir; ?>');
 					}
+				} else if(uploadErrorCode == <?= FILE_EXTRACT_ZIP_FAIL; ?> || uploadErrorCode == <?= FILE_SCENARIO_INVALID; ?>) {
+					alert("Invalid scenario zip file.");
 				}
 			});
 		</script>
@@ -189,7 +235,7 @@ console.log(controls['awRR'].increment);
 	<body>
 		<div id="sitewrapper">
 			<div id="admin-nav">
-				<h1>Cornell Vet School Simulator</h1>
+				<h1>Open VetSim Instructor Interface</h1>
 				<h1 class="welcome-title">Welcome <?= $userName; ?></h1>
 				<div class="profile-display scenario">
 					Scenario Name: 
@@ -229,14 +275,17 @@ console.log(controls['awRR'].increment);
 					<li class="logout">
 						<a href="index.php" class="event-link">Logout</a>						
 					</li>
+					<li class="logout debrief">
+						<a href="/sim-player/player.php" class="event-link">Debrief</a>						
+					</li>
 					<li class="logout">
 						<a href="javascript: void(2);" onclick="modal.manageScenarios();" class="event-link" id="scenario-click">Scenarios</a>						
 					</li>
-					<li class="logout">
+					<!-- <li class="logout">
 						<a href="../../editor/editor.php"  class="event-link breath-link">Editor</a>						
-					</li>
+					</li> -->
 					<li class="logout">
-						<a href="javascript: void(2);"  class="event-link cpr-link">Start CPR</a>						
+						<a href="javascript: void(2);"  class="event-link cpr-link">Start Comps</a>						
 					</li>
 					<li class="logout">
 						<a href="javascript: void(2);"  class="event-link breath-link">Manual Breath</a>						
