@@ -8,8 +8,8 @@
 		private static $dbParams = array(
 							'vet' => array(
 											'dbHost' => 'localhost',
-											'dbUser' => 'vetsim',
-											'dbPswd' => 'vet$im',
+											'dbUser' => 'phpmyadmin',
+											'dbPswd' => 'password',
 											'dbName' => 'vet'
 										),
 							'' => array(
