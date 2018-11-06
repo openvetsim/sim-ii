@@ -917,7 +917,7 @@ console.log("New scenario state RUNNING");
 
 					} else {
 						controls.cpr.inProgress = true;
-						$('#vs-trace-1').attr('onclick', 'javascript:void(2);');
+//						$('#vs-trace-1').attr('onclick', 'javascript:void(2);');
 						
 						// start timer for cpr HR display
 						controls.heartRate.updateCPRDisplay();
