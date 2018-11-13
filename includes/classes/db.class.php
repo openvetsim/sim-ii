@@ -9,7 +9,7 @@
 							'vet' => array(
 											'dbHost' => 'localhost',
 											'dbUser' => 'phpmyadmin',
-											'dbPswd' => 'password',
+											'dbPswd' => 'vet$im',
 											'dbName' => 'vet'
 										),
 							'' => array(
