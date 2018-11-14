@@ -94,6 +94,7 @@
 			pixelCount: 0,			// count in pixel ticks (drawInterval) of current period (incrementing)
 			periodCount: 0,			// number of pixel counts in current period
 			cprHRDisplayStatus: 0, 	// status of hr display {CPR_DELAY_NONE || CPR_DELAY_START || CPR_DELAY_STOP || CPR_ACTIVE}
+			cprwaveformIndex: 0,    // index of the current cpr artifact waveform
 			
 			// vpc params
 			vpcRateIndex: 0,		// index for VPC pattern for current heart rate
@@ -166,12 +167,43 @@
 			chart.ekg.rhythm.cpr = new Array;  // place holder since cpr is similar to vtach3
 			
 			// init cpr waveform, assume rate will be 120 bpm and waveform is simple 1/2 sinusoidal
-			var cprXIncr = (120 * chart.ekg.drawInterval * Math.PI) / 60000;
+			//var cprXIncr = (120 * chart.ekg.drawInterval * Math.PI) / 60000;
 			var cprAmplitude = chart.ekg.height / 2;
-			var cprIndex = 0;
-			for(var x = 0; x <= Math.PI; x += cprXIncr) {
-				chart.ekg.rhythm.cpr[cprIndex] = (Math.sin(x) * -cprAmplitude);
-				cprIndex++;
+			//var cprIndex = 0;
+			//for(var x = 0; x <= Math.PI; x += cprXIncr) {
+			//	chart.ekg.rhythm.cpr[cprIndex] = (Math.sin(x) * -cprAmplitude);
+			//	cprIndex++;
+			//}
+			chart.ekg.rhythm.cpr[0] = [
+				0,0.007352941,0.014705882,0.022058824,0.029411765,0.036764706,0.044117647,0.095588235,
+				0.147058824,0.198529412,0.25,0.272058824,0.294117647,0.529411765,0.764705882,
+				0.838235294,0.911764706,0.941176471,1,0.970588235,0.941176471,0.970588235,1,
+				0.941176471,0.926470588,0.911764706,0.75,0.588235294,0.485294118,0.382352941,
+				0.279411765,0.176470588,0.220588235,0.264705882,0.205882353,0.147058824,0.132352941,
+				0.117647059,0.073529412,0.029411765,0.014705882,-0.014705882
+			];
+			chart.ekg.rhythm.cpr[1] = [
+				0,0.006410256,0.012820513,0.128205128,0.173076923,0.217948718,0.237179487,0.256410256,
+				0.461538462,0.666666667,0.730769231,0.794871795,0.871794872,0.923076923,0.871794872,
+				0.846153846,0.871794872,0.923076923,0.948717949,1,0.884615385,0.846153846,0.871794872,
+				0.820512821,0.230769231,0.179487179,0.128205128,0.115384615,0.102564103,0.064102564,
+				0.025641026,0.012820513,-0.012820513,0,0.012820513,-0.012820513,0,-0.012820513,0.038461538,
+				0,0.012820513,-0.012820513
+			];
+			chart.ekg.rhythm.cpr[2] = [
+				-0.013513514,0.013513514,0,0.040540541,-0.013513514,0,-0.013513514,0.013513514,0,0.081081081,
+			0.162162162,0.621621622,0.648648649,0.675675676,0.648648649,0.540540541,0.621621622,0.702702703,
+			0.864864865,0.918918919,0.918918919,0.932432432,0.972972973,1,0.972972973,0.986486486,
+			0.986486486,0.972972973,0.972972973,0.918918919,0.837837838,0.77027027,0.702702703,0.486486486,
+			0.27027027,0.25,0.22972973,0.182432432,0.135135135,0.013513514,0.006756757,0
+			];
+
+			for(var j = 0; j < chart.ekg.rhythm.cpr.length; j++)
+			{
+				for(var i = 0; i < chart.ekg.rhythm.cpr[j].length; i++)
+				{
+				 	chart.ekg.rhythm.cpr[j][i] *= -cprAmplitude;
+				}
 			}
 			
 			// Atrial Fibrillation
@@ -487,6 +519,8 @@
 			}
 			chart.ekg.length = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex].length;
 			if(chart.ekg.patternIndex >= chart.ekg.length) {
+				// Advance to the next CPR artifact waveform if cpr is happening
+				//chart.cpr.waveformIndex++;
 				chart.ekg.patternIndex = 0;
 			}
 
@@ -538,9 +572,9 @@
 					y = 0;
 					controls.heartRate.audio.pause();
 				} else if(controls.cpr.inProgress == true) {
-					y = chart.ekg.rhythm.cpr[chart.ekg.patternIndex];
+					y = chart.ekg.rhythm.cpr[chart.ekg.cprwaveformIndex][chart.ekg.patternIndex];
 					controls.heartRate.value = 120;
-					chart.ekg.length = chart.ekg.rhythm.cpr.length;
+					chart.ekg.length = chart.ekg.rhythm.cpr[chart.ekg.cprwaveformIndex].length;
 					
 					// increment pointers
 					chart.ekg.patternIndex++;				
@@ -646,6 +680,13 @@
 				
 				// are we beyond pattern?
 				if(chart.ekg.patternIndex >= chart.ekg.length) {
+					if(controls.cpr.inProgress == true) {
+						//if(chart.ekg.cprwaveformIndex==2){
+						//	chart.ekg.cprwaveformIndex=0;
+						//} else {
+						chart.ekg.cprwaveformIndex = Math.floor((Math.random() * 3));
+						//}
+					}
 					chart.ekg.patternIndex = 0;
 				}
 			}
