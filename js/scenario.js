@@ -59,6 +59,18 @@ console.log("Current Scenario State: " + this.currentScenarioState);
 		$('#scenario-select select').unbind().change(function() {
 			simmgr.sendChange({'set:scenario:active': $(this).children('option:selected').val()});
 		});
+		
+		$('#scenario-select select option').unbind().click(function(evt) {
+			var newScenarioFileName = $(this).val();
+			if(newScenarioFileName == scenario.currentScenarioFileName) {
+				simmgr.sendChange({'set:scenario:active': 'blank'});
+				setTimeout(function() {
+					simmgr.sendChange({'set:scenario:active': newScenarioFileName});
+				}, 1000);
+			}
+		});
+		
+		
 	},
 	
 	// start scenario
