@@ -36,10 +36,10 @@
 
 	$content = '';
 	foreach($logArray as $logRecord) {
-		list($timeStamp, $event) = explode(" ", $logRecord, 2);
+		list($timeSystemTime, $timeScenario, $timeScene, $event) = explode(" ", $logRecord, 4);
 		$content .= '
 			<tr>
-				<td class="time-stamp">' . $timeStamp . '</td>
+				<td class="time-stamp">' . $timeScenario . '</td>
 				<td class="event">' . $event . '</td>
 			<tr>
 		';

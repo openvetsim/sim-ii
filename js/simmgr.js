@@ -802,8 +802,11 @@ var simmgr = {
 				}
 				/************ scenario **************/
 				if( ( typeof(response.scenario) != '"undefined"' )  ){
-					if(typeof(response.scenario.runtime) != "undefined" ) {
-						$('#scenario-running-time').html(response.scenario.runtime);
+					if(typeof(response.scenario.runtimeScenario) != "undefined" ) {
+						$('#scenario-running-time').html(response.scenario.runtimeScenario);
+					}
+					if(typeof(response.scenario.runtimeScene) != "undefined" ) {
+						$('#scene-running-time').html(response.scenario.runtimeScene);
 					}
 					
 					// scenario state
