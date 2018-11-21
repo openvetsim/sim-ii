@@ -215,11 +215,12 @@ a:hover {
 		margin: 7px 0 0 0;
 	}
 	#scenario-button{
-		margin: 0px 0 0 10px;
+		margin: 0px 0 0 58px;
 		width: 120px;
 	}
 	#scenario-terminate-button{
-		margin: 0px 0 0 10px;
+		margin: -30px 0 0 33px;
+		width: 120px;
 	}
 	#scenario-video-label{
 		margin: 5px 0 ;
@@ -230,8 +231,9 @@ a:hover {
 		float: left;
 		margin: 8px 0 0 7px;
 	}
-	#scenario-run-time {
-		width: auto;
+	#scenario-run-time, #scene-run-time {
+		width: 145px;
+		display: block;
 	}
 
 /* Media Select Control */

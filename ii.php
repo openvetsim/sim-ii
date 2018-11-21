@@ -411,7 +411,8 @@ console.log(controls['awRR'].increment);
 					<button id="scenario-button" class="scenario-button float-left">Start Scenario</button>
 					<h2 id="scenario-video-label">Start Video With Scenario</h2>
 					<input type="checkbox" id="start-video" class="float-left">
-					<p id="scenario-run-time" class="clearer float-left">Scenario Running time: <span id="scenario-running-time">01:01</span></p>
+					<p id="scenario-run-time" class="clearer float-left">Scenario Running time:</p><p class="float-left" id="scenario-running-time">01:01</p>
+					<p id="scene-run-time" class="clearer float-left">Scene Running time:</p><p class="float-left" id="scene-running-time">01:00</p>
 					<button id="scenario-terminate-button" class="scenario-button float-left">Terminate Scenario</button>
 				</div>
 				<div id="media-select" class="float-left clearer ii-border">
