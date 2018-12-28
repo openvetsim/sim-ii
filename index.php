@@ -168,7 +168,7 @@
 			</div>
 			<div class="clearer"></div>
 			<form method="post" action="#" autocomplete="off">
-				<button id="demo_submit" name="submit" class="admin-demo-btn red-button">Start Demo Session</button>
+				<button id="demo_submit" name="submit" class="admin-demo-btn red-button">Start Demo</button>
 				<br>Clear Demo Scenario Directory <input type='checkbox' name='clearScenarios' value='clear'>
 				<input type="hidden" name="userID" value="5" />
 			</form>
