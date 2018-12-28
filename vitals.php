@@ -68,25 +68,7 @@
 			$( window ).resize(function() {
 				doWindowScale();
 			});
-			
-			$(document).ready(function() {				
-				doWindowScale();
-				$('#theButtons').hide();
-				$(function() {
-				   $(window).keypress(function(e) {
-					   var key = e.key;
-					   console.log(e );
-					   switch ( key )
-					   {
-							case 'H':
-								$('#theButtons').hide();
-								break;
-							case 'S':
-								$('#theButtons').show();
-								break;
-					   }
-				   });
-				});
+			$(document).ready(function() {
 				// init profile data
 				scenario.loadScenario();
 				profile.init();
@@ -111,19 +93,8 @@
 				profile.initPatientInfo();
 				
 				simmgr.init();
-				
-				$('#closeButton').click(function(){ 
-					$(this).text("Closing" );
-					$.ajax({
-						url: '/cgi-bin/quitvitals.php',
-						type: 'post'
-					})
-					.done(function( data, textStatus, jqXHR ) {
-						$('#outputDiv').html(data );
-					});
-				});
-
 			});
+
 		</script>
 <style type="text/css" media="screen">
   * {
@@ -144,22 +115,13 @@
   .dbgNote {
 	font-size: 9px;
   }
-  #theButtons {
-	position: absolute;
-	bottom: -10px;
-	right: 10px;
-  }
-  #theButtons button {
-	font-size: 10px;
-	line-height: normal;
-  }
 	</style>
 	
 </head>
 
 <body>
 			<div id="vsm">
-				<h1>VS Monitor</h1>
+				<h1><span id="startStopButton">VS</span> Monitor</h1>
 				<div id="vs-left-col">
 					<canvas id="vs-trace-1" class="vs-trace" width="500" height="125" onclick="modal.heartRhythm(); return false;"></canvas>
 					<canvas id="vs-trace-2" class="vs-trace" width="500" height="125" onclick="modal.respRhythm(); return false;"></canvas>
@@ -197,12 +159,6 @@
 						<a id="display-nbp-hr" class="alt-control-rate color-red" href="javascript: void(0)" onclick="modal.nbp(); return false;"><span style="font-size: 24px;">PR</span> <span id="displayed-reportedHR">75</span></a>
 					</div>
 				</div>
-				<div id="theButtons">
-					<button id="startStopButton">Stop</button>
-					<a href='vitals.php?v=1'><button>Refresh</button></a>
-				</div>
 			</div>
-			
-			<!--<button id="closeButton">Close</button>-->
 </body>
 </html>

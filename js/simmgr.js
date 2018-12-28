@@ -40,20 +40,19 @@ var simmgr = {
 		
 		// bind demo button to start and stop polling of sim mgr
 		$("#startStopButton").click(function(){
-			var txt = $(this).text();
-			if ( txt == "Start" )
+			if ( simmgr.running == 0 )
 			{
 				simmgr.running = 1;
 				simmgr.quickTimer = setTimeout(function() { simmgr.getQuickStatus(); }, simmgr.quickInterval );
 				simmgr.statusTimer = setTimeout(function() { simmgr.getStatus(); }, simmgr.statusInterval );
-				$(this).text("Stop");
+				$("#startStopButton").css({color:'#FFFFFF'});
 			}
 			else 
 			{
 				simmgr.running = 0;
 				clearTimeout(simmgr.quickTimer );
 				clearTimeout(simmgr.statusTimer );
-				$(this).text("Start");
+				$("#startStopButton").css({color:'#555555'});
 			}
 		});
 		

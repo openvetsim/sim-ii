@@ -160,7 +160,6 @@
 			$(document).ready(function() {
 				// hide debrief menu item
 				$('.logout.debrief').hide();
-				$('#startStopButton').hide();	// Use for debug only
 				
 				// init menu
 				menu.init();
@@ -246,14 +245,6 @@ console.log(controls['awRR'].increment);
 				}
 			});
 		</script>
-		<style>
-			#startStopButton
-			{
-				position: absolute;
-				bottom: 0px;
-				right: 0px;
-			}
-		</style>
 	</head>
 	<body>
 		<div id="sitewrapper">
@@ -371,7 +362,7 @@ console.log(controls['awRR'].increment);
 			</div>
 			
 			<div id="vsm" class="float-left ii-border">
-				<h1>VS Monitor</h1>
+				<h1><span id="startStopButton">VS</span> Monitor</h1>
 				<div id="vs-left-col">
 					<canvas id="vs-trace-1" class="vs-trace" width="500" height="125" onclick="modal.heartRhythm(); return false;"></canvas>
 					<canvas id="vs-trace-2" class="vs-trace" width="500" height="125" onclick="modal.respRhythm(); return false;"></canvas>
@@ -410,7 +401,6 @@ console.log(controls['awRR'].increment);
 						<button id="button-nbp" class="scenario-button red-button">Read NIBP</button>
 					</div>
 				</div>
-				<button id="startStopButton">Stop Status Updates</button>
 				<!-- <div class="float-left ii-border button demo-button">
 					<button id="switch-ekg-now">Switch EKG Patterns!</button>
 					<button id="ekg-sound" class="pause">Turn EKG Sound Off!</button>
