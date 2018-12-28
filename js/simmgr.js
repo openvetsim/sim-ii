@@ -57,6 +57,20 @@ var simmgr = {
 			}
 		});
 		
+		$(window).keypress(function(e) {
+		   var key = e.key;
+		   console.log(e );
+		   switch ( key )
+		   {
+				case 'S':
+					$('#startStopButton').show();
+					$("#startStopButton").click();
+					break;
+				case 'H':
+					$('#startStopButton').hide();
+					break;
+		   }
+	   });
 		// This call will periodically tap the server to prevent PHP session timeouts.
 		simmgr.tapHost();
 	},

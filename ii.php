@@ -1,7 +1,6 @@
 <?php
 	require_once('init.php');
 	
-	// delete session data
 	$status = adminClass::isUserLoggedIn();
 	if($status === FALSE) {
 		header('location: index.php');
@@ -122,7 +121,6 @@
 	// get scenario list
 	$scenarioFolderList = scandir(SERVER_ACTIVE_SCENARIOS);
 	$scenarioContent = '';
-	$scenarioNameArray = array();
 	foreach($scenarioFolderList as $key => $scenarioFolder) {
 		if(is_dir(SERVER_ACTIVE_SCENARIOS . $scenarioFolder) === TRUE) {
 			if( $scenarioFolder == '.' || $scenarioFolder == '..' || $scenarioFolder == '.git' ) {
@@ -148,7 +146,6 @@
 		$scenarioContent .= '</option>
 		';
 	}
-				
 ?>
 <!DOCTYPE html>
 <html>
@@ -157,10 +154,13 @@
 		
 		<script type="text/javascript">
 			var uploadErrorCode = <?= $uploadErrorCode; ?>;
-var isVitalsMonitor = 0;	// Student Display Flag
+			var userID = <?= $uid ?>;
+			document.cookie = "userID="+userID+"; path=/";
+			var isVitalsMonitor = 0;	// Student Display Flag
 			$(document).ready(function() {
 				// hide debrief menu item
 				$('.logout.debrief').hide();
+				$('#startStopButton').hide();	// Use for debug only
 				
 				// init menu
 				menu.init();

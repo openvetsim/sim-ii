@@ -106,7 +106,7 @@
 						}
 					}
 				}
-				header('location: ii.php');
+				header('location: ii-demo.php');
 			}
 			else
 			{

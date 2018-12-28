@@ -11,30 +11,105 @@
 	$uid = $userRow['UserID'];
 	$sessionID = session_id();
 	
-	// get scenario list
-	$scenarioFolderList = scandir(SERVER_SCENARIOS);
-	$scenarioContent = '';
-	foreach($scenarioFolderList as $key => $scenarioFolder) {
-		if(is_dir(SERVER_SCENARIOS . $scenarioFolder) === TRUE) {
-			if( $scenarioFolder == '.' || $scenarioFolder == '..' || $scenarioFolder == '.git' ) {
-				continue;
-			}
+	$uploadErrorCode = FILE_NO_ERROR;
+
+	// If Demo user, then we use a temporary directory for Scenarios
+	// Otherwise, the standard directory
+	if ( $uid == 5 )
+	{
+		define("SERVER_ACTIVE_SCENARIOS", SERVER_DEMO_SCENARIOS . $sessionID . DIRECTORY_SEPARATOR);
+		define("BROWSER_ACTIVE_SCENARIOS",BROWSER_DEMO_SCENARIOS . $sessionID . DIRECTORY_SEPARATOR);
+
+	}
+	else
+	{
+		define("SERVER_ACTIVE_SCENARIOS", SERVER_SCENARIOS );
+		define("BROWSER_ACTIVE_SCENARIOS", BROWSER_SCENARIOS );
+	}
+	
+	// are deleting a scenario?
+	$deleteScenarioDir = dbClass::valuesFromGet('ddir');
+	if($deleteScenarioDir != '') {
+		if(fileClass::deleteDir(SERVER_ACTIVE_SCENARIOS . $deleteScenarioDir)) {
+			$uploadErrorCode = SHOW_SCENARIO_MANAGER;
+		} 
+	}
+	
+	// process POST and see if we added a new scenario
+	$scenarioDir = '';
+	if(isset($_POST['scenario-submit']) === TRUE) {
+		// check for $_FILES error codes
+		$fileUploadError = $_FILES['scenario-file-select']['error'];
+		if($fileUploadError == UPLOAD_ERR_OK) {
+			// delete temp directory
+			fileClass::deleteDir(TMP_SCENARIO_DIR);
 			
-			if(file_exists(SERVER_SCENARIOS . $scenarioFolder . DIRECTORY_SEPARATOR . 'main.xml') === TRUE) {
-				$scenarioHeader = scenarioXML::getScenarioHeaderArray($scenarioFolder . DIRECTORY_SEPARATOR . 'main');
-				$scenarioContent .= '
-					<option value="' . $scenarioFolder . '">';
-				if ( isset($scenarioHeader['title']['name'] ) && strlen($scenarioHeader['title']['name']) > 0 ) {
-					$scenarioContent .= $scenarioHeader['title']['name'];
+			// make temp directory and unpack archive
+			@mkdir(TMP_SCENARIO_DIR, 0777, TRUE );
+
+			// attempt to extract the zip
+			$scenarioZip = new ZipArchive;
+			$resource = $scenarioZip->open($_FILES['scenario-file-select']['tmp_name']);
+			if ($resource === TRUE) {
+				$scenarioZip->extractTo(TMP_SCENARIO_DIR);
+				$scenarioZip->close();
+				
+				fileClass::setDirModeRecursive(TMP_SCENARIO_DIR, 0777);
+				$uploadErrorCode = FILE_EXTRACT_ZIP_OK;
+			} else {
+				$uploadErrorCode = FILE_EXTRACT_ZIP_FAIL;
+				fileClass::deleteDir(TMP_SCENARIO_DIR);
+			}			
+		}
+		
+		// validate archive if extract is OK
+		if($uploadErrorCode == FILE_EXTRACT_ZIP_OK) {
+			if(!fileClass::validateScenarioArchive()) {
+				$uploadErrorCode = FILE_SCENARIO_INVALID;				
+				fileClass::deleteDir(TMP_SCENARIO_DIR);
+			} else {
+				// check for duplicate scenario directories
+				$parts = pathinfo($_FILES['scenario-file-select']['name']);
+				if(is_dir(SERVER_ACTIVE_SCENARIOS . $parts['filename'])) {
+					$uploadErrorCode = FILE_SCENARIO_DUP;
+					$scenarioDir = $parts['filename'];
 				} else {
-					$scenarioContent .= $scenarioFolder;
+					// move the temp directory to a new scenario
+					fileClass::copyDir(TMP_SCENARIO_DIR, SERVER_ACTIVE_SCENARIOS . $parts['filename'] . '/', 0777);
+					fileClass::deleteDir(TMP_SCENARIO_DIR);					
 				}
-				$scenarioContent .= '</option>
-				';
 			}
 		}
 	}
 	
+	// get scenario list
+	$scenarioFolderList = scandir(SERVER_ACTIVE_SCENARIOS);
+	$scenarioContent = '';  
+	foreach($scenarioFolderList as $key => $scenarioFolder) {
+		if(is_dir(SERVER_ACTIVE_SCENARIOS . $scenarioFolder) === TRUE) {
+			if( $scenarioFolder == '.' || $scenarioFolder == '..' || $scenarioFolder == '.git' ) {
+				continue;
+			}
+			
+			if(file_exists(SERVER_ACTIVE_SCENARIOS . $scenarioFolder . DIRECTORY_SEPARATOR . 'main.xml') === TRUE) {
+				$scenarioHeader = scenarioXML::getScenarioHeaderArray($scenarioFolder . DIRECTORY_SEPARATOR . 'main');
+				$fileName = $scenarioFolder . DIRECTORY_SEPARATOR . 'main';
+				$scenarioHeaderArray = scenarioXML::getScenarioHeaderArray($fileName);
+				$scenarioNameArray[$scenarioHeaderArray['title']['name']] = $scenarioFolder;
+			}
+		}
+	}
+
+	// sort the scenario names
+	ksort($scenarioNameArray);
+			
+	foreach($scenarioNameArray as $scenarioName => $scenarioFolder) {
+		$scenarioContent .= '
+			<option value="' . $scenarioFolder . '">';
+		$scenarioContent .= $scenarioName;
+		$scenarioContent .= '</option>
+		';
+	}
 ?>
 <!DOCTYPE html>
 <html>
@@ -43,12 +118,15 @@
 		
 		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>demo.js?v=<?= $ts ?>"></script>
 		<script type="text/javascript">
-var userID = <?= $uid ?>;
-document.cookie = "userID="+userID+"; path=/";
-var isVitalsMonitor = 0;	// Student Display Flag
+			var uploadErrorCode = <?= $uploadErrorCode; ?>;
+			var userID = <?= $uid ?>;
+			document.cookie = "userID="+userID+"; path=/";
+			var isVitalsMonitor = 0;	// Student Display Flag
 			$(document).ready(function() {
 				console.log(document.cookie );
-				
+				// hide debrief menu item
+				$('.logout.debrief').hide();
+				$('#startStopButton').hide();	// Use for debug only
 				// init menu
 				menu.init();
 				
@@ -82,45 +160,22 @@ console.log(controls['awRR'].increment);
 				$('#vs-heartRhythm p.display-rate').html(controls.heartRate.value);
 				$('#vs-awRR p.display-rate').html(controls.awRR.value);
 				
-				// demo controls -- will be removed for production
-				// demo beat now
-				/*
-				$('#switch-ekg-now').click(function() {
-					if(chart.ekg.rhythmIndex == 0) {
-						chart.ekg.rhythmIndex = 1;
-					} else if(chart.ekg.rhythmIndex == 1) {
-						chart.ekg.rhythmIndex = 2;
-					} else {
-						chart.ekg.rhythmIndex = 0;
-					}
-					chart.ekg.length = chart.ekg.rhythm[chart.ekg.rhythmIndex].length
-				});
-				$('#ekg-sound').click(function() {
-					if($(this).hasClass('play') == true) {
-						controls.heartRate.audio.play();
-						$(this).removeClass('play').addClass('pause');
-						$(this).html('Turn EKG Sound OFF!');
-						chart.ekg.beepFlag = true;
-					} else {
-						$(this).removeClass('pause').addClass('play');
-						$(this).html('Turn EKG Sound ON!');
-						chart.ekg.beepFlag = false;
-					}
-				
-				});
-				
-				$('#switch-resp-now').click(function() {
-					if(chart.resp.rhythmIndex == 0) {
-						chart.resp.rhythmIndex = 1;
-					} else {
-						chart.resp.rhythmIndex = 0;
-					}
-					chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex].length
-				});
-				*/
 				simmgr.init();
 				controls.cpr.init();
 				controls.manualRespiration.init();
+				
+				if(uploadErrorCode == <?= FILE_EXTRACT_ZIP_OK; ?>) {
+					$('#scenario-click').click();
+				}
+				
+				// duplicate scenario?
+				if(uploadErrorCode == <?= FILE_SCENARIO_DUP; ?>) {
+					if(confirm('Duplicate scenario...overwrite?')) {
+						scenario.addScenario('<?= $scenarioDir; ?>');
+					}
+				} else if(uploadErrorCode == <?= FILE_EXTRACT_ZIP_FAIL; ?> || uploadErrorCode == <?= FILE_SCENARIO_INVALID; ?>) {
+					alert("Invalid scenario zip file.");
+				}
 			});
 		</script>
 		<style>
@@ -135,7 +190,7 @@ console.log(controls['awRR'].increment);
 	<body>
 		<div id="sitewrapper">
 			<div id="admin-nav">
-				<h1>Cornell Vet School Simulator - Demo</h1>
+				<h1>Open VetSim Instructor Interface</h1>
 				<h1 class="welcome-title">Welcome <?= $userName; ?></h1>
 				<div class="profile-display scenario">
 					Scenario Name: 
@@ -144,24 +199,6 @@ console.log(controls['awRR'].increment);
 					&nbsp;&nbsp;|&nbsp;&nbsp;Scene ID:&nbsp;<span id="scene-id">1</span>
 				</div>
 				<ul id="main-nav">
-					<!-- <li class="with-sub-nav">
-						<a href="javascript:void(2);">File</a>
-						<ul class="sub-nav">
-							<li><a href="javascript: void(2);">File Another Item</a></li>
-							<li><a href="javascript: void(2);">File Another Item</a></li>
-							<li><a href="javascript: void(2);">File Another Item</a></li>
-							<li><a href="javascript: void(2);">File Another Item</a></li>
-						</ul>
-					</li>
-					<li class="with-sub-nav">
-						<a href="javascript:void(2);">Settings</a>
-						<ul class="sub-nav">
-							<li><a href="javascript: void(2);">Settings Another Item</a></li>
-							<li><a href="javascript: void(2);">Settings Another Item</a></li>
-							<li><a href="javascript: void(2);">Settings Another Item</a></li>
-							<li><a href="javascript: void(2);">Settings Another Item</a></li>
-						</ul>
-					</li> -->
 					<li >
 						<a href="javascript:void(2);" onclick="modal.showUsers();">Users</a>
 					</li>
@@ -173,7 +210,10 @@ console.log(controls['awRR'].increment);
 						Version: <?= VERSION_MAJOR . '.' . VERSION_MINOR; ?>						
 					</li>
 					<li class="logout">
-						<a href="demo.php" class="event-link">Logout</a>						
+						<a href="index.php" class="event-link">Logout</a>						
+					</li>
+					<li class="logout debrief">
+						<a href="/sim-player/player.php" class="event-link">Debrief</a>						
 					</li>
 					<li class="logout">
 						<a href="javascript: void(2);" onclick="modal.manageScenarios();" class="event-link" id="scenario-click">Scenarios</a>						
@@ -182,7 +222,7 @@ console.log(controls['awRR'].increment);
 						<a href="../../editor/editor.php"  class="event-link breath-link">Editor</a>						
 					</li> -->
 					<li class="logout">
-						<a href="javascript: void(2);"  class="event-link cpr-link">Start CPR</a>						
+						<a href="javascript: void(2);"  class="event-link cpr-link">Start Comps</a>						
 					</li>
 					<li class="logout">
 						<a href="javascript: void(2);"  class="event-link breath-link">Manual Breath</a>						
@@ -215,8 +255,17 @@ console.log(controls['awRR'].increment);
 					<a id="vocals-dog-control-title" href="javascript: void(2)" onclick="modal.vocals(); return false;">Vocals</a>
 					<a class="sound-mute" id="vocals-mute" href="javascript: void(2)" onclick="modal.vocals(); return false;"><img src="<?= BROWSER_IMAGES; ?>sound_mute.png"></a>
 				</div>
-				<div id="pulse-dog-control" class="dog-control">
-					<a id="pulse-dog-control-title" href="javascript: void(2)" onclick="modal.pulseStrength(); return false;">Pulse Strength</a>
+				<div id="left-femoral-pulse-dog-control" class="dog-control">
+					<a id="left-femoral-pulse-dog-control-title" href="javascript: void(2)" onclick="modal.pulseStrength('left', 'femoral'); return false;">Pulse Strength</a>
+				</div>
+				<div id="right-femoral-pulse-dog-control" class="dog-control">
+					<a id="right-femoral-pulse-dog-control-title" href="javascript: void(2)" onclick="modal.pulseStrength('right', 'femoral'); return false;">Pulse Strength</a>
+				</div>
+				<div id="left-dorsal-pulse-dog-control" class="dog-control">
+					<a id="left-dorsal-pulse-dog-control-title" href="javascript: void(2)" onclick="modal.pulseStrength('left', 'dorsal'); return false;">Pulse Strength</a>
+				</div>
+				<div id="right-dorsal-pulse-dog-control" class="dog-control">
+					<a id="right-dorsal-pulse-dog-control-title" href="javascript: void(2)" onclick="modal.pulseStrength('right', 'dorsal'); return false;">Pulse Strength</a>
 				</div>
 				<div id="left-lung-dog-control" class="dog-control">
 					<a id="left-lung-dog-control-title" href="javascript: void(2)" onclick="modal.leftLung(); return false;">Left Lung</a>
@@ -276,11 +325,6 @@ console.log(controls['awRR'].increment);
 					</div>
 				</div>
 				<button id="startStopButton">Stop Status Updates</button>
-				<!-- <div class="float-left ii-border button demo-button">
-					<button id="switch-ekg-now">Switch EKG Patterns!</button>
-					<button id="ekg-sound" class="pause">Turn EKG Sound Off!</button>
-					<button id="switch-resp-now">Switch Resp Patterns!</button>
-				</div> -->
 			</div>
 			
 			<div id="media-col">
@@ -292,7 +336,8 @@ console.log(controls['awRR'].increment);
 					<button id="scenario-button" class="scenario-button float-left">Start Scenario</button>
 					<h2 id="scenario-video-label">Start Video With Scenario</h2>
 					<input type="checkbox" id="start-video" class="float-left">
-					<p id="scenario-run-time" class="clearer float-left">Scenario Running time: <span id="scenario-running-time">01:01</span></p>
+					<p id="scenario-run-time" class="clearer float-left">Scenario Running time:</p><p class="float-left" id="scenario-running-time">01:01</p>
+					<p id="scene-run-time" class="clearer float-left">Scene Running time:</p><p class="float-left" id="scene-running-time">01:00</p>
 					<button id="scenario-terminate-button" class="scenario-button float-left">Terminate Scenario</button>
 				</div>
 				<div id="media-select" class="float-left clearer ii-border">

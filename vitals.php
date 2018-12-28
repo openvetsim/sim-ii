@@ -1,11 +1,32 @@
 <?php
 	require_once('init.php');
-	// get profile ini
-//	$profileURL = parse_ini_file(SERVER_PROFILES . "profile.ini", TRUE);
-//	$profileURL = SERVER_PROFILES . $profileURL['settings']['defaultProfile'];
-//	$profileINI = json_encode(parse_ini_file($profileURL, TRUE));
+	
+	$userRow = adminClass::getUserRowFromSession();
+	if ( $userRow )
+	{
+		$userName = $userRow['UserFirstName'] . " " . $userRow['UserLastName'];
+		$uid = $userRow['UserID'];
+	}
+	else
+	{
+		$userName = "";
+		$uid = 0;
+	}
+	$sessionID = session_id();
+	
+	// If Demo user, then we use a temporary directory for Scenarios
+	// Otherwise, the standard directory
+	if ( $uid == 5 )
+	{
+		define("SERVER_ACTIVE_SCENARIOS", SERVER_DEMO_SCENARIOS . $sessionID . DIRECTORY_SEPARATOR);
+		define("BROWSER_ACTIVE_SCENARIOS",BROWSER_DEMO_SCENARIOS . $sessionID . DIRECTORY_SEPARATOR);
 
-//	$profileINI_Decoded = json_decode($profileINI, TRUE);
+	}
+	else
+	{
+		define("SERVER_ACTIVE_SCENARIOS", SERVER_SCENARIOS );
+		define("BROWSER_ACTIVE_SCENARIOS", BROWSER_SCENARIOS );
+	}
 
 ?>
 <!DOCTYPE html >
@@ -50,11 +71,28 @@
 			
 			$(document).ready(function() {				
 				doWindowScale();
-				
+				$('#theButtons').hide();
+				$(function() {
+				   $(window).keypress(function(e) {
+					   var key = e.key;
+					   console.log(e );
+					   switch ( key )
+					   {
+							case 'H':
+								$('#theButtons').hide();
+								break;
+							case 'S':
+								$('#theButtons').show();
+								break;
+					   }
+				   });
+				});
 				// init profile data
 				scenario.loadScenario();
 				profile.init();
 				profile.isVitalsMonitor = true;	// Student Display Flag
+				var userID = <?= $uid ?>;
+				document.cookie = "userID="+userID+"; path=/";
 
 				chart.init();
 				controls.heartRate.init();
