@@ -10,11 +10,28 @@
 		exit();
 	}
 	
+	$userRow = adminClass::getUserRowFromSession();
+	$uid = $userRow['UserID'];
+	$sessionID = session_id();
+	// If Demo user, then we use a temporary directory for Scenarios
+	// Otherwise, the standard directory
+	if ( $uid == 5 )
+	{
+		define("SERVER_ACTIVE_SCENARIOS", SERVER_DEMO_SCENARIOS . $sessionID . DIRECTORY_SEPARATOR);
+		define("BROWSER_ACTIVE_SCENARIOS",BROWSER_DEMO_SCENARIOS . $sessionID . DIRECTORY_SEPARATOR);
+
+	}
+	else
+	{
+		define("SERVER_ACTIVE_SCENARIOS", SERVER_SCENARIOS );
+		define("BROWSER_ACTIVE_SCENARIOS", BROWSER_SCENARIOS );
+	}
+	
 	// get list of scenarios and descriptions
-	$scenarioDirs = scandir(SERVER_SCENARIOS);
+	$scenarioDirs = scandir(SERVER_ACTIVE_SCENARIOS);
 	$scenarioList = array();
 	foreach($scenarioDirs as $scenarioDir) {
-		if(is_dir(SERVER_SCENARIOS . $scenarioDir) === true && $scenarioDir != '.' && $scenarioDir != '..' && $scenarioDir != '.git') {
+		if(is_dir(SERVER_ACTIVE_SCENARIOS . $scenarioDir) === true && $scenarioDir != '.' && $scenarioDir != '..' && $scenarioDir != '.git') {
 			$scenarioList[] = $scenarioDir;
 		}
 	}

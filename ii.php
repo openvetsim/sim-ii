@@ -9,13 +9,29 @@
 	
 	$userRow = adminClass::getUserRowFromSession();
 	$userName = $userRow['UserFirstName'] . " " . $userRow['UserLastName'];
+	$uid = $userRow['UserID'];
+	$sessionID = session_id();
 	
 	$uploadErrorCode = FILE_NO_ERROR;
+
+	// If Demo user, then we use a temporary directory for Scenarios
+	// Otherwise, the standard directory
+	if ( $uid == 5 )
+	{
+		define("SERVER_ACTIVE_SCENARIOS", SERVER_DEMO_SCENARIOS . $sessionID . DIRECTORY_SEPARATOR);
+		define("BROWSER_ACTIVE_SCENARIOS",BROWSER_DEMO_SCENARIOS . $sessionID . DIRECTORY_SEPARATOR);
+
+	}
+	else
+	{
+		define("SERVER_ACTIVE_SCENARIOS", SERVER_SCENARIOS );
+		define("BROWSER_ACTIVE_SCENARIOS", BROWSER_SCENARIOS );
+	}
 	
 	// are deleting a scenario?
 	$deleteScenarioDir = dbClass::valuesFromGet('ddir');
 	if($deleteScenarioDir != '') {
-		if(fileClass::deleteDir(SERVER_SCENARIOS . $deleteScenarioDir)) {
+		if(fileClass::deleteDir(SERVER_ACTIVE_SCENARIOS . $deleteScenarioDir)) {
 			$uploadErrorCode = SHOW_SCENARIO_MANAGER;
 		} 
 	}
@@ -30,7 +46,7 @@
 			fileClass::deleteDir(TMP_SCENARIO_DIR);
 			
 			// make temp directory and unpack archive
-			@mkdir(TMP_SCENARIO_DIR, 0777);
+			@mkdir(TMP_SCENARIO_DIR, 0777, TRUE );
 
 			// attempt to extract the zip
 			$scenarioZip = new ZipArchive;
@@ -55,12 +71,12 @@
 			} else {
 				// check for duplicate scenario directories
 				$parts = pathinfo($_FILES['scenario-file-select']['name']);
-				if(is_dir(SERVER_SCENARIOS . $parts['filename'])) {
+				if(is_dir(SERVER_ACTIVE_SCENARIOS . $parts['filename'])) {
 					$uploadErrorCode = FILE_SCENARIO_DUP;
 					$scenarioDir = $parts['filename'];
 				} else {
 					// move the temp directory to a new scenario
-					fileClass::copyDir(TMP_SCENARIO_DIR, SERVER_SCENARIOS . $parts['filename'] . '/', 0777);
+					fileClass::copyDir(TMP_SCENARIO_DIR, SERVER_ACTIVE_SCENARIOS . $parts['filename'] . '/', 0777);
 					fileClass::deleteDir(TMP_SCENARIO_DIR);					
 				}
 			}
@@ -69,7 +85,7 @@
 		$parts = pathinfo($_FILES['scenario-file-select']['name']);
 		$ext = $parts['extension'];
 		if($ext == 'zip') {
-			if(is_dir(SERVER_SCENARIOS . $parts['filename'])) {
+			if(is_dir(SERVER_ACTIVE_SCENARIOS . $parts['filename'])) {
 				$dupScenario = 1;
 				fileClass::deleteDir(TMP_SCENARIO_DIR);
 				$tmpFileName = pathinfo($_FILES['scenario-file-select']['tmp_name']);
@@ -90,7 +106,7 @@
 					}
 					
 					// copy from temp directory to new scenario folder
-					fileClass::copyDir(TMP_SCENARIO_DIR, SERVER_SCENARIOS . $parts['filename'] . '/', 0777);
+					fileClass::copyDir(TMP_SCENARIO_DIR, SERVER_ACTIVE_SCENARIOS . $parts['filename'] . '/', 0777);
 					fileClass::deleteDir(TMP_SCENARIO_DIR);
 					$scenarioClick = 1;
 				} else {
@@ -104,16 +120,16 @@
 	}
 	
 	// get scenario list
-	$scenarioFolderList = scandir(SERVER_SCENARIOS);
+	$scenarioFolderList = scandir(SERVER_ACTIVE_SCENARIOS);
 	$scenarioContent = '';
 	$scenarioNameArray = array();
 	foreach($scenarioFolderList as $key => $scenarioFolder) {
-		if(is_dir(SERVER_SCENARIOS . $scenarioFolder) === TRUE) {
+		if(is_dir(SERVER_ACTIVE_SCENARIOS . $scenarioFolder) === TRUE) {
 			if( $scenarioFolder == '.' || $scenarioFolder == '..' || $scenarioFolder == '.git' ) {
 				continue;
 			}
 			
-			if(file_exists(SERVER_SCENARIOS . $scenarioFolder . DIRECTORY_SEPARATOR . 'main.xml') === TRUE) {
+			if(file_exists(SERVER_ACTIVE_SCENARIOS . $scenarioFolder . DIRECTORY_SEPARATOR . 'main.xml') === TRUE) {
 				$scenarioHeader = scenarioXML::getScenarioHeaderArray($scenarioFolder . DIRECTORY_SEPARATOR . 'main');
 				$fileName = $scenarioFolder . DIRECTORY_SEPARATOR . 'main';
 				$scenarioHeaderArray = scenarioXML::getScenarioHeaderArray($fileName);

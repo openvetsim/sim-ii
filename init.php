@@ -4,6 +4,7 @@ error_reporting(E_ALL);
 
 	// session
 	session_start();
+	$sessionID = session_id();
 	
 	// debug
 	define("DEBUG", TRUE);
@@ -30,12 +31,13 @@ error_reporting(E_ALL);
 	define("SERVER_SIM_LOGS", $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "simlogs" . DIRECTORY_SEPARATOR);	
 	define("SERVER_SCENARIOS", $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "scenarios" . DIRECTORY_SEPARATOR);	
 	define("SERVER_SCENARIOS_PATIENTS", SERVER_SCENARIOS . "patients" . DIRECTORY_SEPARATOR);	
+	define("SERVER_DEMO_SCENARIOS", $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "demo" . DIRECTORY_SEPARATOR);
 	
 	// server location for ini files
 //	define("SERVER_PROFILES",  SERVER_SCENARIOS . "profiles" . DIRECTORY_SEPARATOR);
-	define("SERVER_PROFILES", $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "profiles" . DIRECTORY_SEPARATOR);	
-	define("SERVER_VOCALS", SERVER_SCENARIOS . "vocals" . DIRECTORY_SEPARATOR);
-	define("SERVER_MEDIA", SERVER_SCENARIOS . "media" . DIRECTORY_SEPARATOR);
+//	define("SERVER_PROFILES", $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "profiles" . DIRECTORY_SEPARATOR);	
+//	define("SERVER_VOCALS", SERVER_SCENARIOS . "vocals" . DIRECTORY_SEPARATOR);
+//	define("SERVER_MEDIA", SERVER_SCENARIOS . "media" . DIRECTORY_SEPARATOR);
 
 	// browser defines
 	if(isset($_SERVER['HTTPS']) == true) {
@@ -60,10 +62,11 @@ error_reporting(E_ALL);
 	define("BROWSER_PROFILES_IMAGES", ".." . DIRECTORY_SEPARATOR . "scenarios" . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR);
 	define("BROWSER_CGI",  ".." . DIRECTORY_SEPARATOR . "cgi-bin" . DIRECTORY_SEPARATOR);
 	define("BROWSER_SCENARIOS", ".." . DIRECTORY_SEPARATOR . "scenarios" . DIRECTORY_SEPARATOR);
-	define("BROWSER_SCENARIOS_IMAGES", BROWSER_SCENARIOS . "images" . DIRECTORY_SEPARATOR);
-	define("BROWSER_SCENARIOS_PATIENTS", BROWSER_SCENARIOS . "patients" . DIRECTORY_SEPARATOR);
-	define("BROWSER_SCENARIOS_MEDIA", BROWSER_SCENARIOS . "media" . DIRECTORY_SEPARATOR);
-	define("BROWSER_SCENARIOS_VOCALS", BROWSER_SCENARIOS . "vocals" . DIRECTORY_SEPARATOR);
+	define("BROWSER_DEMO_SCENARIOS", ".." . DIRECTORY_SEPARATOR . "demo" . DIRECTORY_SEPARATOR);
+//	define("BROWSER_SCENARIOS_IMAGES", BROWSER_SCENARIOS . "images" . DIRECTORY_SEPARATOR);
+//	define("BROWSER_SCENARIOS_PATIENTS", BROWSER_SCENARIOS . "patients" . DIRECTORY_SEPARATOR);
+//	define("BROWSER_SCENARIOS_MEDIA", BROWSER_SCENARIOS . "media" . DIRECTORY_SEPARATOR);
+//	define("BROWSER_SCENARIOS_VOCALS", BROWSER_SCENARIOS . "vocals" . DIRECTORY_SEPARATOR);
 	
 	define("BROWSER_CSS", BROWSER_ROOT . "css" . DIRECTORY_SEPARATOR);
 	define("BROWSER_IMAGES", BROWSER_ROOT . "images" . DIRECTORY_SEPARATOR);
@@ -108,7 +111,7 @@ error_reporting(E_ALL);
 	define('MOBILIZED', TRUE);
 	
 	// define temp directory for scenario
-	define('TMP_SCENARIO_DIR', '/var/www/html/temp/');
+	define('TMP_SCENARIO_DIR', '/var/www/html/temp/'.$sessionID.'/' );
 		
 	/************************************/
 	// requires for global classes

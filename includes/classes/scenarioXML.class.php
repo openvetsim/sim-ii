@@ -5,7 +5,7 @@
 		}
 				
 		static public function getScenarioArray($fileName) {
-			$filePath = SERVER_SCENARIOS . $fileName . ".xml";
+			$filePath = SERVER_ACTIVE_SCENARIOS . $fileName . ".xml";
 			if(file_exists($filePath) === FALSE) {
 				return FALSE;
 			} else {
@@ -30,7 +30,7 @@
 				return FALSE;
 			} else {
 				return $scenarioArray['header'];
-			}
+				}
 		}
 
 		static public function getScenarioEventsArray($fileName) {

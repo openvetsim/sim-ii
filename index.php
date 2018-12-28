@@ -1,15 +1,120 @@
 <?php
 	require_once('init.php');
-	
+
+	define("SERVER_ACTIVE_SCENARIOS", SERVER_SCENARIOS );
+	define("BROWSER_ACTIVE_SCENARIOS", BROWSER_SCENARIOS );
 	// delete session data
 	adminClass::removeUserfromSession();
-
+	
 	// check admin login
 	$loginErrorFlag = 0;
 	if(isset($_POST['submit'])) {
 //FB::log($_POST);
-
-		if(($userRow = adminClass::isUserLoginValid($_POST['UserEmail'], $_POST['UserPassWord'])) !== FALSE) {
+		
+		if ( isset($_POST['userID']) && ( $_POST['userID'] == 5 ) )
+		{
+			// Demo User
+			$userID = '5';
+			if(($userRow = adminClass::getUserRow($userID)) !== FALSE) 
+			{
+				adminClass::addUserToSession($userRow);
+				$sessionID = session_id();
+				
+				// Demo Scenario Directory Support
+				$dest = SERVER_DEMO_SCENARIOS.$sessionID;
+				
+				// Clear and refresh, if indicated
+				if ( isset($_POST['clearScenarios'] ) && $_POST['clearScenarios'] == 'clear' )
+				{
+					$files = new RecursiveIteratorIterator(
+						new RecursiveDirectoryIterator($dest, RecursiveDirectoryIterator::SKIP_DOTS),
+							RecursiveIteratorIterator::CHILD_FIRST );
+					foreach ( $files as $fileinfo )
+					{
+						$path = $fileinfo->getRealPath();
+						if ( $fileinfo->isDir() )
+						{
+							rmdir($path);
+						}
+						else
+						{
+							unlink($path);
+						}
+					}
+					rmdir($dest );
+				}
+				
+				// Create a scenarios directory, if needed
+				$stat = @stat($dest );
+				if ( !$stat )
+				{
+					$sts = mkdir ($dest, 0755 );
+					if ( $sts == FALSE )
+					{
+						$err = error_get_last();
+						print_r($err );
+						die('mkdir fails' );
+					}
+					// Copy the base scenarios to the Demo directory
+					$source = SERVER_SCENARIOS;
+					$iterator = new RecursiveIteratorIterator(
+						new RecursiveDirectoryIterator($source, RecursiveDirectoryIterator::SKIP_DOTS),
+						RecursiveIteratorIterator::SELF_FIRST);
+					foreach ( $iterator as $item )
+					{
+						if ( $item->isDir()) 
+						{
+							$path = $iterator->getSubPathName();
+							$pos = strpos($path, ".git");
+							if ( $pos === FALSE )
+							{
+								$sts = @mkdir($dest . DIRECTORY_SEPARATOR . $iterator->getSubPathName());
+								if ( $sts == FALSE )
+								{
+									echo "<pre>";
+									$err = error_get_last();
+									
+									printf("Pos: %s\nErr: %s\nItem: %s\nDest: %s\n</pre>\n",
+											$pos, 
+											print_r($err, TRUE ),
+											print_r($item, TRUE ),
+											print_r($dest, TRUE ) );
+									die('mkdir fails' );
+								}
+							}
+						} 
+						else
+						{
+							$path = $iterator->getSubPathName();
+							$pos = strpos($path, ".git");
+							if ( $pos === FALSE )
+							{
+								$sts = @copy($item, $dest . DIRECTORY_SEPARATOR . $path );
+								if ( $sts == FALSE )
+								{
+									echo "<pre>";
+									$err = error_get_last();
+									
+									printf("Pos: %s\nErr: %s\nItem: %s\nDest: %s\n</pre>\n",
+											$pos, 
+											print_r($err, TRUE ),
+											print_r($item, TRUE ),
+											print_r($dest, TRUE ) );
+									die('copy fails' );
+								}
+							}
+						}
+					}
+				}
+				header('location: ii.php');
+			}
+			else
+			{
+				adminClass::removeUserFromSession();
+				$loginErrorFlag = 1;
+			}
+		}
+		else if( isset($_POST['UserEmail']) && isset($_POST['UserPassWord']) && ($userRow = adminClass::isUserLoginValid($_POST['UserEmail'], $_POST['UserPassWord'])) !== FALSE) {
 			adminClass::addUserToSession($userRow);
 			header('location: ii.php');
 		} else {
@@ -25,6 +130,8 @@
 		<?php require_once(SERVER_INCLUDES . "header.php"); ?>
 		
 		<script type="text/javascript">
+			document.cookie = "TestCookie=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=;";
+			document.cookie = "simIIUserID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=;";
 			$(document).ready(function() {
 				var loginErrorFlag = <?php echo $loginErrorFlag; ?>;
 				if(loginErrorFlag == 1) {
@@ -33,6 +140,10 @@
 				
 				// focus on username
 				$('input[name=UserEmail]').focus();
+				/* $('#demo_submit').click(function(event){
+					event.preventDefault();
+					window.location.href = "ii-demo.php";
+				}); */
 			});
 		</script>
 	</head>
@@ -52,9 +163,15 @@
 					</fieldset>
 					<button id="login_submit" name="submit" class="admin-btn red-button">Submit</button>
 					<p class="error_login">Incorrect username or password.  Please try again.</p>
+					
 				</form>
 			</div>
-			
+			<div class="clearer"></div>
+			<form method="post" action="#" autocomplete="off">
+				<button id="demo_submit" name="submit" class="admin-demo-btn red-button">Start Demo Session</button>
+				<br>Clear Demo Scenario Directory <input type='checkbox' name='clearScenarios' value='clear'>
+				<input type="hidden" name="userID" value="5" />
+			</form>
 			<div class="clearer"></div>
 		</div>	
 	</body>

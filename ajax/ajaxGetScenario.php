@@ -14,6 +14,23 @@
 		}
 	}
 
+	$userRow = adminClass::getUserRowFromSession();
+	$uid = $userRow['UserID'];
+	$sessionID = session_id();
+	// If Demo user, then we use a temporary directory for Scenarios
+	// Otherwise, the standard directory
+	if ( $uid == 5 )
+	{
+		define("SERVER_ACTIVE_SCENARIOS", SERVER_DEMO_SCENARIOS . $sessionID . DIRECTORY_SEPARATOR);
+		define("BROWSER_ACTIVE_SCENARIOS",BROWSER_DEMO_SCENARIOS . $sessionID . DIRECTORY_SEPARATOR);
+
+	}
+	else
+	{
+		define("SERVER_ACTIVE_SCENARIOS", SERVER_SCENARIOS );
+		define("BROWSER_ACTIVE_SCENARIOS", BROWSER_SCENARIOS );
+	}
+	
 	// get file name
 	$fileName = dbClass::valuesFromPost('fn');
 	if($fileName == '') {
