@@ -19,12 +19,12 @@ var media = {
 		
 		if(typeof scenario.scenarioMedia.file != 'undefined') {
 			for(var index = 0; index < scenario.scenarioMedia.file.length; index++) {
-				if(scenario.scenarioMedia.file[index]['url'] == media.currentMediaFileName) {
+				if(scenario.scenarioMedia.file[index]['filename'] == media.currentMediaFileName) {
 					mediaSelected = ' selected="selected" ';
 				} else {
 					mediaSelected = '';			
 				}
-				mediaOptionContent += '<option value="' + scenario.scenarioMedia.file[index]['url'] + '" ' + mediaSelected + '>' + scenario.scenarioMedia.file[index]['title'] + '</option>';
+				mediaOptionContent += '<option value="' + scenario.scenarioMedia.file[index]['filename'] + '" ' + mediaSelected + '>' + scenario.scenarioMedia.file[index]['title'] + '</option>';
 			}			
 		}
 		$('#media-select > select').html(mediaOptionContent);
