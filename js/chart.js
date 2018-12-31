@@ -206,6 +206,14 @@
 				}
 			}
 			
+			// ekg
+			chart.ekg.rhythm['defib'] = [
+//				32, -64, 64, 64, 64, 64, 64, 64, 64, 64,
+//				64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
+//				32, 25, 16, 12, 10, 8, 6, 4, 2, 1, 0
+-32,-32,32,32,-64,-64,-64,-64,-64,-64,-64,-64,-64,-64,-64,-64,-64,-64,-32,-25,-16,-12,-10,-8,-6,-5,-4,-2,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+			];
+			
 			// Atrial Fibrillation
 			chart.ekg.rhythm['afib'][0] = [
 				0, 1, 2, 3, 10, 17, 20, 52, 64, 40, 26, 10, 0, -10, -20, -15, -10, -1 // Up to 150
@@ -337,7 +345,7 @@
 			];
 			
 			// setup pattern length
-			chart.ekg.length = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex].length
+			chart.ekg.length = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex].length;
 			
 			// setup beep value
 			chart.ekg.beepValue = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex].max() * -1;
@@ -509,7 +517,7 @@
 				}
 			}  else if(chart.ekg.rhythmIndex == 'vtach3') {
 				chart.ekg.rateIndex = 0;
-			} 
+			}
 			
 			if ( typeof ( chart.ekg.rhythm[chart.ekg.rhythmIndex] ) === 'undefined' || typeof chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex] == 'undefined')
 			{
@@ -517,7 +525,11 @@
 				chart.ekg.rhythmIndex = 'asystole';	// Flatline
 				chart.ekg.rateIndex = 0;
 			}
-			chart.ekg.length = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex].length;
+			
+			if(chart.ekg.rhythmIndex != 'dfib') {
+				chart.ekg.length = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex].length;
+			}
+			
 			if(chart.ekg.patternIndex >= chart.ekg.length) {
 				// Advance to the next CPR artifact waveform if cpr is happening
 				//chart.cpr.waveformIndex++;
@@ -659,6 +671,11 @@
 				} else if(chart.ekg.rhythmIndex == 'vfib') {
 					chart.vfib.base = chart.getBaseline();
 					y = chart.vfib.base + chart.getfib() - 6;
+				} else if(chart.ekg.rhythmIndex == 'defib') {
+					y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.patternIndex];
+					
+					// increment pointers
+					chart.ekg.patternIndex++;				
 				}
 				
 				// clear out sync flag
@@ -687,7 +704,13 @@
 						chart.ekg.cprwaveformIndex = Math.floor((Math.random() * 3));
 						//}
 					}
-					chart.ekg.patternIndex = 0;
+					
+					if(controls.defib.shock == 1) {
+						// keep patternindex on 0
+						chart.ekg.patternIndex--;
+					} else {
+						chart.ekg.patternIndex = 0;
+					}
 				}
 			}
 			else {
