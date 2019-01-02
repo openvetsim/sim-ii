@@ -112,6 +112,13 @@ var simmgr = {
 						controls.heartRate.isVPCCycle();
 					}
 				}
+				/******** defib exit ************/
+				if(typeof(response.defibrillation.shock) != "undefined" && controls.defib.shock == 1 && response.defibrillation.shock == 0) {
+					controls.defib.shock = 0;
+					chart.ekg.rhythmIndex = controls.heartRhythm.currentRhythm;
+					chart.ekg.length = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex].length;
+				}
+
 			},
 
 			error: function( jqXHR,  textStatus,  errorThrown){
@@ -990,6 +997,17 @@ console.log("New scenario state RUNNING");
 				}
 				if(typeof(response.cardiac.right_dorsal_pulse_strength) != "undefined" && response.cardiac.right_dorsal_pulse_strength != controls.pulseStrength.right.dorsal.value) {
 					controls.pulseStrength.right.dorsal.value = response.cardiac.right_dorsal_pulse_strength;
+				}
+				
+				/************ defib **************/
+				if(typeof(response.defibrillation.shock) != "undefined" && response.defibrillation.shock != controls.defib.shock) {
+					controls.defib.shock = response.defibrillation.shock;
+					if(controls.defib.shock == 1) {
+						controls.defib.last = response.defibrillation.last;
+						chart.ekg.length = chart.ekg.rhythm['defib'].length;
+						chart.ekg.patternIndex = 0;
+						chart.ekg.rhythmIndex = 'defib';
+					}
 				}
 			},
 

@@ -1,4 +1,9 @@
 	var controls = {
+		defib: {
+			last: -1,			// count of defib to flag a new defib cycle, -1 indicates uninitialized...
+			shock: 0			// currently in defib cycle...
+		},
+		
 		heartRate: {
 			value: 75,
 			avg_rate: 0,			// rolling average as reported by sim mgr
