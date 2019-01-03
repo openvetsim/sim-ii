@@ -54,6 +54,8 @@
 				$('#p4').text(response.cardiac.avg_rate+" ("+rdiff+"%)" );
 				$('#shockLast').text(response.defibrillation.last );
 				$('#shockState').text(response.defibrillation.shock );
+				$('#cprCompression').text(response.cpr.compression );
+				$('#cprRunning').text(response.cpr.running );
 				/*
 				$('#dbg1').text(response.debug.debug1 );
 				$('#dbg2').text(response.debug.debug2 );
@@ -100,6 +102,7 @@
 		<tr><td>Rate</td><td id='p3' ></td></tr>
 		<tr><td>Avg_Rate</td><td id='p4'></td></tr>
 		<tr><td>Shock</td><td id='shockLast' ></td><td id='shockState'></td></tr>
+		<tr><td>CPR</td><td id='cprCompression' ></td><td id='cprRunning'></td></tr>
 		<!--
 		<tr><td>DBG1</td><td id='dbg1' ></td></tr>
 		<tr><td>DBG2</td><td id='dbg2' ></td></tr>
