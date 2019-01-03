@@ -211,7 +211,7 @@
 //				32, -64, 64, 64, 64, 64, 64, 64, 64, 64,
 //				64, 64, 64, 64, 64, 64, 64, 64, 64, 64,
 //				32, 25, 16, 12, 10, 8, 6, 4, 2, 1, 0
--32,-32,32,32,-64,-64,-64,-64,-64,-64,-64,-64,-64,-64,-64,-64,-64,-64,-32,-25,-16,-12,-10,-8,-6,-5,-4,-2,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+-32,-32,32,32,-64,-64,-64,-64,-64,-64,-64,-64,-64,-64,-64,-64,-64,-64,-32,-25,-16,-12,-10,-8,-6,-5,-4,-2,-1,0,0
 			];
 			
 			// Atrial Fibrillation
@@ -707,7 +707,12 @@
 					
 					if(controls.defib.shock == 1) {
 						// keep patternindex on 0
-						chart.ekg.patternIndex--;
+//						chart.ekg.patternIndex--;
+						// generate random noise between range
+						y = Math.floor((Math.random() * chart.ekg.noiseMax));
+						if(y > (chart.ekg.noiseMax / 2)) {
+							y -= (chart.ekg.noiseMax / 2);
+						}
 					} else {
 						chart.ekg.patternIndex = 0;
 					}

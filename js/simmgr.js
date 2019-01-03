@@ -113,7 +113,8 @@ var simmgr = {
 					}
 				}
 				/******** defib exit ************/
-				if(typeof(response.defibrillation.shock) != "undefined" && controls.defib.shock == 1 && response.defibrillation.shock == 0) {
+				if(typeof(response.defibrillation.shock) != "undefined" && chart.ekg.rhythmIndex == 'defib' && response.defibrillation.shock == 0) {
+console.log('defib: here');
 					controls.defib.shock = 0;
 					chart.ekg.rhythmIndex = controls.heartRhythm.currentRhythm;
 					chart.ekg.length = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex].length;
@@ -278,6 +279,7 @@ var simmgr = {
 					if(typeof(response.cardiac.nibp_read) != "undefined" && controls.bpcuff.leadsConnected == true) {
 						if( response.cardiac.nibp_read == 1) {
 							$('#button-nbp').css('background-color', buttons.disconnectColor);
+							$('#nibp-read-in-progress').toggle();
 						} else {
 							$('#button-nbp').css('background-color', buttons.connectColor);							
 						}
@@ -293,6 +295,7 @@ var simmgr = {
 							
 							controls.nbp.nibp_read = response.cardiac.nibp_read;
 							controls.nbp.updateDisplayedNBP();
+							$('#nibp-read-in-progress').hide();							
 						}
 					}
 					
@@ -1000,13 +1003,17 @@ console.log("New scenario state RUNNING");
 				}
 				
 				/************ defib **************/
-				if(typeof(response.defibrillation.shock) != "undefined" && response.defibrillation.shock != controls.defib.shock) {
-					controls.defib.shock = response.defibrillation.shock;
-					if(controls.defib.shock == 1) {
-						controls.defib.last = response.defibrillation.last;
-						chart.ekg.length = chart.ekg.rhythm['defib'].length;
-						chart.ekg.patternIndex = 0;
-						chart.ekg.rhythmIndex = 'defib';
+				if(typeof(response.defibrillation.shock) != "undefined" && response.defibrillation.last != controls.defib.last) {
+					if(response.defibrillation.last == 0) {
+						controls.defib.last = 0;
+					} else {
+						controls.defib.shock = response.defibrillation.shock;
+						if(controls.defib.shock == 1) {
+							controls.defib.last = response.defibrillation.last;
+							chart.ekg.length = chart.ekg.rhythm['defib'].length;
+							chart.ekg.patternIndex = 0;
+							chart.ekg.rhythmIndex = 'defib';
+						}
 					}
 				}
 			},

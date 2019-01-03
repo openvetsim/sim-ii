@@ -115,6 +115,14 @@
 			right: 29px;
 		}
 		
+		#nibp-read-in-progress {
+			color: red;
+			font-size: 22px;
+			position: absolute;
+			top: -1px;
+			right: 40px;
+		}
+		
 .wide-col {
 	margin: 0px 0 10px 0;
 	float: left;

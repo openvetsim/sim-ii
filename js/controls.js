@@ -662,6 +662,9 @@
 				if(profile.isVitalsMonitor) {
 					controls.nbp.displayNIBPDashes();									
 				}
+				if( profile.isVitalsMonitor ) {
+					$('#nibp-read-in-progress').hide();
+				}
 			},
 			
 			updateDisplayedNBP: function() {

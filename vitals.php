@@ -71,8 +71,8 @@
 			$(document).ready(function() {
 				// init profile data
 				scenario.loadScenario();
-				profile.init();
 				profile.isVitalsMonitor = true;	// Student Display Flag
+				profile.init();
 				var userID = <?= $uid ?>;
 				document.cookie = "userID="+userID+"; path=/";
 
@@ -155,6 +155,7 @@
 					</div>
 					<div id="vs-nbp" class="alt-control">
 						<a class="alt-control-title color-red" href="javascript: void(0)" onclick="modal.nbp(); return false;">NIBP</a>
+						<p id="nibp-read-in-progress">Read in progress</p>
 						<a id="display-nbp" class="alt-control-rate nbip color-red" href="javascript: void(0)" onclick="modal.nbp(); return false;"><span id="displayed-systolic">140</span>/<span id="displayed-diastolic">75</span> (<span id="displayed-meanNBP">80</span>) <span class="nbip-label">mmHg</span></a>
 						<a id="display-nbp-hr" class="alt-control-rate color-red" href="javascript: void(0)" onclick="modal.nbp(); return false;"><span style="font-size: 24px;">PR</span> <span id="displayed-reportedHR">75</span></a>
 					</div>
