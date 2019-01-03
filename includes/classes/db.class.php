@@ -1,15 +1,31 @@
 <?php
+	
+// Note: 
+// Don't change the database username and password in this file, as 
+// they will be overwritten if you download updates. You should set
+// the username abd password in a a file named dbDefaults.php in this directory.
 
+$defaultsFile = SERVER_CLASSES . "dbDefaults.php";
+if ( file_exists($defaultsFile ) )
+{
+	include($defaultsFile );
+}
+else
+{
+	define("DB_USER", "phpmyadmin" );
+	define("DB_PASS", "vet\$im" );
+}
 	class dbClass {		
 		private static $connection;
 		
 		private $connection2;
 		
+
 		private static $dbParams = array(
 							'vet' => array(
 											'dbHost' => 'localhost',
-											'dbUser' => 'phpmyadmin',
-											'dbPswd' => 'vet$im',
+											'dbUser' => DB_USER,
+											'dbPswd' => DB_PASS,
 											'dbName' => 'vet'
 										),
 							'' => array(
@@ -31,7 +47,7 @@
 			$dbPswd = self::$dbParams[$dbSelect]['dbPswd'];
 			$dbName = self::$dbParams[$dbSelect]['dbName'];
 			
-			$connection = mysqli_connect($dbHost, $dbUser, $dbPswd) or self::dbError('Logon database failed '.$dbHost, DB_DEBUG);
+			$connection = mysqli_connect($dbHost, $dbUser, $dbPswd) or self::dbError('Logon database failed '.$dbHost.'. ' , DB_DEBUG);
 			$status = mysqli_select_db($connection, $dbName) or self::dbError('Could not find database '.$dbName, DB_DEBUG);
 			if($status == TRUE) {
 				return $connection;
