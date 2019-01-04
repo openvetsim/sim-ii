@@ -125,7 +125,7 @@
 			$(document).ready(function() {
 				console.log(document.cookie );
 				// hide debrief menu item
-				$('.logout.debrief').hide();
+				//$('.logout.debrief').hide();
 				// init menu
 				menu.init();
 				
@@ -189,6 +189,10 @@ console.log(controls['awRR'].increment);
 					&nbsp;&nbsp;|&nbsp;&nbsp;Scene Name:&nbsp;<span id="scene-name">Test</span>
 					&nbsp;&nbsp;|&nbsp;&nbsp;Scene ID:&nbsp;<span id="scene-id">1</span>
 				</div>
+				
+					<div >
+						<a href="vitals-demo.php" target="vitals" class="event-link">Vitals</a>						
+					</div>
 				<ul id="main-nav">
 					<li >
 						<a href="javascript:void(2);" onclick="modal.showUsers();">Users</a>
