@@ -16,7 +16,7 @@ var simmgr = {
 	breathCount : 0,
 	pulseCount : 0,
 	pulseCountVpc: 0,
-	quickInterval : 200,
+	quickInterval : 400,
 	statusInterval : 1000,
 	running : 0,
 	audioPlayStarted : 0,
