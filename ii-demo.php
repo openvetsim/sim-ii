@@ -131,6 +131,7 @@
 				
 				// Initialize the demo
 				simDemo.init();
+				hotkeys.init();
 				
 				// init profile data
 				scenario.loadScenario();

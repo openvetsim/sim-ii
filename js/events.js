@@ -30,6 +30,9 @@
 					// remove previous events
 					$('.event-priority').remove();
 					
+					// Clear prior hotkeys
+					hotkeys.clearAll();
+					
 					// get priority events if any
 					if(typeof response.priority != 'undefined' && response.priority.length > 0) {
 						var content = '<li class="event-priority event-divider">|</li><li class="event-priority">Quick Event Links:</li>';
@@ -38,7 +41,13 @@
 						});
 						$('ul#main-nav li.menu-events').after(content);
 					}
-					
+					// Set hotkeys, if any
+					if(typeof response.hotkeys != 'undefined' && response.hotkeys.length > 0) {
+						response.hotkeys.forEach(function(key ) {
+							console.log("hotkey:", key.hotkey, key.id );
+							hotkeys.addKey(key.hotkey, function(){events.sendPriorityEvent(key.id )} );
+						});
+					}
 				}
 			});
 						

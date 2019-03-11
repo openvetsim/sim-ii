@@ -43,7 +43,7 @@
 
 		<script type="text/javascript" src="scripts/jquery/2.2.1/jquery.min.js"></script>
 		<script src="scripts/jquery-ui/1.11.4/jquery-ui.js"></script>
-
+		<script src="scripts/hotkeys.js"></script>
 		<!-- <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script> -->
 <?php
 		if(MOBILIZED) {

@@ -2,7 +2,7 @@
 	// init
 	require_once("../init.php");
 	$returnVal = array();
-
+	
 	// is user logged in
 	if(adminClass::isUserLoggedIn() === FALSE) {
 		$returnVal['status'] = AJAX_STATUS_LOGIN_FAIL;
@@ -20,7 +20,8 @@
 			
 	$content = '';
 	$priority = array();
-
+	$hotkeys = array();
+	
 	// get elements of event library
 	foreach($eventsArray['category'] as $eventCategory) {
 		$content .= '
@@ -46,25 +47,32 @@
 				echo json_encode($returnVal);
 				exit();					
 			}
-			
+
 			// HACK...need elements to be an array
 			if(isset($eventArray[0]) === FALSE || is_array($eventArray[0]) === FALSE) {
 				$eventArray[0] = array(
 					'title' => $eventArray['title'],
 					'id' => $eventArray['id'],
+					'hotkey' => (isset($eventArray['hotkey']) ? $eventArray['hotkey'] : ''),
 					'priority' => $eventArray['priority']
 				);
 				unset($eventArray['title']);
 				unset($eventArray['id']);
 				unset($eventArray['priority']);
+				unset($eventArray['hotkey']);
 			}
-			
 			
 			foreach($eventArray as $event) {
 				$content .= '
 						<li>
 							<img class="event-check primary" src="' . BROWSER_IMAGES . 'check.png" alt="event checkmark">
-							<a data-category="' . $eventCategory['title'] . '" data-category-id="' . $eventCategory['name'] . '" data-event-id="' . $event['id'] . '" href="javascript: void(2);" onclick="events.sendEventLibraryClick(this);">' . $event['title'] . '</a>
+							<a data-category="' . $eventCategory['title'] . '" data-category-id="' . $eventCategory['name'] . '" data-event-id="' . $event['id'] . '" href="javascript: void(2);" onclick="events.sendEventLibraryClick(this);">' . $event['title'] . '</a>';
+				if ( strlen($event['hotkey'] ) == 1 )
+				{
+					$content .= " (".$event['hotkey'].")";
+					$hotkeys[] = array ( 'hotkey' => $event['hotkey'], 'id' => $event['id'] );
+				}
+				$content .= '
 						</li>					
 				';
 				
@@ -86,6 +94,7 @@
 	$returnVal['status'] = AJAX_STATUS_OK;
 	$returnVal['html'] = $content;
 	$returnVal['priority'] = $priority;
+	$returnVal['hotkeys'] = $hotkeys;
 	echo json_encode($returnVal);
 	exit();
 ?>

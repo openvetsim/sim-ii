@@ -228,6 +228,7 @@ console.log(controls['awRR'].increment);
 				});
 				*/
 				simmgr.init();
+				hotkeys.init();
 				controls.cpr.init();
 				controls.manualRespiration.init();
 				
