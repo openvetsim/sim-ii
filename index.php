@@ -26,22 +26,26 @@
 				// Clear and refresh, if indicated
 				if ( isset($_POST['clearScenarios'] ) && $_POST['clearScenarios'] == 'clear' )
 				{
-					$files = new RecursiveIteratorIterator(
-						new RecursiveDirectoryIterator($dest, RecursiveDirectoryIterator::SKIP_DOTS),
-							RecursiveIteratorIterator::CHILD_FIRST );
-					foreach ( $files as $fileinfo )
+					$stat = @stat($dest );
+					if ( $stat )
 					{
-						$path = $fileinfo->getRealPath();
-						if ( $fileinfo->isDir() )
+						$files = new RecursiveIteratorIterator(
+							new RecursiveDirectoryIterator($dest, RecursiveDirectoryIterator::SKIP_DOTS),
+								RecursiveIteratorIterator::CHILD_FIRST );
+						foreach ( $files as $fileinfo )
 						{
-							rmdir($path);
+							$path = $fileinfo->getRealPath();
+							if ( $fileinfo->isDir() )
+							{
+								rmdir($path);
+							}
+							else
+							{
+								unlink($path);
+							}
 						}
-						else
-						{
-							unlink($path);
-						}
+						rmdir($dest );
 					}
-					rmdir($dest );
 				}
 				
 				// Create a scenarios directory, if needed
