@@ -9,6 +9,24 @@
 <?php
 
 	require_once('init.php');
+	function checkHotkey($key )
+	{	
+		if(preg_match('/[^bc]/', $key))
+		{
+			echo "'$key' is good\n";
+		}
+		else
+		{
+			echo "'$key' is bad\n";
+		}
+	}
+	$keyList = "ABCDEFabcdef0123~`!@#$%^&*()_+-={}|[]\:;'<>?,./\"";
+	$length = strlen($keyList );
+	for ( $i = 0 ; $i < $length ; $i++) 
+	{
+		checkHotkey($keyList[$i] );
+	}
+
 /*
 FB::log('Initialized!');
 	
@@ -52,6 +70,7 @@ $result = dbClass::dbInsertQueryResult(modelClass::createInsertQuery('Users', $c
 	print_r($eventsArray );
 	printf("Done\n");
 */
+/*
 function getWavParams($fileName )
 {
 	$fp = fopen($fileName, 'r');
@@ -76,6 +95,7 @@ function getWavParams($fileName )
 	$file = "DogBarkSnarl.wav";
 	printf("%s: %s", $file, print_r(getWavParams($path.$file ), TRUE ) );
 	//print_r($hdr);
+*/
 ?>
 		</pre>
 	</body>

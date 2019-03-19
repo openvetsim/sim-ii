@@ -895,10 +895,10 @@
 			
 			setCPRState: function() {
 				if(controls.cpr.inProgress == false) {
-					$('a.cpr-link').html('Start Comps');
+					$('a.cpr-link').html('Start Comps (c)');
 					$('#button-cpr').attr('src', BROWSER_IMAGES + 'empty.png');
 				} else {
-					$('a.cpr-link').html('Stop Comps');					
+					$('a.cpr-link').html('Stop Comps (c)');					
 					$('#button-cpr').attr('src', BROWSER_IMAGES + 'heart.png');
 				}
 			}

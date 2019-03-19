@@ -36,12 +36,18 @@
 					// get priority events if any
 					if(typeof response.priority != 'undefined' && response.priority.length > 0) {
 						var content = '<li class="event-priority event-divider">|</li><li class="event-priority">Quick Event Links:</li>';
+						var hotkey = '';
 						response.priority.forEach(function(element, index, event) {
-							content += '<li class="event-priority"><a class="event-link" href="javascript: void(2);" onclick="events.sendPriorityEvent(\'' + element.id + '\');">' + element.title + '</a></li>';
+							if ( typeof element.hotkey !== 'undefined' && element.hotkey.length != 0 )
+							{
+								hotkey = ' ('+element.hotkey+')';
+							}
+							content += '<li class="event-priority"><a class="event-link" href="javascript: void(2);" onclick="events.sendPriorityEvent(\'' + element.id + '\');">' + element.title + hotkey + '</a></li>';
 						});
 						$('ul#main-nav li.menu-events').after(content);
 					}
-					// Set hotkeys, if any
+					
+					// Set defined hotkeys, if any
 					if(typeof response.hotkeys != 'undefined' && response.hotkeys.length > 0) {
 						response.hotkeys.forEach(function(key ) {
 							console.log("hotkey:", key.hotkey, key.id );

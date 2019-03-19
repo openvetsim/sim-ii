@@ -2,7 +2,7 @@
 	// init
 	require_once("../init.php");
 	$returnVal = array();
-	
+
 	// is user logged in
 	if(adminClass::isUserLoggedIn() === FALSE) {
 		$returnVal['status'] = AJAX_STATUS_LOGIN_FAIL;
@@ -63,6 +63,11 @@
 			}
 			
 			foreach($eventArray as $event) {
+				// Make sure the hotkey is valid. 
+				if ( ! checkHotkey($event['hotkey'] ) )
+				{
+					$event['hotkey'] = '';
+				}
 				$content .= '
 						<li>
 							<img class="event-check primary" src="' . BROWSER_IMAGES . 'check.png" alt="event checkmark">
@@ -80,6 +85,7 @@
 					$priority[] = array(
 						'title' => $event['title'],
 						'id' => $event['id'],
+						'hotkey' => $event['hotkey'],
 					);
 				}
 			}
@@ -97,4 +103,15 @@
 	$returnVal['hotkeys'] = $hotkeys;
 	echo json_encode($returnVal);
 	exit();
+	
+
+	// Hotkey must be a single character and not 'b' or 'c'. These are reserved.
+	function checkHotkey($key )
+	{	
+		if ( strlen($key ) == 1 && preg_match('/[^bc]/', $key) )
+		{
+			return ( TRUE );
+		}
+		return ( FALSE );
+	}
 ?>

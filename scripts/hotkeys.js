@@ -3,9 +3,11 @@
  * Copyright 2019, Terry Kelleher
  * Dual licensed under the MIT or GPL Version 2 licenses.
  *
- * Hotkeys support providing key assignements and bulk removal.
+ * Hotkeys support providing key assignments and bulk removal.
  *
- * Keys accepted are simple printable characters only. 
+ * Keys accepted are simple printable characters only.
+ * Keys 'b' and 'c' are reserved. These are permanently set for
+ * manual breath and start/stop compressions.
  */
  
 var hotkeys =
@@ -17,7 +19,15 @@ var hotkeys =
 	catchKeys : function (e)
 	{
 		var str = String.fromCharCode(e.keyCode);
-		if ( this.table.hasOwnProperty(str ) )
+		if ( str == 'b' )
+		{
+			$('.breath-link')[0].click();
+		}
+		else if ( str == 'c' )
+		{
+			$('.cpr-link')[0].click();
+		}
+		else if ( this.table.hasOwnProperty(str ) )
 		{
 			this.table[str]();
 		}
@@ -47,6 +57,7 @@ var hotkeys =
 				this.table[keyString] = keyHandle;
 			}
 		}
+
 	},
 	
 	init : function()
