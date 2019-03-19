@@ -218,10 +218,10 @@ console.log(controls['awRR'].increment);
 						<a href="../../editor/editor.php"  class="event-link breath-link">Editor</a>						
 					</li> -->
 					<li class="logout">
-						<a href="javascript: void(2);"  class="event-link cpr-link">Start Comps</a>						
+						<a href="javascript: void(2);"  class="event-link cpr-link">Start Comps (c)</a>						
 					</li>
 					<li class="logout">
-						<a href="javascript: void(2);"  class="event-link breath-link">Manual Breath</a>						
+						<a href="javascript: void(2);"  class="event-link breath-link">Manual Breath (b)</a>						
 					</li>
 				</ul>
 			</div>
