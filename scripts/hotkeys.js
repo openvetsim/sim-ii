@@ -18,7 +18,8 @@ var hotkeys =
 	
 	catchKeys : function (e)
 	{
-		var str = String.fromCharCode(e.keyCode);
+//		var str = String.fromCharCode(e.keyCode);
+		var str = e.key;
 		if ( str == 'b' )
 		{
 			$('.breath-link')[0].click();

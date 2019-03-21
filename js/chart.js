@@ -583,6 +583,11 @@
 				if(chart.ekg.stopFlag == true) {
 					y = 0;
 					controls.heartRate.audio.pause();
+				} else if(chart.ekg.rhythmIndex == 'defib') {
+					y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.patternIndex];
+					
+					// increment pointers
+					chart.ekg.patternIndex++;				
 				} else if(controls.cpr.inProgress == true) {
 					y = chart.ekg.rhythm.cpr[chart.ekg.cprwaveformIndex][chart.ekg.patternIndex];
 					controls.heartRate.value = 120;
@@ -671,11 +676,6 @@
 				} else if(chart.ekg.rhythmIndex == 'vfib') {
 					chart.vfib.base = chart.getBaseline();
 					y = chart.vfib.base + chart.getfib() - 6;
-				} else if(chart.ekg.rhythmIndex == 'defib') {
-					y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.patternIndex];
-					
-					// increment pointers
-					chart.ekg.patternIndex++;				
 				}
 				
 				// clear out sync flag
