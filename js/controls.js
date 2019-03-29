@@ -492,7 +492,7 @@
 			},
 			
 			displayValue: function(){
-				if ( ( profile.isVitalsMonitor == false ) || ( controls.SpO2.leadsConnected == true ) ) {
+				if ( ( profile.isVitalsMonitor == false ) || ( controls.SpO2.leadsConnected == true  && !controls.heartRhythm.arrest) ) {
 					$('#display-SpO2').html(controls.SpO2.value + '<span class="vs-lower-label"> %</span>');
 				}
 				else {

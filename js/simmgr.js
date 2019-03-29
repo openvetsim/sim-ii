@@ -396,7 +396,7 @@ console.log('defib: here');
 					}
 					
 					// heart arrest
-					if(typeof(response.cardiac.arrest) != "undefined") {
+					if(typeof(response.cardiac.arrest) != "undefined" && response.cardiac.arrest != controls.heartRhythm.arrest) {
 						if(response.cardiac.arrest == 1) {
 							controls.heartRhythm.arrest = true;
 							$('#indicator-arrest').show();
@@ -404,6 +404,7 @@ console.log('defib: here');
 							controls.heartRhythm.arrest = false;						
 							$('#indicator-arrest').hide();
 						}
+						controls.SpO2.displayValue();
 					}
 					
 					// heart vpc
