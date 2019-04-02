@@ -684,7 +684,7 @@ console.log('defib: here');
 					// etco2
 					if (typeof(response.respiration.etco2) != "undefined") {
 						var etCO2Rate = response.respiration.etco2;
-						if(etCO2Rate != controls.etCO2.value) {
+						if(etCO2Rate != controls.etCO2.value && (chart.resp.rhythmIndex == 'low' || chart.resp.rhythmIndex == 'rest' ) ) {
 							controls.etCO2.value = response.respiration.etco2;
 							controls.etCO2.displayValue();
 							chart.getETC02MaxDisplay();				
