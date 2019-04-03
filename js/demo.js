@@ -1,4 +1,9 @@
 /*
+sim-ii: Copyright (C) 2019  VetSim, Cornell University College of Veterinary Medicine Ithaca, NY
+
+See gpl.html
+*/
+/*
 	Support for demo mode.
 	
 	In this mode, we start a private simmgr session. This is distinguished by the presence of the

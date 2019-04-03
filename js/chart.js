@@ -1,4 +1,9 @@
-	
+/*
+sim-ii: Copyright (C) 2019  VetSim, Cornell University College of Veterinary Medicine Ithaca, NY
+
+See gpl.html
+*/
+
 	// routine to get max of an array
 	Array.prototype.max = function () {
 		return Math.max.apply(Math, this);

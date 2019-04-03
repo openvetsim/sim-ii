@@ -1,7 +1,10 @@
 /*
+sim-ii: Copyright (C) 2019  VetSim, Cornell University College of Veterinary Medicine Ithaca, NY
+
+See gpl.html
+*/
+/*
  * Hotkeys
- * Copyright 2019, Terry Kelleher
- * Dual licensed under the MIT or GPL Version 2 licenses.
  *
  * Hotkeys support providing key assignments and bulk removal.
  *

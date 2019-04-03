@@ -1,3 +1,8 @@
+/*
+sim-ii: Copyright (C) 2019  VetSim, Cornell University College of Veterinary Medicine Ithaca, NY
+
+See gpl.html
+*/
 	var modal = {
 		imgTop: '50px',
 		imgPadding: '0px',

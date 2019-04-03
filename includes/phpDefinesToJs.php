@@ -1,3 +1,10 @@
+<?php
+/*
+sim-ii: Copyright (C) 2019  VetSim, Cornell University College of Veterinary Medicine Ithaca, NY
+
+See gpl.html
+*/
+?>
 			<script type="text/javascript">
 				var BROWSER_AJAX = "<?= BROWSER_AJAX; ?>";
 				var BROWSER_IMAGES = "<?= BROWSER_IMAGES; ?>";

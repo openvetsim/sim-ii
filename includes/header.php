@@ -1,3 +1,10 @@
+<?php
+/*
+sim-ii: Copyright (C) 2019  VetSim, Cornell University College of Veterinary Medicine Ithaca, NY
+
+See gpl.html
+*/
+?>
 		<meta charset="UTF-8">
 		<meta name="google" content="notranslate">
 		<meta http-equiv="Content-Language" content="en">

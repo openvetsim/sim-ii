@@ -1,3 +1,8 @@
+/*
+sim-ii: Copyright (C) 2019  VetSim, Cornell University College of Veterinary Medicine Ithaca, NY
+
+See gpl.html
+*/
 	var controls = {
 		defib: {
 			last: -1,			// count of defib to flag a new defib cycle, -1 indicates uninitialized...
