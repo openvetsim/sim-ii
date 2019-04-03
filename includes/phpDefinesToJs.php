@@ -14,5 +14,9 @@
 				var AJAX_STATUS_LOGIN_FAIL = <?= AJAX_STATUS_LOGIN_FAIL; ?>;
 				var SERVER_ADDR = "<?= SERVER_ADDR; ?>";
 				var REMOTE_ADDR = "<?= REMOTE_ADDR; ?>";
-
+				
+				var ETCO2_NEW_WAVEFORM_COMPLETED = 3;
+				var ETCO2_NEW_VALUE_ENTERED = 2;
+				var ETCO2_NEW_WAVEFORM_IN_PROGRESS = 1;
+				var ETCO2_OK = 0;
 			</script>

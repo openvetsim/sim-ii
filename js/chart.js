@@ -859,13 +859,20 @@
 							case 'high-to-low':	// Depletion of CO2 (high to low)
 								chart.resp.rhythmIndex = 'rest';
 								chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex].length;
-								chart.resp.patternIndex = 0;								
+								chart.resp.patternIndex = 0;
+								if(controls.etCO2.changeInProgressStatus == ETCO2_NEW_WAVEFORM_IN_PROGRESS) {
+									controls.etCO2.changeInProgressStatus = ETCO2_NEW_WAVEFORM_COMPLETED;
+								}							
 								break;
 
 							case 'rest':	// rest between breaths...stay in cycle until synch pulse
 								chart.resp.rhythmIndex = 'rest';
 								chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex].length;
 								chart.resp.patternIndex = 0;
+								if(controls.etCO2.changeInProgressStatus == ETCO2_NEW_WAVEFORM_COMPLETED) {
+									controls.etCO2.changeInProgressStatus = ETCO2_OK;
+									controls.etCO2.displayValue();
+								}							
 								break;
 
 						}

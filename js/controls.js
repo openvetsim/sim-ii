@@ -508,6 +508,7 @@
 			maxValue: 100,
 			slideBar: '',
 			increment: 1,
+			changeInProgressStatus: ETCO2_OK,
 			
 			modalUnitsLabel: 'mmHg',
 			
@@ -526,6 +527,11 @@
 			},
 			
 			displayValue: function() {
+				// if a new value of ETCO2 has been sent, wait until low transition to
+				// display new value
+				if(controls.etCO2.changeInProgressStatus != ETCO2_OK) {
+					return;
+				}
 				var awRRHTML = $('.awRR a.alt-control-rate').html();
 				// NOTE: Oct 1, 2018: This change was outstanding on vet.newforce.us. Checked in by TMK
 //console.log('awrr: ' + awRRHTML.includes('---'));				
