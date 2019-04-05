@@ -132,7 +132,7 @@ a:hover {
 			width: 250px;
 		}
 			#admin-nav div.profile-display.scenario {
-				width: 700px;
+				width: 650px;
 			}
 				#admin-nav div.profile-display.scenario img {
 					width: 24px;
@@ -158,6 +158,9 @@ a:hover {
 			margin-right: 30px;
 			color: #FFFFFF;
 		}
+			ul#main-nav li.event-priority {
+				margin-right: 15px;
+			}
 		ul#main-nav li.logout {
 			float: right;
 			color: #FFFFFF;

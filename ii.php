@@ -271,7 +271,7 @@ console.log(controls['awRR'].increment);
 	<body>
 		<div id="sitewrapper">
 			<div id="admin-nav">
-				<h1>Open VetSim Instructor Interface</h1>
+				<h1>Open VetSim Instructor Interface - V<?= VERSION_MAJOR . '.' . VERSION_MINOR; ?></h1>
 				<h1 class="welcome-title">Welcome <?= $userName; ?></h1>
 				<div class="profile-display scenario">
 					Scenario Name: 
@@ -303,10 +303,6 @@ console.log(controls['awRR'].increment);
 					</li>
 					<li class="menu-events">
 						<a href="javascript:void(2);" onclick="modal.showEvents(); return false;">Events</a>
-					</li>
-
-					<li class="logout">
-						Version: <?= VERSION_MAJOR . '.' . VERSION_MINOR; ?>						
 					</li>
 					<li class="logout">
 						<a href="index.php" class="event-link">Logout</a>						
