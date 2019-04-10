@@ -534,7 +534,7 @@ See gpl.html
 			displayValue: function() {
 				// if a new value of ETCO2 has been sent, wait until low transition to
 				// display new value
-				if(controls.etCO2.changeInProgressStatus != ETCO2_OK) {
+				if(controls.etCO2.changeInProgressStatus != ETCO2_OK && controls.awRR.value != 0) {
 					return;
 				}
 				var awRRHTML = $('.awRR a.alt-control-rate').html();
