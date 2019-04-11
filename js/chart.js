@@ -73,6 +73,12 @@ See gpl.html
 		CPR_DELAY_OUT: 3000,		// delay stop in msec
 		cprDelayTimer: 0,			// timer for cpr delay
 		
+		MANUAL_RESP_IDLE: 0,		// no manual respiration
+		MANUAL_RESP_START: 1,		// start of manual respiration cycle
+		MANUAL_RESP_DISPLAY_ETCO2: 2,	// display etco2
+		MANUAL_RESP_DISPLAY_START_INDEX: 35,	// manual breath index to start display	
+		MANUAL_RESP_DISPLAY_END_COUNT: 300,	// duration of display count		
+		
 		// ekg strip parameters
 		ekg: {
 			width: 0,				// width of strip in pixels
@@ -144,7 +150,9 @@ See gpl.html
 									// pattern index for resp high to low.
 			pixelCount: 0,			// count in pixel ticks (drawInterval) of current period (incrementing)
 			periodCount: 0,			// number of pixel counts in current period
-			risePatternIndex: 4		// index of pattern to use for rise and fall times based on breathing rate
+			risePatternIndex: 4,		// index of pattern to use for rise and fall times based on breathing rate
+			manualStatus: this.MANUAL_RESP_IDLE,
+			manualBreathDisplayCount: 0			// count of where we are in the display delay for ETCO2
 		},
 		
 		cursorWidth: 10,			// width of cursor in pixels
@@ -408,13 +416,9 @@ See gpl.html
 			
 			chart.resp.manualBreathPattern = [	// approximate 300 msec waveform
 				0,0,0,20,44,62,62,62,62,62,
-//				62,62,62,62,62,62,62,62,62,62,
-//				62,62,62,62,62,62,62,62,62,62,
-//				62,62,62,62,62,62,62,62,62,62,
 				62,62,62,62,62,62,62,62,62,62,
 				62,62,62,62,62,62,62,62,62,62,
 				62,44,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-//				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 			];
 			
 			// get max value
@@ -774,8 +778,19 @@ See gpl.html
 
 			// Create the 'cursor' by clearing out a 10px wide section in front of the pixel
 			chart.drawCursor('resp');
-	
+			
+			if(chart.resp.manualBreathDisplayCount > 0) {
+				controls.etCO2.displayValue();
+				chart.resp.manualBreathDisplayCount++;
+				if(chart.resp.manualBreathDisplayCount == 300) {
+					chart.resp.manualBreathDisplayCount = 0;
+				}
+			}
+			
 			if(controls.manualRespiration.inProgress == true) {
+				if(controls.manualRespiration.manualBreathIndex == 35) {
+					chart.resp.manualBreathDisplayCount++;
+				}
 				if(controls.manualRespiration.manualBreathIndex >= chart.resp.manualBreathPattern.length) {
 					controls.manualRespiration.inProgress = false;
 					y = 0;
