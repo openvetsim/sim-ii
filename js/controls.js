@@ -534,13 +534,13 @@ See gpl.html
 			displayValue: function() {
 				// if a new value of ETCO2 has been sent, wait until low transition to
 				// display new value
-				if(controls.etCO2.changeInProgressStatus != ETCO2_OK && controls.awRR.value != 0) {
+				if( controls.etCO2.changeInProgressStatus != ETCO2_OK && controls.awRR.value != 0 && chart.resp.manualBreathDisplayCount == 0 ) {
 					return;
 				}
 				var awRRHTML = $('.awRR a.alt-control-rate').html();
 				// NOTE: Oct 1, 2018: This change was outstanding on vet.newforce.us. Checked in by TMK
 //console.log('awrr: ' + awRRHTML.includes('---'));				
-				if ( awRRHTML.includes('---') == true ) {
+				if ( awRRHTML.includes('---') == true && chart.resp.manualBreathDisplayCount == 0 ) {
 					$('#vs-etCO2 a').html('---<span class="vs-upper-label"> mmHg</span>');					
 				} else if ( ( profile.isVitalsMonitor == false ) || ( controls.CO2.leadsConnected == true ) ) {
 					$('#vs-etCO2 a').html(controls.etCO2.value + '<span class="vs-upper-label"> mmHg</span>');	
@@ -935,6 +935,7 @@ See gpl.html
 				this.iiCount = this.serverCount;
 				this.inProgress = true;
 				this.manualBreathIndex = 0;
+				chart.resp.manualBreathDisplayCount = 0;
 			}
 		
 		}
