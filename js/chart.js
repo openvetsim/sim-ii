@@ -891,7 +891,9 @@ See gpl.html
 								chart.resp.patternIndex = 0;
 								if(controls.etCO2.changeInProgressStatus == ETCO2_NEW_WAVEFORM_COMPLETED) {
 									controls.etCO2.changeInProgressStatus = ETCO2_OK;
-									controls.etCO2.displayValue();
+									if(controls.awRR.value > 0) {
+										controls.etCO2.displayValue();
+									}
 								}							
 								break;
 

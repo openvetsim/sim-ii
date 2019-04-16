@@ -537,6 +537,14 @@ See gpl.html
 				if( controls.etCO2.changeInProgressStatus != ETCO2_OK && controls.awRR.value != 0 && chart.resp.manualBreathDisplayCount == 0 ) {
 					return;
 				}
+				
+				// additional conditions to return
+				if( controls.awRR.value == 0 ) {
+					if(controls.manualRespiration.inProgress == false || (controls.manualRespiration.inProgress == true && controls.manualRespiration.manualBreathIndex < 35 ) ) {
+						return;
+					}
+				}
+				
 				var awRRHTML = $('.awRR a.alt-control-rate').html();
 				// NOTE: Oct 1, 2018: This change was outstanding on vet.newforce.us. Checked in by TMK
 //console.log('awrr: ' + awRRHTML.includes('---'));				
