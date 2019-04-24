@@ -532,6 +532,10 @@ See gpl.html
 			},
 			
 			displayValue: function() {
+				if ( ( profile.isVitalsMonitor == true ) && ( controls.CO2.leadsConnected == false ) ) {
+					$('#vs-etCO2 a').html('---<span class="vs-upper-label"> mmHg</span>');	
+				}
+				
 				// if a new value of ETCO2 has been sent, wait until low transition to
 				// display new value
 				if( controls.etCO2.changeInProgressStatus != ETCO2_OK && controls.awRR.value != 0 && chart.resp.manualBreathDisplayCount == 0 ) {
@@ -539,11 +543,11 @@ See gpl.html
 				}
 				
 				// additional conditions to return
-				if( controls.awRR.value == 0 ) {
-					if(controls.manualRespiration.inProgress == false || (controls.manualRespiration.inProgress == true && controls.manualRespiration.manualBreathIndex < 35 ) ) {
-						return;
-					}
-				}
+//				if( controls.awRR.value == 0 ) {
+//					if(controls.manualRespiration.inProgress == false || (controls.manualRespiration.inProgress == true && controls.manualRespiration.manualBreathIndex < 35 ) ) {
+//						return;
+//					}
+//				}
 				
 				var awRRHTML = $('.awRR a.alt-control-rate').html();
 				// NOTE: Oct 1, 2018: This change was outstanding on vet.newforce.us. Checked in by TMK
@@ -552,8 +556,7 @@ See gpl.html
 					$('#vs-etCO2 a').html('---<span class="vs-upper-label"> mmHg</span>');					
 				} else if ( ( profile.isVitalsMonitor == false ) || ( controls.CO2.leadsConnected == true ) ) {
 					$('#vs-etCO2 a').html(controls.etCO2.value + '<span class="vs-upper-label"> mmHg</span>');	
-				}
-				else {
+				} else {
 					$('#vs-etCO2 a').html('---<span class="vs-upper-label"> mmHg</span>');	
 				}
 									
