@@ -548,10 +548,7 @@ See gpl.html
 				if( profile.isVitalsMonitor == true ) {
 					if( chart.resp.manualBreathDisplayCount == 1 ) {
 						controls.etCO2.manualETCO2Val = controls.etCO2.value;
-						$('#vs-etCO2 a').html(controls.etCO2.manualETCO2Val + '<span class="vs-upper-label"> mmHg</span>');
-console.log('manual breath count: ' + chart.resp.manualBreathDisplayCount);				
-console.log('etco2: ' + controls.etCO2.value);				
-console.log('manetco2: ' + controls.etCO2.manualETCO2Val);				
+						$('#vs-etCO2 a').html(controls.etCO2.manualETCO2Val + '<span class="vs-upper-label"> mmHg</span>');				
 						return;
 					} else if( chart.resp.manualBreathDisplayCount > 0 ) {
 						$('#vs-etCO2 a').html(controls.etCO2.manualETCO2Val + '<span class="vs-upper-label"> mmHg</span>');

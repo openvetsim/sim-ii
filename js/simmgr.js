@@ -691,7 +691,8 @@ console.log('defib: here');
 						var etCO2Rate = response.respiration.etco2;
 						if(etCO2Rate != controls.etCO2.value) {
 							controls.etCO2.changeInProgressStatus = ETCO2_NEW_VALUE_ENTERED;
-							if(chart.resp.rhythmIndex == 'low' || chart.resp.rhythmIndex == 'rest' || controls.awRR.value == 0 ) {
+console.log('here');
+							if(chart.resp.rhythmIndex == 'low' || chart.resp.rhythmIndex == 'rest' || ( controls.awRR.value == 0 && chart.resp.manualBreathDisplayCount > 1 ) ) {
 								controls.etCO2.changeInProgressStatus = ETCO2_NEW_WAVEFORM_IN_PROGRESS;
 								controls.etCO2.value = response.respiration.etco2;
 //								controls.etCO2.displayValue();
