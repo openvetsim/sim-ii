@@ -514,6 +514,7 @@ See gpl.html
 			slideBar: '',
 			increment: 1,
 			changeInProgressStatus: ETCO2_OK,
+			manualETCO2Val: '---',
 			
 			modalUnitsLabel: 'mmHg',
 			
@@ -533,7 +534,8 @@ See gpl.html
 			
 			displayValue: function() {
 				if ( ( profile.isVitalsMonitor == true ) && ( controls.CO2.leadsConnected == false ) ) {
-					$('#vs-etCO2 a').html('---<span class="vs-upper-label"> mmHg</span>');	
+					$('#vs-etCO2 a').html('---<span class="vs-upper-label"> mmHg</span>');
+					return;
 				}
 				
 				// if a new value of ETCO2 has been sent, wait until low transition to
@@ -541,14 +543,23 @@ See gpl.html
 				if( controls.etCO2.changeInProgressStatus != ETCO2_OK && controls.awRR.value != 0 && chart.resp.manualBreathDisplayCount == 0 ) {
 					return;
 				}
-				
-				// additional conditions to return
-//				if( controls.awRR.value == 0 ) {
-//					if(controls.manualRespiration.inProgress == false || (controls.manualRespiration.inProgress == true && controls.manualRespiration.manualBreathIndex < 35 ) ) {
-//						return;
-//					}
-//				}
-				
+			
+				// additional conditions to return for vitals monitor
+				if( profile.isVitalsMonitor == true ) {
+					if( chart.resp.manualBreathDisplayCount == 1 ) {
+						controls.etCO2.manualETCO2Val = controls.etCO2.value;
+						$('#vs-etCO2 a').html(controls.etCO2.manualETCO2Val + '<span class="vs-upper-label"> mmHg</span>');
+console.log('manual breath count: ' + chart.resp.manualBreathDisplayCount);				
+console.log('etco2: ' + controls.etCO2.value);				
+console.log('manetco2: ' + controls.etCO2.manualETCO2Val);				
+						return;
+					} else if( chart.resp.manualBreathDisplayCount > 0 ) {
+						$('#vs-etCO2 a').html(controls.etCO2.manualETCO2Val + '<span class="vs-upper-label"> mmHg</span>');
+						return;
+					} else if( controls.manualRespiration.inProgress == true ) {
+						return;
+					}
+				}
 				var awRRHTML = $('.awRR a.alt-control-rate').html();
 				// NOTE: Oct 1, 2018: This change was outstanding on vet.newforce.us. Checked in by TMK
 //console.log('awrr: ' + awRRHTML.includes('---'));				
