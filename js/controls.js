@@ -540,7 +540,7 @@ See gpl.html
 				
 				// if a new value of ETCO2 has been sent, wait until low transition to
 				// display new value
-				if( controls.etCO2.changeInProgressStatus != ETCO2_OK && controls.awRR.value != 0 && chart.resp.manualBreathDisplayCount == 0 ) {
+				if( controls.etCO2.changeInProgressStatus != ETCO2_OK && controls.awRR.value != 0 && chart.resp.manualBreathDisplayCount == 0 && profile.isVitalsMonitor == true ) {
 					return;
 				}
 			
