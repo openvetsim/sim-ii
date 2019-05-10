@@ -1086,7 +1086,11 @@ console.dir(params);
 						modal.showModal(response);
 						$('#modal .container').css('width', '900px');
 						$('#modal .container .control-modal-div').css('width', '900px');
-						$('#modal-content').css('margin-top', '0');
+						$('#modal-content').css({
+							'margin-top': '0',
+							'max-height': '600px',
+							'overflow-y': 'scroll'
+						});
 						modal.bindCloseModal();
 						
 						$('#scenario-file-select').change(function() {
