@@ -774,6 +774,7 @@ console.log('defib: here');
 //							controls.leftLung.mute = true;
 //							$('#left-lung-mute').show();
 							// force mute to false
+							console.log("Found left_lung_sound_mute == 1, set to zero" );
 							simmgr.sendChange({'set:respiration:left_lung_sound_mute': 0});						
 						} else {
 							controls.leftLung.mute = false;
@@ -798,7 +799,8 @@ console.log('defib: here');
 //							controls.rightLung.mute = true;
 //							$('#right-lung-mute').show();
 							// force mute to false
-							simmgr.sendChange({'set:respiration:left_lung_sound_mute': 0});						
+							console.log("Found right_lung_sound_mute == 1, set to zero" );
+							simmgr.sendChange({'set:respiration:right_lung_sound_mute': 0});						
 						} else {
 							controls.rightLung.mute = false;
 							$('#right-lung-mute').hide();						
