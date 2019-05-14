@@ -22,7 +22,7 @@ var media = {
 		var mediaOptionContent = '';
 		var mediaSelected = '';
 		
-		if(typeof scenario.scenarioMedia.file != 'undefined') {
+		if(typeof scenario.scenarioMedia != 'undefined' && typeof scenario.scenarioMedia.file != 'undefined') {
 			for(var index = 0; index < scenario.scenarioMedia.file.length; index++) {
 				if(scenario.scenarioMedia.file[index]['filename'] == media.currentMediaFileName) {
 					mediaSelected = ' selected="selected" ';
