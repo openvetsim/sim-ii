@@ -691,9 +691,18 @@ console.log('defib: here');
 						var etCO2Rate = response.respiration.etco2;
 						if(etCO2Rate != controls.etCO2.value) {
 							controls.etCO2.changeInProgressStatus = ETCO2_NEW_VALUE_ENTERED;
+// debug
+/*
+if( profile.isVitalsMonitor ) {
+	console.log("**************************");
+	console.log("Vitals new: " + etCO2Rate);
+	console.log("Vitals rhythm index: " + chart.resp.rhythmIndex);
+}
+*/
 							if(chart.resp.rhythmIndex == 'low' || 
 								chart.resp.rhythmIndex == 'rest' || 
 								( controls.awRR.value == 0 && chart.resp.manualBreathDisplayCount > 1 ) || 
+								( controls.heartRhythm.arrest && profile.isVitalsMonitor ) ||
 								profile.isVitalsMonitor == false  ) {
 								controls.etCO2.changeInProgressStatus = ETCO2_NEW_WAVEFORM_IN_PROGRESS;
 								controls.etCO2.value = response.respiration.etco2;
