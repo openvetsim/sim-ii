@@ -696,19 +696,33 @@ console.log('defib: here');
 if( profile.isVitalsMonitor ) {
 	console.log("**************************");
 	console.log("Vitals new: " + etCO2Rate);
+	console.log("Vitals old: " + controls.etCO2.value);
 	console.log("Vitals rhythm index: " + chart.resp.rhythmIndex);
+	console.log("awrr: " + controls.awRR.value);
+	console.log("Manual Breath Count: " + chart.resp.manualBreathDisplayCount);
 }
 */
+							// set new value of ETCO2
+							controls.etCO2.value = response.respiration.etco2;
+							
+							// display if not vitals
+							// vitals display of ETCO2 is controlled in chart.js
+							if( ! profile.isVitalsMonitor ) {
+								controls.etCO2.displayValue();
+							}
+
+/*
 							if(chart.resp.rhythmIndex == 'low' || 
 								chart.resp.rhythmIndex == 'rest' || 
 								( controls.awRR.value == 0 && chart.resp.manualBreathDisplayCount > 1 ) || 
+								( chart.resp.manualBreathDisplayCount == 0 && !profile.isVitalsMonitor ) || 
 								( controls.heartRhythm.arrest && profile.isVitalsMonitor ) ||
 								profile.isVitalsMonitor == false  ) {
 								controls.etCO2.changeInProgressStatus = ETCO2_NEW_WAVEFORM_IN_PROGRESS;
-								controls.etCO2.value = response.respiration.etco2;
 //								controls.etCO2.displayValue();
-								chart.getETC02MaxDisplay();
+//								chart.getETC02MaxDisplay();
 							}
+*/
 						}
 					}
 					
@@ -734,8 +748,15 @@ if( profile.isVitalsMonitor ) {
 							controls.CO2.leadsConnected = false;					
 						}
 						if ( changed ) {
+							if( controls.CO2.leadsConnected == true ) {
+								chart.resp.rrBlankCount = 2;
+							}
 							controls.awRR.displayValue();
-							controls.etCO2.displayValue();
+							if( !profile.isVitalsMonitor ) {
+								controls.etCO2.displayValue();						
+							} else {
+								$('#vs-etCO2 a').html('---<span class="vs-upper-label"> mmHg</span>');				
+							}
 						}
 						buttons.setVSButton('CO2');
 					}

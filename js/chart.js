@@ -77,7 +77,8 @@ See gpl.html
 		MANUAL_RESP_START: 1,		// start of manual respiration cycle
 		MANUAL_RESP_DISPLAY_ETCO2: 2,	// display etco2
 		MANUAL_RESP_DISPLAY_START_INDEX: 35,	// manual breath index to start display	
-		MANUAL_RESP_DISPLAY_END_COUNT: 300,	// duration of display count		
+		MANUAL_RESP_DISPLAY_END_COUNT: 300,	// duration of display count
+		RESP_ETCO2_BLANK_DELAY: 15000,	// delay for blanking ETCO2 on vitals
 		
 		// ekg strip parameters
 		ekg: {
@@ -133,7 +134,9 @@ See gpl.html
 			rhythmIndex: 'low',		// index of current rhythm being displayed
 			length: 10,				// variable to hold length of pattern
 			patternIndex: 0,		// index of currently displayed pixel in pattern
-			lastY: 0,				// variable to save last displayed Y coordinate of pattern
+			lastY: 0,				// variable to save last Y coordinate of pattern
+			lastDisplayedY: 0,		// variable to save last displayed Y coordinate of pattern (with display offsets)
+			lastETCO2: 0,			// last ETCO2 used for calculating ETCO2 Max...used for vitals display of ETCO2
 			xPos: 0,				// current x position on strip
 			drawInterval: 50,		// interval in milli-sec to display pixels
 			activeCount: 0,			// Count of updates since sync
@@ -152,7 +155,10 @@ See gpl.html
 			periodCount: 0,			// number of pixel counts in current period
 			risePatternIndex: 4,		// index of pattern to use for rise and fall times based on breathing rate
 			manualStatus: this.MANUAL_RESP_IDLE,
-			manualBreathDisplayCount: 0			// count of where we are in the display delay for ETCO2
+			manualBreathDisplayCount: 0,			// count of where we are in the display delay for ETCO2
+			breathStart: false,		// flag to indicate if a new breating waveform is starting.
+			blankTimer: 0,			// timer to blank vitals ETCO2
+			rrBlankCount: 2			// count of breath waveforms before displaying valid awRR
 		},
 		
 		cursorWidth: 10,			// width of cursor in pixels
@@ -779,32 +785,29 @@ See gpl.html
 			// Create the 'cursor' by clearing out a 10px wide section in front of the pixel
 			chart.drawCursor('resp');
 			
-			if(chart.resp.manualBreathDisplayCount > 0) {
-				controls.etCO2.displayValue();
-				chart.resp.manualBreathDisplayCount++;
-				if(chart.resp.manualBreathDisplayCount == 300) {
-					chart.resp.manualBreathDisplayCount = 0;
-				}
-			}
 			
 			if(controls.manualRespiration.inProgress == true) {
-				if(controls.manualRespiration.manualBreathIndex == 35) {
-					chart.resp.manualBreathDisplayCount++;
-				}
 				if(controls.manualRespiration.manualBreathIndex >= chart.resp.manualBreathPattern.length) {
 					controls.manualRespiration.inProgress = false;
 					y = 0;
 				} else {
 					if(chart.resp.manualBreathPattern[controls.manualRespiration.manualBreathIndex] <= chart.displayETCO2.max) {
-                                              y = chart.resp.manualBreathPattern[controls.manualRespiration.manualBreathIndex] * -1;
-                                      } else {
-                                              y = chart.displayETCO2.max * -1;
-                                      }
-									  controls.manualRespiration.manualBreathIndex++;
+						y = chart.resp.manualBreathPattern[controls.manualRespiration.manualBreathIndex] * -1;
+                    } else {
+						y = chart.displayETCO2.max * -1;
+                    }
+					controls.manualRespiration.manualBreathIndex++;
 				}
-			} else if (controls.heartRhythm.pea == true) {
-				y = 0;
+				
+				// check for vitals display of new ETCO2, manual breath index = 35 is transition to low.
+				if( profile.isVitalsMonitor && controls.manualRespiration.manualBreathIndex == 35 ) {
+					controls.etCO2.displayValue();					
+				}
+				
+//			} else if (controls.heartRhythm.pea == true) {
+//				y = 0;
 			} else if(simmgr.respResponse.rate == 0) {
+				chart.resp.rhythmIndex = 'low';	// start pattern with pattern low...start of inhalation
 				y = 0;
 			} else if ( ( profile.isVitalsMonitor == false ) || ( controls.CO2.leadsConnected == true ) ) {
 				if(chart.status.resp.synch == true ) {	// Restart Cycle
@@ -815,6 +818,9 @@ See gpl.html
 					
 					// clear out synch bit
 					chart.status.resp.synch = false;
+					
+					// flag start of synch
+					chart.resp.breathStart = true;
 					
 					// pixel count is used to track total number of pixels rendered in waveform
 					chart.resp.pixelCount = 0;
@@ -882,7 +888,12 @@ See gpl.html
 								chart.resp.patternIndex = 0;
 								if(controls.etCO2.changeInProgressStatus == ETCO2_NEW_WAVEFORM_IN_PROGRESS) {
 									controls.etCO2.changeInProgressStatus = ETCO2_NEW_WAVEFORM_COMPLETED;
-								}							
+								}
+
+								// if we are vitals display ETCO2 when waveform transitions from high to low
+								if ( profile.isVitalsMonitor ) {
+									controls.etCO2.displayValue();
+								}								
 								break;
 
 							case 'rest':	// rest between breaths...stay in cycle until synch pulse
@@ -891,9 +902,6 @@ See gpl.html
 								chart.resp.patternIndex = 0;
 								if(controls.etCO2.changeInProgressStatus == ETCO2_NEW_WAVEFORM_COMPLETED) {
 									controls.etCO2.changeInProgressStatus = ETCO2_OK;
-									if(controls.awRR.value > 0) {
-										controls.etCO2.displayValue();
-									}
 								}							
 								break;
 
@@ -904,6 +912,9 @@ See gpl.html
 			else {
 				y = 0;
 			}
+			
+			// save last y before offsets are added in
+			chart.resp.lastY = y;
 			
 			y += chart.resp.yOffset + chart.resp.yDisplayOffset;
 			// create stroke
@@ -917,7 +928,7 @@ See gpl.html
 				chart.resp.ctx.strokeStyle = 'black';
 			}
 			chart.resp.ctx.beginPath();
-			chart.resp.ctx.moveTo(chart.resp.xPos, chart.resp.lastY);
+			chart.resp.ctx.moveTo(chart.resp.xPos, chart.resp.lastDisplayedY);
 			
 			// increment xpos
 			chart.resp.xPos++;
@@ -926,18 +937,30 @@ See gpl.html
 			chart.resp.ctx.stroke();
 						
 			// save last values for next segment
-			chart.resp.lastY = y;
+			chart.resp.lastDisplayedY = y;
 			
 			// see if we are beyond end of chart
 			if((chart.resp.xPos + chart.resp.xOffsetRight) > chart.resp.width) {
 				chart.resp.xPos = chart.resp.xOffsetLeft;
 				chart.resp.ctx.fillRect(0, 0, chart.resp.xOffsetLeft, chart.resp.height);
 			}
+			
+			// are we at the start of a new pattern?
+			// clear out bit and recalculate amplitude of ETCO2 waveform.
+			if( chart.resp.breathStart ) {
+				chart.resp.breathStart = false;
+				chart.getETC02MaxDisplay();
+//console.log("New ETCO2: " + controls.etCO2.value);
+//console.log("New ETCO2 max: " + chart.displayETCO2.max);
+			}
 		},
 		
 		getETC02MaxDisplay: function() {
 			// calculate maximum displayed for ETCO2
 			chart.displayETCO2.max = Math.floor(chart.resp.max * (controls.etCO2.value / controls.etCO2.maxValue));
+			
+			// save value of ETCO2 used for last max calculation (for vitals use...)
+			chart.resp.lastETCO2 = controls.etCO2.value;
 		},
 
 		getBaseline: function() {

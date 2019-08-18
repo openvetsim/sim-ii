@@ -275,7 +275,7 @@ See gpl.html
 //					controls.awRR.beatTimeout = setTimeout(controls.awRR.setSynch, Math.round((60 / controls.awRR.value) * 1000));
 				}
 				if ( ( profile.isVitalsMonitor == false ) || ( controls.CO2.leadsConnected == true ) ) {
-					if(profile.isVitalsMonitor &&  controls.awRR.value == 0) {
+					if( profile.isVitalsMonitor && ( controls.awRR.value == 0 || chart.resp.rrBlankCount > 0 ) ) {
 						$('.awRR a.alt-control-rate').html('---<span class="vs-lower-label"> bpm</span>');
 					} else {
 						$('.awRR a.alt-control-rate').html(controls.awRR.value + '<span class="vs-lower-label"> bpm</span>');
@@ -283,9 +283,6 @@ See gpl.html
 				} else {
 					$('.awRR a.alt-control-rate').html('---<span class="vs-lower-label"> bpm</span>');
 				}
-				
-				// update etco2 to show '---'
-				controls.etCO2.displayValue();
 			},
 			
 			setRespRate: function() {
@@ -305,6 +302,9 @@ See gpl.html
 // console.log(Math.round((60 / controls.awRR.value) * 1000));
 // console.log(controls.awRR.value);
 				chart.status.resp.synch = true;
+				
+				// set flag to mark start of breath
+				chart.resp.breathStart = true;								
 				return;
 //				if ( ! ( simmgr.isLocalDisplay() ) )
 //				{
@@ -533,33 +533,50 @@ See gpl.html
 			},
 			
 			displayValue: function() {
-				if ( ( profile.isVitalsMonitor == true ) && ( controls.CO2.leadsConnected == false ) ) {
-					$('#vs-etCO2 a').html('---<span class="vs-upper-label"> mmHg</span>');
-					return;
-				}
-				
-				// if a new value of ETCO2 has been sent, wait until low transition to
-				// display new value
-				if( controls.etCO2.changeInProgressStatus != ETCO2_OK && controls.awRR.value != 0 && chart.resp.manualBreathDisplayCount == 0 && profile.isVitalsMonitor == true ) {
-					return;
-				}
-			
-				// additional conditions to return for vitals monitor
-				if( profile.isVitalsMonitor == true ) {
-					if( chart.resp.manualBreathDisplayCount == 1 ) {
-						controls.etCO2.manualETCO2Val = controls.etCO2.value;
-						$('#vs-etCO2 a').html(controls.etCO2.manualETCO2Val + '<span class="vs-upper-label"> mmHg</span>');				
-						return;
-					} else if( chart.resp.manualBreathDisplayCount > 0 ) {
-						$('#vs-etCO2 a').html(controls.etCO2.manualETCO2Val + '<span class="vs-upper-label"> mmHg</span>');
-						return;
-					} else if( controls.manualRespiration.inProgress == true ) {
-						return;
+				if ( profile.isVitalsMonitor == true ) {
+					if( controls.CO2.leadsConnected == false || controls.etCO2.value == 0 ) {
+						$('#vs-etCO2 a').html('---<span class="vs-upper-label"> mmHg</span>');
+					} else {
+						$('#vs-etCO2 a').html( chart.resp.lastETCO2 + '<span class="vs-upper-label"> mmHg</span>');
+						clearTimeout( chart.resp.blankTimer );
 					}
+					
+					// decrement rrBlankCount
+					if( controls.CO2.leadsConnected == true && chart.resp.rrBlankCount > 0 ) {
+						chart.resp.rrBlankCount--;
+					}
+					
+					// begin timer for blankout
+					chart.resp.blankTimer = setTimeout(
+						function() {
+							$('#vs-etCO2 a').html('---<span class="vs-upper-label"> mmHg</span>');							
+						}, chart.RESP_ETCO2_BLANK_DELAY
+					);
+					
+				} else {
+						$('#vs-etCO2 a').html(controls.etCO2.value + '<span class="vs-upper-label"> mmHg</span>');					
 				}
+console.log("rrBlankCount: " + chart.resp.rrBlankCount);
+				
+				// since etco2.displayValue is only called at the end of a breathing waveform
+				// we are using this point to determine when to start showing awRR
+				if( profile.isVitalsDisplay && ( chart.resp.rrBlankCount > 0 ) ) {
+					chart.resp.rrBlankCount--;
+				}
+				return;
+/*
+if(profile.isVitalsMonitor == true) {
+console.log("ETCO2 Display Value0");
+console.log("ETCO2 Display Value - chart.resp.manualBreathDisplayCount: " + chart.resp.manualBreathDisplayCount );
+console.log("ETCO2 Display Value - controls.manualRespiration.inProgress: " + controls.manualRespiration.inProgress );
+console.log("ETCO2 Display Value - controls.etCO2.changeInProgressStatus: " + controls.etCO2.changeInProgressStatus );
+console.log("ETCO2 Display Value - chart.resp.rhythmIndex: " + chart.resp.rhythmIndex );
+}
+
+
 				var awRRHTML = $('.awRR a.alt-control-rate').html();
 				// NOTE: Oct 1, 2018: This change was outstanding on vet.newforce.us. Checked in by TMK
-//console.log('awrr: ' + awRRHTML.includes('---'));				
+			
 				if ( awRRHTML.includes('---') == true && chart.resp.manualBreathDisplayCount == 0 ) {
 					$('#vs-etCO2 a').html('---<span class="vs-upper-label"> mmHg</span>');					
 				} else if ( ( profile.isVitalsMonitor == false ) || ( controls.CO2.leadsConnected == true ) ) {
@@ -567,9 +584,8 @@ See gpl.html
 				} else {
 					$('#vs-etCO2 a').html('---<span class="vs-upper-label"> mmHg</span>');	
 				}
-									
+*/				
 			}
-
 		},
 		
 		Tperi: {
@@ -955,6 +971,9 @@ See gpl.html
 				this.inProgress = true;
 				this.manualBreathIndex = 0;
 				chart.resp.manualBreathDisplayCount = 0;
+				
+				// set flag to mark start of breath
+				chart.resp.breathStart = true;
 			}
 		
 		}
