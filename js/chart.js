@@ -813,7 +813,6 @@ See gpl.html
 				if(chart.status.resp.synch == true ) {	// Restart Cycle
 // console.log("Periodcount: " + chart.resp.periodCount);
 // console.log("rate: " + simmgr.respResponse.rate);
-					
 					chart.updateRespRate();
 					
 					// clear out synch bit

@@ -974,6 +974,20 @@ console.log("ETCO2 Display Value - chart.resp.rhythmIndex: " + chart.resp.rhythm
 				
 				// set flag to mark start of breath
 				chart.resp.breathStart = true;
+				
+				// reset spontaneous breath parameters
+				// clear out synch bit
+				chart.status.resp.synch = false;
+				// pixel count is used to track total number of pixels rendered in waveform
+				chart.resp.pixelCount = 0;
+				
+				// index of current pattern pixel being displayed
+				chart.resp.patternIndex = 0;
+				
+				// start pattern with pattern low...start of inhalation
+				chart.resp.rhythmIndex = 'rest';
+				
+				chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex].length;
 			}
 		
 		}

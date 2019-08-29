@@ -81,7 +81,9 @@ var simmgr = {
 					simmgr.respResponse.inhalation_duration = response.respiration.inhalation_duration;
 					simmgr.respResponse.exhalation_duration = response.respiration.exhalation_duration;
 					simmgr.respResponse.rate = response.respiration.rate;
-					controls.awRR.setSynch();
+					if( controls.manualRespiration.inProgress == false ) {
+						controls.awRR.setSynch();
+					}
 				}
 				if ( simmgr.isLocalDisplay() )
 				{
