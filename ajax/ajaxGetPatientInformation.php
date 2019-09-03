@@ -36,11 +36,27 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 		}
 	}
 	
+	$userRow = adminClass::getUserRowFromSession();
+	$uid = $userRow['UserID'];
+	$sessionID = session_id();
+	
+	if ( $uid == 5 )
+	{
+		define("SERVER_ACTIVE_SCENARIOS", SERVER_DEMO_SCENARIOS . $sessionID . DIRECTORY_SEPARATOR);
+		define("BROWSER_ACTIVE_SCENARIOS",BROWSER_DEMO_SCENARIOS . $sessionID . DIRECTORY_SEPARATOR);
+
+	}
+	else
+	{
+		define("SERVER_ACTIVE_SCENARIOS", SERVER_SCENARIOS );
+		define("BROWSER_ACTIVE_SCENARIOS", BROWSER_SCENARIOS );
+	}
+	
 	$profileArray = $_POST['profile'];
 	$directory = dbClass::valuesFromPost('dir');
 	
 	// resize image
-	$imageSizeArray = getImageSize(SERVER_SCENARIOS . $directory . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR .  $profileArray['image']);
+	$imageSizeArray = getImageSize(SERVER_ACTIVE_SCENARIOS . $directory . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR .  $profileArray['image']);
 	if($imageSizeArray !== FALSE) {
 		// check width, max = 300px
 		if($imageSizeArray[0] >= $imageSizeArray[1]) {
@@ -53,7 +69,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 	$content = '
 		<div id="patient-info">
 			<h1>Patient Information</h1>
-			<img src="' . BROWSER_SCENARIOS . $directory . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR .  $profileArray['image'] . '" ' . $cssContent . '>
+			<img src="' . BROWSER_ACTIVE_SCENARIOS . $directory . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR .  $profileArray['image'] . '" ' . $cssContent . '>
 			<table>
 	';
 	if(isset($profileArray['species']) === TRUE) {

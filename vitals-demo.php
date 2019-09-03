@@ -53,7 +53,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 		define("SERVER_ACTIVE_SCENARIOS", SERVER_SCENARIOS );
 		define("BROWSER_ACTIVE_SCENARIOS", BROWSER_SCENARIOS );
 	}
-
 ?>
 <!DOCTYPE html >
 <html>

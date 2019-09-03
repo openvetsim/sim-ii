@@ -32,6 +32,14 @@ var simmgr = {
 	
 	init : function() {
 		console.log("simmgr: init" );
+		if(typeof userID != "undefined") {
+			console.log("uid: " + userID );
+			if ( userID == 5 )
+			{
+				// This is the Demo user
+				simmgr.quickInterval = 200;
+			}
+		}
 		
 		// Set the interval faster if the client is the local vitals display
 		if ( simmgr.isLocalDisplay() )
