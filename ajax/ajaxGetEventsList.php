@@ -33,7 +33,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 	
 	// get profile info
 	$eventsArray = json_decode(str_replace("\\", "", dbClass::valuesFromPost('events')), TRUE);
-	if(count($eventsArray) == 0) {
+	if( ! $eventsArray || ! is_array($eventsArray) || count($eventsArray) == 0) {
 		$returnVal['status'] = AJAX_STATUS_FAIL;
 		echo json_encode($returnVal);
 		exit();		
@@ -85,7 +85,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 			
 			foreach($eventArray as $event) {
 				// Make sure the hotkey is valid. 
-				if ( ! checkHotkey($event['hotkey'] ) )
+				if ( ! in_array('hotkey', $event) || ! checkHotkey($event['hotkey'] ) )
 				{
 					$event['hotkey'] = '';
 				}

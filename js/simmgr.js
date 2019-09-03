@@ -89,7 +89,9 @@ var simmgr = {
 					simmgr.respResponse.inhalation_duration = response.respiration.inhalation_duration;
 					simmgr.respResponse.exhalation_duration = response.respiration.exhalation_duration;
 					simmgr.respResponse.rate = response.respiration.rate;
-					controls.awRR.setSynch();
+					if( controls.manualRespiration.inProgress == false ) {
+						controls.awRR.setSynch();
+					}
 				}
 				if ( simmgr.isLocalDisplay() )
 				{
@@ -699,15 +701,38 @@ console.log('defib: here');
 						var etCO2Rate = response.respiration.etco2;
 						if(etCO2Rate != controls.etCO2.value) {
 							controls.etCO2.changeInProgressStatus = ETCO2_NEW_VALUE_ENTERED;
+// debug
+/*
+if( profile.isVitalsMonitor ) {
+	console.log("**************************");
+	console.log("Vitals new: " + etCO2Rate);
+	console.log("Vitals old: " + controls.etCO2.value);
+	console.log("Vitals rhythm index: " + chart.resp.rhythmIndex);
+	console.log("awrr: " + controls.awRR.value);
+	console.log("Manual Breath Count: " + chart.resp.manualBreathDisplayCount);
+}
+*/
+							// set new value of ETCO2
+							controls.etCO2.value = response.respiration.etco2;
+							
+							// display if not vitals
+							// vitals display of ETCO2 is controlled in chart.js
+							if( ! profile.isVitalsMonitor ) {
+								controls.etCO2.displayValue();
+							}
+
+/*
 							if(chart.resp.rhythmIndex == 'low' || 
 								chart.resp.rhythmIndex == 'rest' || 
 								( controls.awRR.value == 0 && chart.resp.manualBreathDisplayCount > 1 ) || 
+								( chart.resp.manualBreathDisplayCount == 0 && !profile.isVitalsMonitor ) || 
+								( controls.heartRhythm.arrest && profile.isVitalsMonitor ) ||
 								profile.isVitalsMonitor == false  ) {
 								controls.etCO2.changeInProgressStatus = ETCO2_NEW_WAVEFORM_IN_PROGRESS;
-								controls.etCO2.value = response.respiration.etco2;
 //								controls.etCO2.displayValue();
-								chart.getETC02MaxDisplay();
+//								chart.getETC02MaxDisplay();
 							}
+*/
 						}
 					}
 					
@@ -733,8 +758,15 @@ console.log('defib: here');
 							controls.CO2.leadsConnected = false;					
 						}
 						if ( changed ) {
+							if( controls.CO2.leadsConnected == true ) {
+								chart.resp.rrBlankCount = 2;
+							}
 							controls.awRR.displayValue();
-							controls.etCO2.displayValue();
+							if( !profile.isVitalsMonitor ) {
+								controls.etCO2.displayValue();						
+							} else {
+								$('#vs-etCO2 a').html('---<span class="vs-upper-label"> mmHg</span>');				
+							}
 						}
 						buttons.setVSButton('CO2');
 					}
@@ -782,6 +814,7 @@ console.log('defib: here');
 //							controls.leftLung.mute = true;
 //							$('#left-lung-mute').show();
 							// force mute to false
+							console.log("Found left_lung_sound_mute == 1, set to zero" );
 							simmgr.sendChange({'set:respiration:left_lung_sound_mute': 0});						
 						} else {
 							controls.leftLung.mute = false;
@@ -806,7 +839,8 @@ console.log('defib: here');
 //							controls.rightLung.mute = true;
 //							$('#right-lung-mute').show();
 							// force mute to false
-							simmgr.sendChange({'set:respiration:left_lung_sound_mute': 0});						
+							console.log("Found right_lung_sound_mute == 1, set to zero" );
+							simmgr.sendChange({'set:respiration:right_lung_sound_mute': 0});						
 						} else {
 							controls.rightLung.mute = false;
 							$('#right-lung-mute').hide();						
