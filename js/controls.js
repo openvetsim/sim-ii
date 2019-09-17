@@ -80,7 +80,7 @@ See gpl.html
 				}
 			},
 			
-			setSynch: function() {
+			setSynch: function() {				
 				// if afib, then get randomized delay, else delay multiplier is 1.0
 				if(controls.heartRhythm.currentRhythm == 'afib') {
 					controls.heartRate.delay = chart.afib.delay[chart.afib.delayPtr++];
@@ -104,7 +104,7 @@ See gpl.html
 				} else {
 					chart.status.cardiac.synch = true;
 				}
-					
+	
 				if ( ! ( simmgr.isLocalDisplay() ))
 				{
 					clearTimeout(controls.heartRate.beatTimeout);
@@ -925,6 +925,7 @@ console.log("ETCO2 Display Value - chart.resp.rhythmIndex: " + chart.resp.rhythm
 		
 		cpr: {
 			inProgress: false,
+			running: 0,
 			
 			init: function() {
 				controls.cpr.setCPRState();
@@ -934,7 +935,7 @@ console.log("ETCO2 Display Value - chart.resp.rhythmIndex: " + chart.resp.rhythm
 					if(controls.cpr.inProgress == false) {
 						simmgr.sendChange( { 'set:cpr:compression' : 1 } );					
 					} else {
-						simmgr.sendChange( { 'set:cpr:compression' : 0 } );					
+						simmgr.sendChange( { 'set:cpr:compression' : 0 } );				
 					}
 				});
 			},

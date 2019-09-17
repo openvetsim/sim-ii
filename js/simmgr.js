@@ -996,6 +996,11 @@ console.log("New scenario state RUNNING");
 					chart.updateCardiac(response.cardiac);
 				}
 				
+				if(( typeof(response.cpr.running) != "undefined" ) &&  response.cpr.running != controls.cpr.running) {
+					controls.cpr.running = response.cpr.running;
+				}
+
+				
 				/************ pulse palpation **************/
 /*
 				if(typeof(response.pulse.position) != "undefined" && response.pulse.position != controls.pulse.position) {
