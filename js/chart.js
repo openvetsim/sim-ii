@@ -613,14 +613,14 @@ See gpl.html
 					
 					// increment pointers
 					chart.ekg.patternIndex++;
-				} else if( controls.cpr.running == 1) {
+//				} else if( controls.cpr.running == 1) {
 					// if we get here then we are in the 2 second runout of the cpr waveform.
 					// generate noise value.
-					y = Math.floor((Math.random() * chart.ekg.noiseMax));
-					if(y > (chart.ekg.noiseMax / 2)) {
-						y -= (chart.ekg.noiseMax / 2);
-					}
-					chart.ekg.patternIndex = 0;					
+//					y = Math.floor((Math.random() * chart.ekg.noiseMax));
+//					if(y > (chart.ekg.noiseMax / 2)) {
+//						y -= (chart.ekg.noiseMax / 2);
+//					}
+//					chart.ekg.patternIndex = 0;					
 				} else if(chart.ekg.rhythmIndex == 'sinus' || chart.ekg.rhythmIndex == 'vtach1' || chart.ekg.rhythmIndex == 'vtach2') {
 					// check if we are doing a vpc.  VPC synch will only get set when the vpc needs to be generated
 					if(chart.status.cardiac.vpcSynch == true && chart.ekg.patternIndex == 0 && chart.status.cardiac.synch == false) {
