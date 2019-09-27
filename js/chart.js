@@ -395,10 +395,10 @@ See gpl.html
 				30
 			];
 			chart.resp.rhythm['low'] = [	
-				0,0
+				0
 			];
 			chart.resp.rhythm['rest'] = [	
-				0,0
+				0,0,0
 			];
 			chart.resp.rhythm['low-to-high'][0] = [	
 				0,8,15,20,24,28,36,44,52,60
@@ -896,14 +896,8 @@ See gpl.html
 								chart.resp.rhythmIndex = 'rest';
 								chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex].length;
 								chart.resp.patternIndex = 0;
-								if(controls.etCO2.changeInProgressStatus == ETCO2_NEW_WAVEFORM_IN_PROGRESS) {
-									controls.etCO2.changeInProgressStatus = ETCO2_NEW_WAVEFORM_COMPLETED;
-								}
+								controls.etCO2.changeInProgressStatus = ETCO2_NEW_WAVEFORM_COMPLETED;
 
-								// if we are vitals display ETCO2 when waveform transitions from high to low
-								if ( profile.isVitalsMonitor ) {
-									controls.etCO2.displayValue();
-								}								
 								break;
 
 							case 'rest':	// rest between breaths...stay in cycle until synch pulse
@@ -912,6 +906,10 @@ See gpl.html
 								chart.resp.patternIndex = 0;
 								if(controls.etCO2.changeInProgressStatus == ETCO2_NEW_WAVEFORM_COMPLETED) {
 									controls.etCO2.changeInProgressStatus = ETCO2_OK;
+									
+									if ( profile.isVitalsMonitor ) {
+										controls.etCO2.displayValue();
+									}								
 								}							
 								break;
 

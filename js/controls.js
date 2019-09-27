@@ -515,6 +515,7 @@ See gpl.html
 			increment: 1,
 			changeInProgressStatus: ETCO2_OK,
 			manualETCO2Val: '---',
+			delayCount: 0,
 			
 			modalUnitsLabel: 'mmHg',
 			
