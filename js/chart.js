@@ -421,13 +421,13 @@ See gpl.html
 			];
 			
 			chart.resp.manualBreathPattern = [	// approximate 300 msec waveform
-				0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-				0,0,0,20,44,62,62,62,62,62,
+				0,0,0,0,0,0,0,0,0,0,
+				0,0,0,0,0,0,0,0,0,0,
+				20,44,62,62,62,62,62,62,62,62,
 				62,62,62,62,62,62,62,62,62,62,
 				62,62,62,62,62,62,62,62,62,62,
-				62,62,62,62,62,62,62,62,62,62,
-//				62,44,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-				62,44,20,0,0,0
+				62,62,62,62,62,62,62,62,44,20,
+				0,0,0
 			];
 			
 			// get max value
@@ -811,7 +811,7 @@ See gpl.html
 				}
 				
 				// check for vitals display of new ETCO2, manual breath index = 35 is transition to low.
-				if( profile.isVitalsMonitor && controls.manualRespiration.manualBreathIndex == 35 ) {
+				if( profile.isVitalsMonitor && controls.manualRespiration.manualBreathIndex == (chart.resp.manualBreathPattern.length - 1) ) {
 					controls.etCO2.displayValue();					
 				}
 				
@@ -897,7 +897,9 @@ See gpl.html
 								chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex].length;
 								chart.resp.patternIndex = 0;
 								controls.etCO2.changeInProgressStatus = ETCO2_NEW_WAVEFORM_COMPLETED;
-
+									if ( profile.isVitalsMonitor ) {
+										controls.etCO2.displayValue();
+									}
 								break;
 
 							case 'rest':	// rest between breaths...stay in cycle until synch pulse
@@ -907,9 +909,9 @@ See gpl.html
 								if(controls.etCO2.changeInProgressStatus == ETCO2_NEW_WAVEFORM_COMPLETED) {
 									controls.etCO2.changeInProgressStatus = ETCO2_OK;
 									
-									if ( profile.isVitalsMonitor ) {
-										controls.etCO2.displayValue();
-									}								
+//									if ( profile.isVitalsMonitor ) {
+//										controls.etCO2.displayValue();
+//									}								
 								}							
 								break;
 
