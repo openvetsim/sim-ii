@@ -106,6 +106,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 
 	$returnVal['status'] = AJAX_STATUS_OK;
 	$returnVal['html'] = $content;
+	$returnVal['freeSpace'] = disk_free_space ( SERVER_SCENARIOS );
 	echo json_encode($returnVal);
 	exit();
 ?>
