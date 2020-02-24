@@ -600,9 +600,59 @@ console.log("ETCO2 Display Value - chart.resp.rhythmIndex: " + chart.resp.rhythm
 			disconnectHTML: "Connect Tperi Probe",
 			
 			modalUnitsLabel: '&deg;F',
+			currentUnits: 'F',
 			
 			init: function() {
+				// set dropdown for units
+				if( typeof localStorage.tperiUnits != "undefined") {
+					controls.Tperi.currentUnits = localStorage.tperiUnits;
+					simmgr.sendChange( { 'set:general:temperature_units' : controls.Tperi.currentUnits } );
+				}
+
 				controls.Tperi.displayValue();
+			},
+			
+			fahrToCent: function( fahrT ) {
+				return ( (fahrT - 32) * 5/9 ).toFixed(1);
+			},
+			
+			centToFahr: function( centT ) {
+				return ( (centT * 9/5) + 32 ).toFixed(1);
+			},
+			
+			setModalValues: function( TperiUnits ) {				
+				var newTperiVal = parseInt( $('.strip-value.new').val() );
+				if( TperiUnits == 'C' ) {
+					// convert to Centigrade
+					$('h2.modal-section-title').html("Tperi (&deg;C) ");
+					
+					// update min and max to C
+					// the new displayed value is greater then 50, than the previous value was in F and we will need to convert
+					if( newTperiVal > 50  ) {
+						$('.strip-value.new').val( controls.Tperi.fahrToCent($('.strip-value.new').val()) );
+					}
+					
+					$('.strip-value.current').val( controls.Tperi.fahrToCent(controls.Tperi.value) );
+					$('.control-slider-1').attr({
+						'min': controls.Tperi.fahrToCent( controls.Tperi.minValue ),
+						'max': controls.Tperi.fahrToCent( controls.Tperi.maxValue )
+					});
+					
+				} else {
+					// convert to Fahrenheit
+					$('h2.modal-section-title').html("Tperi (&deg;F) ");
+					
+					// update min and max to F
+					// the new displayed value is greater then 50, than the previous value was in F and we will need to convert
+					if( newTperiVal < 50  ) {
+						$('.strip-value.new').val( controls.Tperi.centToFahr($('.strip-value.new').val()) );
+					}
+					$('.strip-value.current').val( controls.Tperi.value );
+					$('.control-slider-1').attr({
+						'min': controls.Tperi.minValue,
+						'max': controls.Tperi.maxValue
+					});
+				}
 			},
 			
 			setValue: function(newValue) {
@@ -616,19 +666,35 @@ console.log("ETCO2 Display Value - chart.resp.rhythmIndex: " + chart.resp.rhythm
 				}
 //				controls.Tperi.displayValue();
 			},
+			
 			validateNewValue: function() {
 				var newValue = parseFloat($('.strip-value.new').val());
-				if(newValue < controls.Tperi.minValue || isNaN(newValue) == true) {
+/*				if(newValue < controls.Tperi.minValue || isNaN(newValue) == true) {
 					$('.strip-value.new').val(controls.Tperi.minValue);			
 				} else if(newValue > controls.Tperi.maxValue) {
 					$('.strip-value.new').val(controls.Tperi.maxValue);
+				} */
+				
+				// use min and max values in slider itself
+				var TperiMin = parseFloat( $('.strip-value.new').attr("min") );
+				var TperiMax = parseFloat( $('.strip-value.new').attr("max") );
+				if(newValue < TperiMin || isNaN(newValue) == true) {
+					$('.strip-value.new').val( TperiMin );			
+				} else if(newValue > TperiMax) {
+					$('.strip-value.new').val(TperiMax);
 				}
 				controls.Tperi.slideBar.slider("refresh");
 			},
 			
+			// stored value will always be in Fahrenheit
 			displayValue: function() {
 				if ( ( profile.isVitalsMonitor == false ) || ( controls.Tperi.leadsConnected == true ) ) {
-					$('#display-Tperi').html(controls.Tperi.value.toFixed(1) + '<span class="vs-lower-label"> &ordm;F</span>');
+					// which units to be displayed?
+					if( controls.Tperi.currentUnits == 'F' ) {
+						$('#display-Tperi').html(controls.Tperi.value.toFixed(1) + '<span class="vs-lower-label"> &ordm;F</span>');					
+					} else {
+						$('#display-Tperi').html( controls.Tperi.fahrToCent(controls.Tperi.value) + '<span class="vs-lower-label"> &ordm;C</span>');										
+					}
 				} else {
 					$('#display-Tperi').html('----' + '<span class="vs-lower-label"> &ordm;F</span>');
 				}

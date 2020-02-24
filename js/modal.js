@@ -319,7 +319,7 @@ See gpl.html
 		
 		Tperi: function() {
 			$.ajax({
-				url: BROWSER_AJAX + 'ajaxGetSingleControlContent.php',
+				url: BROWSER_AJAX + 'ajaxGetTperiControlContent.php',
 				type: 'post',
 				async: false,
 				data: {ModalTitle: 'Set Tperi', ControlTitle: "Tperi", ModalUnits: controls.Tperi.modalUnitsLabel},
@@ -333,16 +333,30 @@ See gpl.html
 
 						$('.strip-value').val(parseFloat(controls.Tperi.value).toFixed(1));
 						
+						$('select.tperi-units-select option').attr("selected", false);
+						$('select.tperi-units-select option[value=' + controls.Tperi.currentUnits + ']').attr("selected", true);						
+						controls.Tperi.setModalValues( controls.Tperi.currentUnits );
+						
 						// bind apply button
 						$('.modal-button.apply').click(function() {
 //							controls.Tperi.value = parseFloat($('.strip-value.new').val());
 //							controls.Tperi.displayValue();
-							simmgr.sendChange( { 'set:general:temperature' : parseFloat($('.strip-value.new').val()) * 10, 'set:general:transfer_time' : $('.transfer-time option:selected').val() } );
+							localStorage.tperiUnits = controls.Tperi.currentUnits = $('select.tperi-units-select option:selected').val();
+							
+							// convert if necessary
+							var TperiValue = $('.strip-value.new').val();
+							if( localStorage.tperiUnits == 'C' ) {
+								TperiValue = controls.Tperi.centToFahr( $('.strip-value.new').val() );
+							} 
+							
+							simmgr.sendChange( { 'set:general:temperature' : parseFloat( TperiValue ) * 10, 
+												 'set:general:transfer_time' : $('.transfer-time option:selected').val(),
+												  'set:general:temperature_units' : localStorage.tperiUnits } );
 							modal.closeModal();
 						});
 						
 						// bind change in new value
-						$('.strip-value.new').change(controls.Tperi.validateNewValue);
+//						$('.strip-value.new').change(controls.Tperi.validateNewValue);
 						
 						// bind increment and decrement
 						$('.control-incr-decr-rate.decr-rate').click(function() {
@@ -352,6 +366,11 @@ See gpl.html
 						$('.control-incr-decr-rate.incr-rate').click(function() {
 							$('.strip-value.new').val( (parseFloat($('.strip-value.new').val()) + controls.Tperi.increment).toFixed(1) );
 							controls.Tperi.validateNewValue();
+						});
+						
+						// bind change of units
+						$('select.tperi-units-select').change(function() {
+							controls.Tperi.setModalValues( $(this).val() );
 						});
 					}
 				}
@@ -1156,7 +1175,7 @@ console.dir(params);
 			$('#modal .close_modal').show();
 		},
 		
-		initSingleSlider: function(controlType) {
+		initSingleSlider: function(controlType) {			
 			if(typeof controls[controlType] == 'undefined') {
 				controlType = 'awRR';
 			}
@@ -1167,7 +1186,7 @@ console.dir(params);
 				$('.control-slider-1').val(controls.awRR.modalRate);
 			} else {
 				// set value
-				$('.control-slider-1').val(controls[controlType].value);			
+				$('.control-slider-1').val( controls[controlType].value );				
 			}
 			
 			// set min and max
@@ -1175,8 +1194,8 @@ console.dir(params);
 				'step': controls[controlType].increment,
 				'min': controls[controlType].minValue,
 				'max': controls[controlType].maxValue
-			});		
-			
+			});	
+						
 			// bind controls
 			controls[controlType].slideBar = $(".control-slider-1").slider({
 				create: function() {

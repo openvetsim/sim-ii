@@ -485,6 +485,14 @@ console.log('defib: here');
 					}
 				}
 				
+				// temperature units
+				if(typeof(response.general.temperature_units) != "undefined") {
+					if( response.general.temperature_units != controls.Tperi.currentUnits ) {
+						controls.Tperi.currentUnits = response.general.temperature_units;
+						controls.Tperi.displayValue();
+					} 
+				}
+
 				// temperature display
 				if(typeof(response.general.temperature_enable) != "undefined") {
 					if( response.general.temperature_enable == 1) {
