@@ -606,9 +606,8 @@ console.log("ETCO2 Display Value - chart.resp.rhythmIndex: " + chart.resp.rhythm
 				// set dropdown for units
 				if( typeof localStorage.tperiUnits != "undefined") {
 					controls.Tperi.currentUnits = localStorage.tperiUnits;
-					simmgr.sendChange( { 'set:general:temperature_units' : controls.Tperi.currentUnits } );
 				}
-
+				simmgr.sendChange( { 'set:general:temperature_units' : controls.Tperi.currentUnits } );
 				controls.Tperi.displayValue();
 			},
 			
