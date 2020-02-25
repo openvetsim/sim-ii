@@ -690,12 +690,12 @@ console.log("ETCO2 Display Value - chart.resp.rhythmIndex: " + chart.resp.rhythm
 				if ( ( profile.isVitalsMonitor == false ) || ( controls.Tperi.leadsConnected == true ) ) {
 					// which units to be displayed?
 					if( controls.Tperi.currentUnits == 'F' ) {
-						$('#display-Tperi').html(controls.Tperi.value.toFixed(1) + '<span class="vs-lower-label"> &ordm;F</span>');					
+						$('#display-Tperi').html(controls.Tperi.value.toFixed(1) + '<span class="vs-lower-label"> &deg;F</span>');					
 					} else {
-						$('#display-Tperi').html( controls.Tperi.fahrToCent(controls.Tperi.value) + '<span class="vs-lower-label"> &ordm;C</span>');										
+						$('#display-Tperi').html( controls.Tperi.fahrToCent(controls.Tperi.value) + '<span class="vs-lower-label"> &deg;C</span>');										
 					}
 				} else {
-					$('#display-Tperi').html('----' + '<span class="vs-lower-label"> &ordm;F</span>');
+					$('#display-Tperi').html('----' + '<span class="vs-lower-label"> &deg;' + controls.Tperi.currentUnits + '</span>');
 				}
 			}
 		}, 
