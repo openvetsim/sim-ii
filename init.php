@@ -124,7 +124,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 	define('AJAX_STATUS_LOGIN_FAIL', 2);
 	
 	// version
-	define('VERSION_MAJOR', 1);
+	define('VERSION_MAJOR', 'T1');
 	define('VERSION_MINOR', 0);
 	
 	// mobilized
