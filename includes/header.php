@@ -70,4 +70,5 @@ See gpl.html
 		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>log.js?v=<?= $ts ?>"></script>
 		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>user.js?v=<?= $ts ?>"></script>		
 		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>simmgr.js?v=<?= $ts ?>"></script>
+		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>telesim.js?v=<?= $ts ?>"></script>
 		

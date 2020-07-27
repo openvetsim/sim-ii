@@ -201,6 +201,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				buttons.init();
 				events.init();
 				scenario.init();
+				telesim.init();
 //				media.init();
 //				log.init();
 
@@ -300,6 +301,9 @@ console.log(controls['awRR'].increment);
 					</li> -->
 					<li >
 						<a href="javascript:void(2);" onclick="modal.showUsers();">Users</a>
+					</li>
+					<li class="tele-sim enable">
+						<a href="javascript:void(2);" onclick="">Enable TeleSim</a>
 					</li>
 					<li class="menu-events">
 						<a href="javascript:void(2);" onclick="modal.showEvents(); return false;">Events</a>
