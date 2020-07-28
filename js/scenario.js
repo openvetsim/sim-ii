@@ -156,7 +156,14 @@ console.log("Current Scenario State: " + this.currentScenarioState);
 				scenario.scenarioEvents = response.events;
 				scenario.scenarioMedia = response.media;
 				scenario.scenarioVocals = response.vocals;
-
+				if ( typeof(response.soundtags) !== 'undefined' )
+				{
+					scenario.soundtags = response.soundtags;
+					if ( typeof(simsound) !== 'undefined' )
+					{
+						simsound.parseTags();
+					}
+				}
 				// update scenario dropdown if needed
 				$('#scenario-select select').val(scenario.currentScenarioFileName);
 			}

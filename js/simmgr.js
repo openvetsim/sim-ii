@@ -691,6 +691,10 @@ console.log('defib: here');
 					if(typeof(response.respiration.rate) != "undefined") {
 						if( response.respiration.rate != controls.awRR.modalRate ) {
 							controls.awRR.modalRate = response.respiration.rate;
+							if ( typeof(simsound) != 'undefined' )
+							{
+								simsound.lookupLungSound();
+							}
 						}
 					}
 					
@@ -813,7 +817,14 @@ if( profile.isVitalsMonitor ) {
 					/***** Left Lung *****/
 					// left lung sound
 					if(typeof(response.respiration.left_lung_sound) != "undefined") {
-						controls.leftLung.fileName = response.respiration.left_lung_sound;
+						if ( controls.leftLung.fileName != response.respiration.left_lung_sound )
+						{
+							controls.leftLung.fileName = response.respiration.left_lung_sound;
+							if ( typeof(simsound) != 'undefined' )
+							{
+								simsound.lookupLungSound();
+							}
+						}
 					}
 					
 					// left lung mute
@@ -1070,6 +1081,10 @@ console.log("New scenario state RUNNING");
 							chart.ekg.rhythmIndex = 'defib';
 						}
 					}
+				}
+				/************ auscultation **************/
+				if(typeof(response.auscultation) != "undefined" ) {
+					controls.auscultation = response.auscultation;
 				}
 			},
 

@@ -556,6 +556,10 @@ See gpl.html
 
 			chart.heartRate = cardiac.rate;
 			controls.heartRate.value = cardiac.rate;
+			if ( typeof simsound !== 'undefined' )
+			{
+				simsound.lookupHeartSound();
+			}
 //console.log(cardiac );
 //console.log(cardiac.rate);
 //console.log(chart.ekg.rhythmIndex);
@@ -657,6 +661,10 @@ See gpl.html
 					} else if(chart.status.cardiac.synch == true || chart.ekg.patternIndex > 0) {
 						y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex][chart.ekg.patternIndex] * -1;
 						
+						if ( typeof simsound !== 'undefined' )
+						{
+							simsound.playHeartSound();
+						}
 						// beep?
 						if(y == chart.ekg.beepValue && chart.ekg.beepFlag == true && chart.ekg.stopFlag == false) {
 							// controls.heartRate.audio.load();  // Don't do this!!
@@ -674,6 +682,10 @@ See gpl.html
 					} else if(chart.status.cardiac.synch == true || chart.ekg.patternIndex > 0) {
 						y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex][chart.ekg.patternIndex] * -1;
 						
+						if ( typeof simsound !== 'undefined' )
+						{
+							simsound.playHeartSound();
+						}
 						// beep?
 						if(y == chart.ekg.beepValue && chart.ekg.beepFlag == true && chart.ekg.stopFlag == false) {
 							// controls.heartRate.audio.load();  // Don't do this!!
@@ -822,6 +834,10 @@ See gpl.html
 				y = 0;
 			} else if ( ( profile.isVitalsMonitor == false ) || ( controls.CO2.leadsConnected == true ) ) {
 				if(chart.status.resp.synch == true ) {	// Restart Cycle
+					if ( typeof simsound !== 'undefined' )
+					{
+						simsound.playLungSound();
+					}
 // console.log("Periodcount: " + chart.resp.periodCount);
 // console.log("rate: " + simmgr.respResponse.rate);
 					chart.updateRespRate();

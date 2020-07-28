@@ -105,6 +105,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 	$returnVal['events'] = $scenarioEventsArray;
 	$returnVal['media'] = $scenarioMediaArray;
 	$returnVal['vocals'] = $scenarioVocalsArray;
+	
+	// The soundtags array is optional and only used for TeleSim mode
+	$scenarioSoundtagsArray = scenarioXML::getScenarioSoundtagsArray($fileName);
+	if($scenarioEventsArray !== FALSE) {
+		$returnVal['soundtags'] = $scenarioSoundtagsArray;
+	}
+	
 	echo json_encode($returnVal);
 	exit();
 ?>
