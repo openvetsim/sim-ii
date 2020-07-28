@@ -83,5 +83,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 			}
 			return $scenarioArray['vocals'];
 		}
+		
+		static public function getScenarioSoundtagsArray($fileName) {
+			$scenarioArray = self::getScenarioArray($fileName);
+			if($scenarioArray === FALSE || count($scenarioArray['soundtags']) == 0) {
+				return FALSE;
+			} else {
+				return $scenarioArray['soundtags'];
+			}
+		}
 	}
 ?>
