@@ -283,6 +283,10 @@ a:hover {
 		color: black;
 		position: absolute;
 	}
+	
+	#mannequin.tele-sim {
+		width: 300px;
+	}
 
 /* canvas */
 #vsm {

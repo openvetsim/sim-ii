@@ -936,6 +936,7 @@ console.log("New scenario state RUNNING");
 						}
 						profile.initPatientInfo();
 						media.init();
+						telesim.init();
 					}
 					
 					if ( profile.isVitalsMonitor == false ) {

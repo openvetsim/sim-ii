@@ -199,6 +199,9 @@ button.nvs-button {
 		position: absolute;
 		cursor: pointer;
 	}
+		img.nvs-button.tele-sim {
+			width: 40px;
+		}
 	h2.nvs-button {
 		position: absolute;
 		font-size: 14px;

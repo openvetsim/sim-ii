@@ -74,8 +74,6 @@ console.log("Current Scenario State: " + this.currentScenarioState);
 				}, 1000);
 			}
 		});
-		
-		
 	},
 	
 	// start scenario

@@ -302,8 +302,8 @@ console.log(controls['awRR'].increment);
 					<li >
 						<a href="javascript:void(2);" onclick="modal.showUsers();">Users</a>
 					</li>
-					<li class="tele-sim enable">
-						<a href="javascript:void(2);" onclick="">Enable TeleSim</a>
+					<li class="tele-sim disabled">
+						<a href="javascript:void(2);" onclick="telesim.toggleTeleSim(); return false;">Enable TeleSim</a>
 					</li>
 					<li class="menu-events">
 						<a href="javascript:void(2);" onclick="modal.showEvents(); return false;">Events</a>
@@ -375,7 +375,8 @@ console.log(controls['awRR'].increment);
 					<a class="sound-mute" id="right-lung-mute" href="javascript: void(2)" onclick="modal.rightLung(); return false;"><img src="<?= BROWSER_IMAGES; ?>sound_mute.png"></a>
 				</div>
 				<div id="heart-sound-dog-control" class="dog-control">
-					<a id="heart-sound-dog-control-title" href="javascript: void(2)" onclick="modal.heartSound(); return false;">Heart Sound</a>
+					<a class="control-tele-sim" id="heart-sound-dog-control-icon" href="javascript: void(2)" onclick="modal.heartSound(); return false;"><img src="<?= BROWSER_SCENARIOS; ?>/default/images/heartSound.png" width="45px" title="Heart Sounds" alt="Headphone created by Tinashe Mugayi from Noun Project"></a>
+					<a class="control-title" id="heart-sound-dog-control-title" href="javascript: void(2)" onclick="modal.heartSound(); return false;">Heart Sound</a>
 					<a class="sound-mute" id="heart-sound-mute" href="javascript: void(2)" onclick="modal.heartSound(); return false;"><img src="<?= BROWSER_IMAGES; ?>sound_mute.png"></a>
 				</div>
 				<div id="chest-dog-control" class="dog-control">
