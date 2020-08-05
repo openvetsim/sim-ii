@@ -37,18 +37,15 @@ See gpl.html
 						$('#mannequin').css({
 							'background-size': scenario.scenarioProfile.avatar['width_pct_telesim'] + '% ' +  scenario.scenarioProfile.avatar['height_pct_telesim'] + '%'
 						});
-						$('#mannequin').css({
-							'background-size': '50% 70%'
-						});
 				
 						// controls
 						$.each(scenario.scenarioProfile.controls.control, function() {
 							$('#' + this.id).css('left', this.left_telesim + 'px');
 							$('#' + this.id).css('top', this.top_telesim + 'px');
 							$('#' + this.id + '-title').html(this.title).css({
-																			'left': this.left_telesim + 'px',
-																			'top': (parseInt(this.top_telesim) - 20).toString() + 'px',
-																			});
+																	'left': this.left_telesim + 'px',
+																	'top': (parseInt(this.top_telesim) - 20).toString() + 'px',
+																	});
 						});
 						
 						// dog controls
@@ -75,9 +72,9 @@ See gpl.html
 							$('#' + this.id).css('left', this.left + 'px');
 							$('#' + this.id).css('top', this.top + 'px');
 							$('#' + this.id + '-title').html(this.title).css({
-																			'left': this.left + 'px',
-																			'top': (parseInt(this.top) - 20).toString() + 'px',
-																			});
+																	'left': this.left + 'px',
+																	'top': (parseInt(this.top) - 20).toString() + 'px',
+																	});
 						});
 						
 						// dog controls

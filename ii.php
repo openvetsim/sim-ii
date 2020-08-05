@@ -360,14 +360,17 @@ console.log(controls['awRR'].increment);
 				<h2 id="indicator-arrest">Arrest</h2>
 
 				<div id="vocals-dog-control" class="dog-control">
-					<a id="vocals-dog-control-title" href="javascript: void(2)" onclick="modal.vocals(); return false;">Vocals</a>
+					<a class="control-title" id="vocals-dog-control-title" href="javascript: void(2)" onclick="modal.vocals(); return false;">Vocals</a>
+					<a class="control-tele-sim" id="vocals-dog-control-icon" href="javascript: void(2);" onclick="modal.vocals(); return false;"><img src="" width="" title="" alt=""></a>
 					<a class="sound-mute" id="vocals-mute" href="javascript: void(2)" onclick="modal.vocals(); return false;"><img src="<?= BROWSER_IMAGES; ?>sound_mute.png"></a>
 				</div>
 				<div id="left-femoral-pulse-dog-control" class="dog-control">
-					<a id="left-femoral-pulse-dog-control-title" href="javascript: void(2)" onclick="modal.pulseStrength('left', 'femoral'); return false;">Pulse Strength</a>
+					<a class="control-title" id="left-femoral-pulse-dog-control-title" href="javascript: void(2)" onclick="modal.pulseStrength('left', 'femoral'); return false;">Pulse Strength</a>
+					<a class="control-tele-sim" id="left-femoral-pulse-dog-control-icon" href="javascript: void(2);" onclick="modal.pulseStrength('left', 'femoral'); return false;"><img src="" width="" title="" alt=""></a>
 				</div>
 				<div id="right-femoral-pulse-dog-control" class="dog-control">
-					<a id="right-femoral-pulse-dog-control-title" href="javascript: void(2)" onclick="modal.pulseStrength('right', 'femoral'); return false;">Pulse Strength</a>
+					<a class="control-title" id="right-femoral-pulse-dog-control-title" href="javascript: void(2)" onclick="modal.pulseStrength('right', 'femoral'); return false;">Pulse Strength</a>
+					<a class="control-tele-sim" id="right-femoral-pulse-dog-control-icon" href="javascript: void(2);" onclick="modal.pulseStrength('right', 'femoral'); return false;"><img src="" width="" title="" alt=""></a>
 				</div>
 				<div id="left-dorsal-pulse-dog-control" class="dog-control">
 					<a id="left-dorsal-pulse-dog-control-title" href="javascript: void(2)" onclick="modal.pulseStrength('left', 'dorsal'); return false;">Pulse Strength</a>
@@ -376,20 +379,23 @@ console.log(controls['awRR'].increment);
 					<a id="right-dorsal-pulse-dog-control-title" href="javascript: void(2)" onclick="modal.pulseStrength('right', 'dorsal'); return false;">Pulse Strength</a>
 				</div>
 				<div id="left-lung-dog-control" class="dog-control">
-					<a id="left-lung-dog-control-title" href="javascript: void(2)" onclick="modal.leftLung(); return false;">Left Lung</a>
+					<a class="control-title" id="left-lung-dog-control-title" href="javascript: void(2)" onclick="modal.leftLung(); return false;">Left Lung</a>
+					<a class="control-tele-sim" id="left-lung-dog-control-icon" href="javascript: void(2);" onclick="modal.leftLung(); return false;"><img src="" width="" title="" alt=""></a>
 					<a class="sound-mute" id="left-lung-mute" href="javascript: void(2)" onclick="modal.leftLung(); return false;"><img src="<?= BROWSER_IMAGES; ?>sound_mute.png"></a>
 				</div>
 				<div id="right-lung-dog-control" class="dog-control">
-					<a id="right-lung-dog-control-title" href="javascript: void(2)" onclick="modal.rightLung(); return false;">Right Lung</a>
+					<a class="control-title" id="right-lung-dog-control-title" href="javascript: void(2)" onclick="modal.rightLung(); return false;">Right Lung</a>
+					<a class="control-tele-sim" id="right-lung-dog-control-icon" href="javascript: void(2);" onclick="modal.rightLung(); return false;"><img src="" width="" title="" alt=""></a>
 					<a class="sound-mute" id="right-lung-mute" href="javascript: void(2)" onclick="modal.rightLung(); return false;"><img src="<?= BROWSER_IMAGES; ?>sound_mute.png"></a>
 				</div>
 				<div id="heart-sound-dog-control" class="dog-control">
-					<a class="control-tele-sim" id="heart-sound-dog-control-icon" href="javascript: void(2)" onclick="modal.heartSound(); return false;"><img src="<?= BROWSER_SCENARIOS; ?>/default/images/heartSound.png" width="45px" title="Heart Sounds" alt="Headphone created by Tinashe Mugayi from Noun Project"></a>
+					<a class="control-tele-sim" id="heart-sound-dog-control-icon" href="javascript: void(2)" onclick="modal.heartSound(); return false;"><img src="" width="" title="" alt=""></a>
 					<a class="control-title" id="heart-sound-dog-control-title" href="javascript: void(2)" onclick="modal.heartSound(); return false;">Heart Sound</a>
 					<a class="sound-mute" id="heart-sound-mute" href="javascript: void(2)" onclick="modal.heartSound(); return false;"><img src="<?= BROWSER_IMAGES; ?>sound_mute.png"></a>
 				</div>
 				<div id="chest-dog-control" class="dog-control">
-					<a id="chest-dog-control-title" href="javascript: void(2)" onclick="modal.chestRise(); return false;">Chest Movement</a>
+					<a class="control-title" id="chest-dog-control-title" href="javascript: void(2)" onclick="modal.chestRise(); return false;">Chest Movement</a>
+					<a class="control-tele-sim" id="chest-dog-control-icon" href="javascript: void(2);" onclick="modal.chestRise(); return false;"><img src="" width="" title=""></a>
 				</div>
 			</div>
 			

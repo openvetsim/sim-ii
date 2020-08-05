@@ -35,6 +35,12 @@ See gpl.html
 																	'left': this.left + 'px',
 																	'top': (parseInt(this.top) - 20).toString() + 'px',
 																	});
+					
+					// setup src for telesim icon
+					$('#' + this.id + '-icon img').attr('src', BROWSER_SCENARIOS + scenario.currentScenarioFileName + '/images/' + this.icon_telesim);
+					$('#' + this.id + '-icon img').attr('width', this.width_telesim);
+					$('#' + this.id + '-icon img').attr('alt', this.attr_telesim);
+					$('#' + this.id + '-icon img').attr('title', this.title);					
 					$('#' + this.id).show();
 				});
 
