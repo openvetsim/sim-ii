@@ -285,8 +285,31 @@ a:hover {
 	}
 	
 	#mannequin.tele-sim {
-		width: 300px;
+		width: 250px;
 	}
+	
+#telesim-top {
+	height: 200px;
+	width: 239px;
+	background-size: 137% 100%;
+	background-position: -41px 0px;
+	position: relative;
+}
+
+.ausc-hotspot {
+	height: 15px;
+	width: 15px;
+	background-color: blue;
+	color: white;
+	border-radius: 50%;
+	text-align: center;
+	line-height: 15px;
+	position: absolute;
+	cursor: pointer;
+}
+.ausc-hotspot.active {
+	background-color: green;
+}
 
 /* canvas */
 #vsm {

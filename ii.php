@@ -446,6 +446,13 @@ console.log(controls['awRR'].increment);
 				</div> -->
 			</div>
 			
+			<div id="telesim-top" class="float-left ii-border telesim-right" style="background-image: url('<?= BROWSER_SCENARIOS; ?>/default/images/top-dog.png')">
+				<div class="ausc-hotspot" data-coord="1-1-1" style="top: 75px; left: 100px;">1</div>
+				<div class="ausc-hotspot" data-coord="1-2-1" style="top: 75px; left: 125px;">2</div>
+				<div class="ausc-hotspot" data-coord="1-3-1" style="top: 100px; left: 100px;">3</div>
+				<div class="ausc-hotspot" data-coord="1-4-1" style="top: 100px; left: 125px;">4</div>
+			</div>
+			
 			<div id="media-col">
 				<div id="scenario-select" class="float-left clearer ii-border">
 					<h2 class="float-left clearer">Scenario Select:</h2>

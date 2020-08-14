@@ -12,6 +12,35 @@ See gpl.html
 				localStorage.telesim = "disabled";
 			}
 			this.setTeleSim( localStorage.telesim );
+			
+
+			// ausculation points in top right telesim port
+			$('.ausc-hotspot').click( function( evt ) {
+				evt.stopImmediatePropagation();
+				
+				// is tag already active?
+				if( $(this).hasClass('active') ) {
+					$(this).removeClass('active');					
+					simmgr.sendChange( { 'set:auscultation:side' : 0 } );
+				} else {
+					$('.ausc-hotspot').removeClass('active');				
+					$(this).addClass('active');
+					
+					// get coord of tag
+					var temp = $(this).attr('data-coord').split('-');
+					simmgr.sendChange( { 
+						'set:auscultation:side' : temp[0],
+						'set:auscultation:row' : temp[1],
+						'set:auscultation:col' : temp[2]
+					} );
+
+				}
+			});
+			
+			$('#telesim-top').click(function() {
+				$('.ausc-hotspot').removeClass('active');				
+				simmgr.sendChange( { 'set:auscultation:side' : 0 } );
+			});
 		},
 		
 		toggleTeleSim: function() {
@@ -53,6 +82,9 @@ See gpl.html
 						$("div.dog-control a.control-title").hide();
 					}
 					
+					// display telesim right dev
+					$('.telesim-right').show();
+					
 				} else if( action == 'disabled' ) {
 					localStorage.telesim = "disabled";
 					$('.tele-sim > a').html("Enable TeleSim");
@@ -82,7 +114,11 @@ See gpl.html
 						$("div.dog-control a.control-title").show();
 
 					}
+					
+					// hide telesim right dev
+					$('.telesim-right').hide();
+					simmgr.sendChange( { 'set:auscultation:side' : 0 } );
 				}			
 			}			
-		}	
+		}		
 	}
