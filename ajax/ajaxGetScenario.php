@@ -112,6 +112,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 		$returnVal['soundtags'] = $scenarioSoundtagsArray;
 	}
 	
+	// same for the telesim information
+	$scenarioTelesimArray = scenarioXML::getScenarioTelesimArray($fileName);
+	if($scenarioTelesimArray !== FALSE) {
+		$returnVal['telesim'] = $scenarioTelesimArray;
+	}
+
 	echo json_encode($returnVal);
 	exit();
 ?>

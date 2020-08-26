@@ -503,6 +503,25 @@ console.log('defib: here');
 					buttons.setVSButton('Tperi');
 					controls.Tperi.displayValue();
 				}
+				
+				// telesim
+				if(typeof(response.telesim) != "undefined" ) {
+					if( response.telesim.enable != localStorage.telesim && profile.isVitalsMonitor ) {
+						telesim.setTeleSim( response.telesim.enable );
+					}
+					
+					// select
+					if( response.telesim[0].next != telesim.imageNext[0] && typeof telesim.imageList[0] != "undefined" ) {
+						telesim.imageNext[0] = response.telesim[0].next;
+						telesim.processTelesimCommand( response.telesim, 0 );
+					}
+					
+					if( response.telesim[1].next != telesim.imageNext[1] && typeof telesim.imageList[1] != "undefined" ) {
+						telesim.imageNext[1] = response.telesim[1].next;
+						telesim.processTelesimCommand( response.telesim, 1 );
+					}
+					
+				}
 
 				/************ vocals **************/
 				if(typeof(response.vocals) != "undefined" ) {
@@ -1085,6 +1104,14 @@ console.log("New scenario state RUNNING");
 				/************ auscultation **************/
 				if(typeof(response.auscultation) != "undefined" ) {
 					controls.auscultation = response.auscultation;
+					
+					// has auscultation been cancelled
+					if( response.auscultation.side == 0 ) {
+						telesim.clearAuscultation();	
+					} else {
+						var coord = response.auscultation.side + '-' + response.auscultation.row + '-' + response.auscultation.col;
+						telesim.setAuscultation( coord );
+					}
 				}
 			},
 

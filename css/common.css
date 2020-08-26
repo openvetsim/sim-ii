@@ -288,12 +288,22 @@ a:hover {
 		width: 250px;
 	}
 	
-#telesim-top {
+#telesim-0 {
 	height: 200px;
 	width: 239px;
-	background-size: 137% 100%;
-	background-position: -41px 0px;
 	position: relative;
+	background-color: white;
+}
+#telesim-1 {
+	height: 188px;
+	width: 239px;
+	position: relative;
+	margin-top: 10px;
+	background-color: white;
+}
+
+div.telesim-right video {
+
 }
 
 .ausc-hotspot {
@@ -308,7 +318,7 @@ a:hover {
 	cursor: pointer;
 }
 .ausc-hotspot.active {
-	background-color: green;
+	background-color: red;
 }
 
 /* canvas */

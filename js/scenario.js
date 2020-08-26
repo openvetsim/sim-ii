@@ -164,6 +164,10 @@ console.log("Current Scenario State: " + this.currentScenarioState);
 						simsound.parseTags();
 					}
 				}
+				
+				if( typeof(response.telesim) !== 'undefined' ) {
+					scenario.telesim = response.telesim;
+				}
 				// update scenario dropdown if needed
 				$('#scenario-select select').val(scenario.currentScenarioFileName);
 			}

@@ -1,6 +1,6 @@
 <?php
 /*
-sim-ii: 
+sim-ii:
 
 Copyright (C) 2019  VetSim, Cornell University College of Veterinary Medicine Ithaca, NY
 
@@ -57,12 +57,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 	<script type="text/javascript">
 			var windowScaleFactor = 1;
 			
-			function doWindowScale() {			
+			function doWindowScale( scaleFactor ) {			
 				// Resize Chart based on Window Size
 				// Chart is 650 x 400 with 11px on left and 1px left, right and bottom
 				var Wwidth = $(window).width();
 				var Wheight = $(window).height();
-				console.log("Screen size ", Wwidth, Wheight );
+// console.log("Screen size ", Wwidth, Wheight );
 				// Calculate max scale for width and height
 				var zoomW = ( ( Wwidth - 40 ) / (650) ) * 100;
 				var zoomH = ( ( Wheight - 40 ) / (400) ) * 100;
@@ -73,7 +73,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				else
 					zoomSet = zoomW;
 				
-				windowScaleFactor = zoomSet / 100;
+				windowScaleFactor = (zoomSet / 100) * scaleFactor;
 				$('#vsm').css({ 
 					'transform'                : 'scale('+windowScaleFactor+')',
 					'transform-origin'         : '0 0',
@@ -84,10 +84,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 					'-ms-transform'            : 'scale('+windowScaleFactor+')', // IE
 					'-webkit-transform'        : 'scale('+windowScaleFactor+')'  // Opera/Safari
 				});
-				console.log("Transform: "+windowScaleFactor );
+// console.log("Transform: "+windowScaleFactor );
+
 			}
 			$( window ).resize(function() {
-				doWindowScale();
+				doWindowScale( 1.0 );
 			});
 			$(document).ready(function() {
 				// init profile data
@@ -110,11 +111,43 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				//media.init();
 				//log.init();
 				
+				if( !profile.isVitalsMonitor ) {
+					telesim.init();
+				}
+				
 				// init patient info
 				profile.initPatientInfo();
 				
 				simmgr.init();
+				$('#telesim-0').css({
+					position: 'absolute',
+					top: '0',
+					right: '-230px',
+					'transform'                : 'scale(0.8)',
+					'transform-origin'         : '0 0',
+					'-moz-transform-origin'    : '0 0',         // Firefox
+					'-ms-transform-origin'     : '0 0',         // IE
+					'-webkit-transform-origin' : '0 0',         // Opera/Safari
+					'-moz-transform'           : 'scale(0.8)', // Firefox
+					'-ms-transform'            : 'scale(0.8)', // IE
+					'-webkit-transform'        : 'scale(0.8)'  // Opera/Safari
+				});
+				$('#telesim-1').css({
+					position: 'absolute',
+					top: '180px',
+					right: '-230px',
+					'transform'                : 'scale(0.8)',
+					'transform-origin'         : '0 0',
+					'-moz-transform-origin'    : '0 0',         // Firefox
+					'-ms-transform-origin'     : '0 0',         // IE
+					'-webkit-transform-origin' : '0 0',         // Opera/Safari
+					'-moz-transform'           : 'scale(0.8)', // Firefox
+					'-ms-transform'            : 'scale(0.8)', // IE
+					'-webkit-transform'        : 'scale(0.8)'  // Opera/Safari
+				});
+
 			});
+			
 
 		</script>
 <style type="text/css" media="screen">
@@ -181,6 +214,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 						<a id="display-nbp-hr" class="alt-control-rate color-red" href="javascript: void(0)" onclick="modal.nbp(); return false;"><span style="font-size: 24px;">PR</span> <span id="displayed-reportedHR">75</span></a>
 					</div>
 				</div>
+				<div id="telesim-0" class="float-left ii-border telesim-right"></div>
+				<div id="telesim-1" class="float-left ii-border telesim-right"></div>
+
 			</div>
 </body>
 </html>
