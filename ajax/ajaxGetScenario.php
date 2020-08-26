@@ -108,7 +108,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 	
 	// The soundtags array is optional and only used for TeleSim mode
 	$scenarioSoundtagsArray = scenarioXML::getScenarioSoundtagsArray($fileName);
-	if($scenarioEventsArray !== FALSE) {
+	if($scenarioSoundtagsArray !== FALSE) {
 		$returnVal['soundtags'] = $scenarioSoundtagsArray;
 	}
 	
