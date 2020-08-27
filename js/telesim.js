@@ -16,6 +16,7 @@ See gpl.html
 		imageList: new Array,
 		imageNext: new Array,
 		videoObj: new Array,
+		lastSeek: 0,
 		coord: "",
 		
 		init: function() {
@@ -58,16 +59,17 @@ See gpl.html
 				$('select.telesim-select').html('');
 				var telesimSelectContent0 = '<option value="none">Please select</option>';
 				var telesimSelectContent1 = '<option value="none">Please select</option>';
-				$.each( scenario.telesim.images.image, function( key, value ){
-					if(value.window == "0") {
-						telesim.imageList[0][value.name] = value;
-						telesimSelectContent0 += '<option value="' + value.name + '">' + value.name + '</option>';
-					} else {
-						telesim.imageList[1][value.name] = value;
-						telesimSelectContent1 += '<option value="' + value.name + '">' + value.name + '</option>';
-					}
-				});
-			
+				if ( typeof(scenario.telesim.images ) !== 'undefined' && typeof(scenario.telesim.images.image) !== 'undefined' ) {
+					$.each( scenario.telesim.images.image, function( key, value ){
+						if(value.window == "0") {
+							telesim.imageList[0][value.name] = value;
+							telesimSelectContent0 += '<option value="' + value.name + '">' + value.name + '</option>';
+						} else {
+							telesim.imageList[1][value.name] = value;
+							telesimSelectContent1 += '<option value="' + value.name + '">' + value.name + '</option>';
+						}
+					});
+				}
 				$('#telesim-select-0').html( telesimSelectContent0 );	
 				$('#telesim-select-1').html( telesimSelectContent1 );	
 				
@@ -213,8 +215,15 @@ See gpl.html
 			telesim.clearTelesimImage( window );
 			
 			switch ( fileExt ) {
-				case 'mp4': case 'webm': case 'ogg':					
-					$('#telesim-' + window).append('<video id="telesim-video-' + window + '"  width="100%" class="telesim-image" src="'+ imageURL +'" controls>' + 
+				case 'mp4': case 'webm': case 'ogg':
+					var options;
+					if(  profile.isVitalsMonitor ) {
+						options = " muted ";
+					} else {
+						options = " controls ";
+					}
+					$('#telesim-' + window).append('<video id="telesim-video-' + window + '"  width="100%" class="telesim-image" src="'+ imageURL +
+														'" ' + options + '>' + 
 														'<source src="'+ imageURL +'" type="video/' + fileExt + '">' + 
 													'</video>');
 													
@@ -224,9 +233,10 @@ See gpl.html
 					// if not vitals...
 					if( !profile.isVitalsMonitor ) {
 						telesim.videoObj[ window ].onplay = function() {
+							telesim.lastSeek = 0;
 							simmgr.sendChange({ 
 								'set:telesim:command' : window + ":" + TELESIM_START,
-								'set:telesim:param' : window + ":-1",
+								'set:telesim:param' : window + ":" + parseFloat(telesim.videoObj[ window ].currentTime).toString(),
 								'set:telesim:next' : window + ":" + (parseInt(telesim.imageNext[window]) + 1).toString()
 							});
 						}
@@ -238,11 +248,18 @@ See gpl.html
 							});
 						}
 						telesim.videoObj[ window ].onseeking = function() {
-							alert('seeking ' + window + " : current time: " + telesim.videoObj[ window ].currentTime);
+							// alert('seeking ' + window + " : current time: " + telesim.videoObj[ window ].currentTime);
+							if ( telesim.lastSeek == 0 ) {
+								telesim.lastSeek = telesim.videoObj[ window ].currentTime;
+								console.log("Seek", telesim.lastSeek );
+								simmgr.sendChange({ 
+									'set:telesim:command' : window + ":" + TELESIM_SEEK,
+									'set:telesim:param' : window + ":" + telesim.lastSeek,
+									'set:telesim:next' : window + ":" + (parseInt(telesim.imageNext[window]) + 1).toString()
+								});
+							}
+							telesim.lastSeek = 0;
 						}
-					} else {
-						// remove controls from video object if vitals
-						$('#telesim-video-' + window).removeAttr('controls');
 					}
 					
 													
@@ -307,16 +324,34 @@ console.log("------");
 			// clear?
 			if( responseTelesimObj[ window ].command == TELESIM_CLEAR) {
 				telesim.clearTelesimImage( window );							
-			} else if(typeof telesim.imageList[ window ][responseTelesimObj[ window ].name] !== "undefined" && responseTelesimObj[ window ].command == TELESIM_LOAD ) {
+			} else if(typeof telesim.imageList[ window ][responseTelesimObj[ window ].name] !== "undefined" &&
+						responseTelesimObj[ window ].command == TELESIM_LOAD ) {
+				console.log("Add Image", responseTelesimObj[ window ].name );
 				telesim.addTelesimImage( window, telesim.imageList[ window ][responseTelesimObj[ window ].name]);
-			} else if( responseTelesimObj[ window ].command == TELESIM_START ) {
-				if( profile.isVitalsMonitor ) {
-					telesim.videoObj[ window ].play();
-				}							
-			} else if( responseTelesimObj[ window ].command == TELESIM_STOP ) {
-				if( profile.isVitalsMonitor ) {
-					telesim.videoObj[ window ].pause();
-				}							
+			} else {
+				if ( typeof($("#telesim-video-"+window).prop ) === 'function' &&
+					 $("#telesim-video-"+window).prop("nodeName") == "VIDEO" ) {
+					if( responseTelesimObj[ window ].command == TELESIM_START  ) {
+						if( profile.isVitalsMonitor ) {
+							if ( responseTelesimObj[ window ].param > 0 )
+							{
+								telesim.videoObj[ window ].currentTime = parseFloat(responseTelesimObj[ window ].param );
+							}
+							if( profile.isVitalsMonitor ) {
+								$("#telesim-video-"+window).prop('muted', true);
+							}
+							telesim.videoObj[ window ].play();
+						}
+					} else if( responseTelesimObj[ window ].command == TELESIM_STOP ) {
+						if( profile.isVitalsMonitor ) {
+							telesim.videoObj[ window ].pause();
+						}
+					} else if( responseTelesimObj[ window ].command == TELESIM_SEEK ) {
+						if ( profile.isVitalsMonitor || telesim.lastSeek > 0 ) {
+							telesim.videoObj[ window ].currentTime = parseFloat(responseTelesimObj[ window ].param );
+						}
+					}
+				}
 			}
 		}
 	}
