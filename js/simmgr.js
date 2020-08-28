@@ -506,8 +506,16 @@ console.log('defib: here');
 				
 				// telesim
 				if(typeof(response.telesim) != "undefined" ) {
-					if( response.telesim.enable != localStorage.telesim && profile.isVitalsMonitor ) {
+/*					if( response.telesim.enable != localStorage.telesim && profile.isVitalsMonitor ) {
 						telesim.setTeleSim( response.telesim.enable );
+					}
+*/
+					if( profile.isVitalsMonitor ) {
+						if( response.telesim.enable == 0 && $('.telesim-right').is(':visible') ) {
+							telesim.setTeleSim( 0 );
+						} else if( response.telesim.enable == 1 && $('.telesim-right').is(':hidden') ) {
+							telesim.setTeleSim( 1 );						
+						}
 					}
 					
 					// select
