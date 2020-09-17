@@ -18,7 +18,6 @@ See gpl.html
 		videoObj: new Array,
 		lastSeek: 0,
 		coord: "",
-		
 		init: function() {
 			// check if localStorage exists
 			if( typeof(localStorage.telesim) === "undefined" ) {
@@ -195,7 +194,10 @@ See gpl.html
 					if( profile.isVitalsMonitor ) {
 						doWindowScale( 1.0 );
 					}
-					
+					else if ( simmgr.isLocalDisplay() )
+					{
+						simmgr.resetQuickInterval();
+					}
 				}			
 			}			
 		},

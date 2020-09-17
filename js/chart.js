@@ -661,7 +661,7 @@ See gpl.html
 					} else if(chart.status.cardiac.synch == true || chart.ekg.patternIndex > 0) {
 						y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex][chart.ekg.patternIndex] * -1;
 						
-						if ( typeof simsound !== 'undefined' )
+						if ( typeof simsound !== 'undefined' && chart.status.cardiac.synch == true )
 						{
 							simsound.playHeartSound();
 						}
@@ -684,7 +684,7 @@ See gpl.html
 						
 						if ( typeof simsound !== 'undefined' )
 						{
-							simsound.playHeartSound();
+							//simsound.playHeartSound();
 						}
 						// beep?
 						if(y == chart.ekg.beepValue && chart.ekg.beepFlag == true && chart.ekg.stopFlag == false) {

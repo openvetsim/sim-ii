@@ -1,6 +1,6 @@
 <?php
 /*
-sim-ii: 
+sim-ii.php: 
 
 Copyright (C) 2019  VetSim, Cornell University College of Veterinary Medicine Ithaca, NY
 
@@ -174,12 +174,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 		<?php require_once(SERVER_INCLUDES . "header.php"); ?>
 		<?php
 		// This is forTeleSim
-		exec("simSoundInit -f" );
+		exec("simSoundInit" );
+	/*
 		if ( file_exists("../sim-sounds/soundList.php" ) )
 		{
 			require_once("../sim-sounds/soundList.php" );
 			echo "<script type='text/javascript' src='".BROWSER_SCRIPTS."simsound.js'></script>\n";
 		}
+	*/
 		// End TeleSim
 		?>
 		<script type="text/javascript">

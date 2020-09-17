@@ -93,7 +93,7 @@ var simmgr = {
 						controls.awRR.setSynch();
 					}
 				}
-				if ( simmgr.isLocalDisplay() )
+				if ( ! simmgr.isTeleSim() && simmgr.isLocalDisplay() )
 				{
 					if ( response.cardiac.pulseCount != simmgr.pulseCount )
 					{
@@ -1177,5 +1177,38 @@ console.log("New scenario state RUNNING");
 	isLocalDisplay: function()
 	{
 		return ( SERVER_ADDR == REMOTE_ADDR );
+	},
+	
+	isTeleSim: function()
+	{
+		if ( typeof(localStorage.telesim) === "undefined"  || localStorage.telesim == 0 )
+		{
+			return ( true );
+		}
+		return ( false );
+	},
+	
+	resetQuickInterval: function()
+	{
+		if ( simmgr.isLocalDisplay() )
+		{
+			if ( simmgr.isTeleSim() )
+			{
+				simmgr.quickInterval = 40;
+			}
+			else
+			{
+				simmgr.quickInterval = 15;
+			}
+		}
+		else if ( typeof userID != "undefined" && userID == 5 )
+		{
+			// This is the Demo user
+			simmgr.quickInterval = 200;
+		}
+		else
+		{
+			simmgr.quickInterval = 40;
+		}
 	}
 }

@@ -9,33 +9,24 @@ See gpl.html
 
 
 var simsound = {
-	currentHeart : 0,
-	currentLung : 0,
+	currentHeartSound : 0,
+	currentLungSound : 0,
+	currentHeartLevel : 0,
+	currentLungLevel : 0,
+	heartSoundElement : 0,
+	lungSoundElement : 0,
+	heartCount : 0,
+	
 	init : function() {
 	},
 	
-	play : function(index, level ) {
-		console.log ("play", index, level );
-		if ( typeof(level) == 'undefined' )
-		{
-			level = 5;
-		}
-		if ( index > 0 )
-		{
-			var sound = $('#snd_'+index).get(0);
-			sound.pause();
-			sound.currentTime = 0;
-			level = level / 10;
-			console.log("Level", level );
-			sound.volume = level;
-			sound.play();
-		}
-	},
-	
 	playHeartSound : function() {
-		if ( typeof(controls.auscultation) !== 'undefined' &&  controls.auscultation.side > 0 )
+		if ( simsound.currentHeartSound > 0 && 
+			simsound.heartSoundElement != 0 &&
+			typeof(controls.auscultation) !== 'undefined' &&  
+			controls.auscultation.side > 0 )
 		{
-			console.log("Heart", controls.auscultation.side, controls.auscultation.col, controls.auscultation.row );
+			var level = 0;
 			if ( typeof(simsound.tags[controls.auscultation.side] ) == 'undefined' )
 				console.log("Side not in table" );
 			else if ( typeof(simsound.tags[controls.auscultation.side][controls.auscultation.col] ) == 'undefined' )
@@ -44,26 +35,88 @@ var simsound = {
 				console.log("Row (Y) not in table" ); 
 			else
 			{
-				var level = simsound.tags[controls.auscultation.side][controls.auscultation.col][controls.auscultation.row].heartStrength;
-				simsound.play(simsound.currentHeart, level );
+				level = simsound.tags[controls.auscultation.side][controls.auscultation.col][controls.auscultation.row].heartStrength;
+			}
+	
+			
+			simsound.heartSoundElement.pause();
+			simsound.heartSoundElement.currentTime = 0;
+			if ( level > 0 )
+			{
+				level = level / 10;
+			
+				console.log("Heart Level", level, "Count", simsound.heartCount );
+				simsound.heartCount ++;
+				
+				simsound.heartSoundElement.volume = level;
+				playPromise = simsound.heartSoundElement.play();
+				if (playPromise !== undefined) {
+					playPromise.then(_ => {
+					// Automatic playback started!
+					// Show playing UI.
+					})
+					.catch(error => {
+						console.log("Promise Error", error );
+						var errorWord = error.substr(0, error.indexOf(" ") );
+						if ( errorWord == "NotAllowedError" )
+						{
+							// Do something to tell user that he needs to click on a sound entry in the Vitals Screen
+						}
+					});
+				}
 			}
 		}
 	},
 	
 	playLungSound : function() {
-		if ( typeof(controls.auscultation) !== 'undefined' &&  controls.auscultation.side > 0 )
+		if ( simsound.currentLungSound > 0 && 
+			simsound.lungSoundElement != 0 && 
+			typeof(controls.auscultation) !== 'undefined' &&  
+			controls.auscultation.side > 0 )
 		{
-			console.log("Lung", controls.auscultation.side, controls.auscultation.col, controls.auscultation.row );
+			var level = 0;
+			
+			simsound.lungSoundElement.pause();
+			simsound.lungSoundElement.currentTime = 0;
 			if ( typeof(simsound.tags[controls.auscultation.side] ) == 'undefined' )
+			{
 				console.log("Side not in table" );
+			}
 			else if ( typeof(simsound.tags[controls.auscultation.side][controls.auscultation.col] ) == 'undefined' )
-				console.log("Col (X) not in table" ); 
+			{
+				console.log("Col (X) not in table" );
+			}
 			else if ( typeof(simsound.tags[controls.auscultation.side][controls.auscultation.col][controls.auscultation.row] ) == 'undefined' )
-				console.log("Row (Y) not in table" ); 
+			{
+				console.log("Row (Y) not in table" );
+			}
 			else
 			{
-				var level = simsound.tags[controls.auscultation.side][controls.auscultation.col][controls.auscultation.row].lungStrength;
-				simsound.play(simsound.currentLung, level );
+				level = simsound.tags[controls.auscultation.side][controls.auscultation.col][controls.auscultation.row].lungStrength;
+			}
+			if ( level > 0 )
+			{
+				level = level / 10;
+			
+				console.log("Lung Sound", simsound.currentLungSound , "Level", level, simsound.currentLungLevel );
+				simsound.lungSoundElement.volume = level;
+				playPromise = simsound.lungSoundElement.play();
+				
+				if (playPromise !== undefined) 
+				{
+					playPromise.then(_ => {
+						// Automatic playback started!
+					})
+					.catch(error => {
+						console.log("Promise Error", error );
+						var errorWord = error.substr(0, error.indexOf(" ") );
+						if ( errorWord == "NotAllowedError" )
+						{
+							// Do something to tell user that he needs to click on a sound entry in the Vitals Screen
+						}
+						// Auto-play was prevented
+					});
+				}
 			}
 		}
 	},
@@ -71,23 +124,20 @@ var simsound = {
 	lookupLungSound : function() {
 		console.log ("Lookup Lung sound is", simmgr.respResponse.left_lung_sound, simmgr.respResponse.rate  );
 		$.each(soundPlayList, function(idx, el) {
-			//console.log ( el );
-			if ( el.type == 'lung' && el.name == simmgr.respResponse.left_lung_sound )
+			console.log ( el );
+			if ( el.type == 'lung' && 
+				el.name == simmgr.respResponse.left_lung_sound &&
+				simmgr.respResponse.rate >= el.low_limit &&
+				simmgr.respResponse.rate <= el.high_limit)
 			{
-				var rate = simmgr.respResponse.rate;
-				var low = el.low_limit;
-				var high = el.high_limit;
-				//console.log ( el, low, ">=", rate, "<=", high );
-				if ( rate >= low && rate <= high )
-				{
-					simsound.currentLung = el.index;
-					console.log ("Lung sound is", simsound.currentLung );
-					return false;
-				}
+				simsound.currentLungSound = el.index;
+				simsound.lungSoundElement =  $('#snd_'+el.index).get(0);
+				console.log ("Lung sound is", simsound.currentLung );
+				return;
+				
 			}
 		});
 	},
-	
 	
 	lookupHeartSound : function() {
 		console.log ("Lookup Heart sound is", controls.heartSound.soundName, controls.heartRate.value  );
@@ -97,14 +147,26 @@ var simsound = {
 				controls.heartRate.value >= el.low_limit &&
 				controls.heartRate.value <= el.high_limit )
 			{
-				simsound.currentHeart = el.index;
-				
+				simsound.currentHeartSound = el.index;
+				simsound.heartSoundElement = $('#snd_'+el.index).get(0);
 				console.log ("Heart sound is", simsound.currentHeart );
-				return false;
+				return;
 			}
 		});
 	},
 	
+	stopSounds : function() {
+		if ( currentLungSound > 0 && lungSoundElement != 0 )
+		{
+			simsound.currentLungSound = 0;
+			lungSoundElement.pause();
+		}
+		if ( currentHeartSound > 0 && heartSoundElement != 0 )
+		{
+			simsound.currentHeartSound = 0;
+			lungSoundElement.pause();
+		}
+	},
 	parseTags : function() {
 		// Tags are loaded to the scenario section and processed here
 		simsound.tags = new Array();
