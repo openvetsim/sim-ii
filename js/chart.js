@@ -660,11 +660,11 @@ See gpl.html
 						y = chart.getEKGNoisePixel();						
 					} else if(chart.status.cardiac.synch == true || chart.ekg.patternIndex > 0) {
 						y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex][chart.ekg.patternIndex] * -1;
-						
 						if ( typeof simsound !== 'undefined' && chart.status.cardiac.synch == true )
 						{
 							simsound.playHeartSound();
 						}
+						
 						// beep?
 						if(y == chart.ekg.beepValue && chart.ekg.beepFlag == true && chart.ekg.stopFlag == false) {
 							// controls.heartRate.audio.load();  // Don't do this!!
@@ -674,6 +674,7 @@ See gpl.html
 						// increment pointers
 						chart.ekg.patternIndex++;
 					}
+										
 				} else if(chart.ekg.rhythmIndex == 'afib') {
 					if(chart.status.cardiac.synch == false && chart.ekg.patternIndex == 0) {
 						// generate slow noise between range
@@ -755,8 +756,7 @@ See gpl.html
 						chart.ekg.patternIndex = 0;
 					}
 				}
-			}
-			else {
+			} else {
 				y = 0;
 			}
 			
@@ -933,6 +933,14 @@ See gpl.html
 
 						}
 					}
+				}
+			} else if ( ( profile.isVitalsMonitor == true ) || ( controls.CO2.leadsConnected == false ) ) {
+				if(chart.status.resp.synch == true ) {	// Restart Cycle
+					if ( typeof simsound !== 'undefined' )
+					{
+						simsound.playLungSound();
+					}
+					chart.status.resp.synch = false;
 				}
 			}
 			else {

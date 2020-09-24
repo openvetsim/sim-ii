@@ -32,6 +32,7 @@ var simmgr = {
 	
 	init : function() {
 		console.log("simmgr: init" );
+		console.log("simmgr: is local display: "  + simmgr.isLocalDisplay());
 		if(typeof userID != "undefined") {
 			console.log("uid: " + userID );
 			if ( userID == 5 )

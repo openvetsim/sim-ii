@@ -45,7 +45,7 @@ var simsound = {
 			{
 				level = level / 10;
 			
-				console.log("Heart Level", level, "Count", simsound.heartCount );
+// console.log("Heart Level", level, "Count", simsound.heartCount );
 				simsound.heartCount ++;
 				
 				simsound.heartSoundElement.volume = level;
