@@ -600,7 +600,7 @@ See gpl.html
 	
 //console.log(chart.ekg.patternIndex)
 
-			if ( ( profile.isVitalsMonitor == false ) || ( controls.ekg.leadsConnected == true ) ) {
+			if ( ( profile.isVitalsMonitor == false ) || ( controls.ekg.leadsConnected == true ) || simmgr.isTeleSim() == true ) {
 				// see if we need to draw waveform or if we are in background
 				if(chart.ekg.stopFlag == true) {
 					y = 0;
