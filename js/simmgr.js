@@ -94,7 +94,7 @@ var simmgr = {
 						controls.awRR.setSynch();
 					}
 				}
-				if ( ! simmgr.isTeleSim() && simmgr.isLocalDisplay() )
+				if ( simmgr.isTeleSim() || simmgr.isLocalDisplay() )
 				{
 					if ( response.cardiac.pulseCount != simmgr.pulseCount )
 					{
@@ -1182,7 +1182,7 @@ console.log("New scenario state RUNNING");
 	
 	isTeleSim: function()
 	{
-		if ( typeof(localStorage.telesim) === "undefined"  || localStorage.telesim == 0 )
+		if ( typeof(localStorage.telesim) !== "undefined"  && localStorage.telesim == 1 )
 		{
 			return ( true );
 		}
