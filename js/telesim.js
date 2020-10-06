@@ -282,7 +282,14 @@ See gpl.html
 						});
 						
 						$.each( imageObj.auscultation_points.auscultation_point, function( key, auscObj ){
-							$('#telesim-' + window).append('<div class="ausc-hotspot telesim-image" data-coord="' + auscObj.side + '-' + auscObj.row +'-' + auscObj.col + '" style="top: ' + auscObj.offset_top_px + 'px; left: ' + auscObj.offset_left_px + 'px;">' + auscObj.name + '</div>');
+							if ( typeof(auscObj.xPosition) != 'undefined' )
+							{
+								$('#telesim-' + window).append('<div class="ausc-hotspot telesim-image" data-coord="' + auscObj.side + '-' + auscObj.yPosition +'-' + auscObj.xPosition + '" style="top: ' + auscObj.offset_top_px + 'px; left: ' + auscObj.offset_left_px + 'px;">' + auscObj.name + '</div>');
+							}
+							else
+							{
+								$('#telesim-' + window).append('<div class="ausc-hotspot telesim-image" data-coord="' + auscObj.side + '-' + auscObj.row +'-' + auscObj.col + '" style="top: ' + auscObj.offset_top_px + 'px; left: ' + auscObj.offset_left_px + 'px;">' + auscObj.name + '</div>');
+							}
 						});
 						
 						// ausculation points in top right telesim port

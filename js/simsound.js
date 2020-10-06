@@ -45,7 +45,7 @@ var simsound = {
 			{
 				level = level / 10;
 			
-// console.log("Heart Level", level, "Count", simsound.heartCount );
+				console.log("Heart Level", level, "Count", simsound.heartCount );
 				simsound.heartCount ++;
 				
 				simsound.heartSoundElement.volume = level;
@@ -123,34 +123,35 @@ var simsound = {
 	
 	lookupLungSound : function() {
 		console.log ("Lookup Lung sound is", simmgr.respResponse.left_lung_sound, simmgr.respResponse.rate  );
-		$.each(soundPlayList, function(idx, el) {
-			console.log ( el );
-			if ( el.type == 'lung' && 
-				el.name == simmgr.respResponse.left_lung_sound &&
-				simmgr.respResponse.rate >= el.low_limit &&
-				simmgr.respResponse.rate <= el.high_limit)
+		$.each(soundPlayList, function(idx, snd) {
+			console.log ( snd );
+			if ( snd.type == 'lung' && 
+				snd.name == simmgr.respResponse.left_lung_sound &&
+				simmgr.respResponse.rate >= snd.low_limit &&
+				simmgr.respResponse.rate <= snd.high_limit)
 			{
-				simsound.currentLungSound = el.index;
-				simsound.lungSoundElement =  $('#snd_'+el.index).get(0);
-				console.log ("Lung sound is", simsound.currentLung );
-				return;
-				
+				var index = snd.index;
+				simsound.currentLungSound = index;
+				simsound.lungSoundElement =  $('#snd_'+index).get(0);
+				console.log ("Lung sound is " + index );
+				return false;
 			}
 		});
 	},
 	
 	lookupHeartSound : function() {
 		console.log ("Lookup Heart sound is", controls.heartSound.soundName, controls.heartRate.value  );
-		$.each(soundPlayList, function(idx, el) {
-			if ( el.type == 'heart' && 
-				el.name == controls.heartSound.soundName &&  
-				controls.heartRate.value >= el.low_limit &&
-				controls.heartRate.value <= el.high_limit )
+		$.each(soundPlayList, function(idx, snd) {
+			if ( snd.type == 'heart' && 
+				snd.name == controls.heartSound.soundName &&  
+				controls.heartRate.value >= snd.low_limit &&
+				controls.heartRate.value <= snd.high_limit )
 			{
-				simsound.currentHeartSound = el.index;
-				simsound.heartSoundElement = $('#snd_'+el.index).get(0);
-				console.log ("Heart sound is", simsound.currentHeart );
-				return;
+				var index = snd.index;
+				simsound.currentHeartSound = index;
+				simsound.heartSoundElement = $('#snd_'+index).get(0);
+				console.log ("Heart sound is " + index );
+				return false;
 			}
 		});
 	},
