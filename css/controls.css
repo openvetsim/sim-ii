@@ -251,3 +251,22 @@ button.nvs-button {
 	font-size: 20px;
 	margin-left: -10px;
 }
+
+/* telesim controls */
+select.telesim-select {
+	float: left;
+}
+
+img.telesim-repeat {
+	float: right;
+	background-color: #B3FFB3;
+	height: 20px;
+	margin-right: 5px;
+	cursor: pointer;
+}
+
+	img.telesim-repeat.active {
+		background-color: #FFB3B3;
+	}
+
+
