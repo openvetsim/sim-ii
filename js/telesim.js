@@ -6,13 +6,32 @@ See gpl.html
 	
 	// telesim functions
 	
-	const TELESIM_STOP = 0;
+	// convert to bitmap functionality
+	// TELESIM_CLEAR takes priority over all other bits
+	// TELESIM_LOAD, TELESIM_START, TELESIM_LOOP_ENABLE, and TELESIM_LOOP_DISABLE may be combined
+	// Priority order of execution:
+	//	1. TELESIM_LOAD
+	//	2. TELESIM_START
+	//	3. TELESIM_LOOP_ENABLE
+	//	4. TELESIM_LOOP_DISABLE
+	
+	const TELESIM_CLEAR = 1;
+	const TELESIM_STOP = 2;
+	const TELESIM_SEEK = 4;
+	
+	const TELESIM_START = 8;
+	const TELESIM_LOAD = 16;
+	const TELESIM_LOOP_ENABLE = 32;
+	const TELESIM_LOOP_DISABLE = 64;
+	
+/*	const TELESIM_STOP = 0;
 	const TELESIM_START = 1;
 	const TELESIM_CLEAR = 2;
 	const TELESIM_SEEK = 3;
 	const TELESIM_LOAD = 4;
 	const TELESIM_LOOP_DISABLE = 5;
 	const TELESIM_LOOP_ENABLE = 6;
+*/
 	
 	var telesim = {
 		imageList: new Array,
@@ -229,10 +248,11 @@ See gpl.html
 					
 					// add in loop control for non vitals monitor
 					if( !profile.isVitalsMonitor ) {
-						$('#telesim-' + window).append('<a class="telesim-image" href="javascript: void(2);" onclick="telesim.testPlay(' + window + ')">Play</a>' + 
-														'<a class="telesim-image" href="javascript: void(2);" onclick="telesim.testPause(' + window + ')"> Pause</a>' + 
-														'<a class="telesim-image" href="javascript: void(2);" onclick="telesim.testSeek(' + window + ')"> Seek</a>' + 
-														'<img src="' + BROWSER_IMAGES + 'repeat.png" class="telesim-repeat telesim-image" title="Enable looping">');
+//						$('#telesim-' + window).append('<a class="telesim-image" href="javascript: void(2);" onclick="telesim.testPlay(' + window + ')">Play</a>' + 
+//														'<a class="telesim-image" href="javascript: void(2);" onclick="telesim.testPause(' + window + ')"> Pause</a>' + 
+//														'<a class="telesim-image" href="javascript: void(2);" onclick="telesim.testSeek(' + window + ')"> Seek</a>' + 
+//														'<img src="' + BROWSER_IMAGES + 'repeat.png" class="telesim-repeat telesim-image" title="Enable looping">');
+						$('#telesim-' + window).append('<img src="' + BROWSER_IMAGES + 'repeat.png" class="telesim-repeat telesim-image" title="Enable looping">');
 					}
 					$('#telesim-' + window).append('<video id="telesim-video-' + window + '"  width="100%" class="telesim-image" src="'+ imageURL +
 														'" ' + options + '>' + 
@@ -282,10 +302,8 @@ See gpl.html
 							});
 						}
 						telesim.videoObj[ window ].onseeking = function() {
-							// alert('seeking ' + window + " : current time: " + telesim.videoObj[ window ].currentTime);
 							if ( telesim.lastSeek == 0 ) {
 								telesim.lastSeek = telesim.videoObj[ window ].currentTime;
-								console.log("Seek", telesim.lastSeek );
 								simmgr.sendChange({ 
 									'set:telesim:command' : window + ":" + TELESIM_SEEK,
 									'set:telesim:param' : window + ":" + telesim.lastSeek,
@@ -359,47 +377,61 @@ See gpl.html
 		},
 		
 		processTelesimCommand: function( responseTelesimObj, window ) {
-console.log("window: " + window);
-console.dir(responseTelesimObj);
-console.log("------");
-			// clear?
-			if( responseTelesimObj[ window ].command == TELESIM_CLEAR) {
-				telesim.clearTelesimImage( window );							
+			// clear takes priority over everyhting.  if clear, no more checks.
+			if( responseTelesimObj[ window ].command & TELESIM_CLEAR) {
+				telesim.clearTelesimImage( window );
 			} else if(typeof telesim.imageList[ window ][responseTelesimObj[ window ].name] !== "undefined" &&
-						responseTelesimObj[ window ].command == TELESIM_LOAD ) {
-				console.log("Add Image", responseTelesimObj[ window ].name );
+				responseTelesimObj[ window ].command & TELESIM_LOAD ) {
+				
+				// check for load first, then process remaining btmapped commands only if video
+				// perform load
 				telesim.addTelesimImage( window, telesim.imageList[ window ][responseTelesimObj[ window ].name]);
-			} else {
-				if ( typeof($("#telesim-video-"+window).prop ) === 'function' &&
-					 $("#telesim-video-"+window).prop("nodeName") == "VIDEO" ) {
-					if( responseTelesimObj[ window ].command == TELESIM_START  ) {
-						if( profile.isVitalsMonitor ) {
-							if ( responseTelesimObj[ window ].param > 0 )
-							{
-								telesim.videoObj[ window ].currentTime = parseFloat(responseTelesimObj[ window ].param );
-							}
-							$("#telesim-video-"+window).prop('muted', true);
-							telesim.videoObj[ window ].play();
-						} else {
-							telesim.videoObj[ window ].play();							
-						}
-					} else if( responseTelesimObj[ window ].command == TELESIM_STOP ) {
-//						if( profile.isVitalsMonitor ) {
-							telesim.videoObj[ window ].pause();
-//						}
-					} else if( responseTelesimObj[ window ].command == TELESIM_SEEK ) {
-						if ( profile.isVitalsMonitor || telesim.lastSeek > 0 ) {
+				
+				// set dropdown
+				$('#telesim-select-' + window).children('option[value="' + responseTelesimObj[ window ].name + '"]').prop('selected', true);				
+			}
+
+			// check if loaded object is a video
+			if ( typeof($("#telesim-video-"+window).prop ) === 'function' &&
+				 $("#telesim-video-"+window).prop("nodeName") == "VIDEO" ) {
+
+				// check for start, stop, seek, loop enable and loop disable
+				if( parseInt(responseTelesimObj[ window ].command) & TELESIM_START  ) {
+					if( profile.isVitalsMonitor ) {
+						if ( responseTelesimObj[ window ].param > 0 )
+						{
 							telesim.videoObj[ window ].currentTime = parseFloat(responseTelesimObj[ window ].param );
 						}
-					} else if( responseTelesimObj[ window ].command == TELESIM_LOOP_ENABLE ) {
-						$('#telesim-' + window + ' > img.telesim-repeat').addClass('active');
-						$('#telesim-' + window + ' > img.telesim-repeat').attr('title', 'Disable looping');
-						$('#telesim-video-' + window).attr('loop', true);						
-					} else if( responseTelesimObj[ window ].command == TELESIM_LOOP_DISABLE ) {
-						$('#telesim-' + window + ' > img.telesim-repeat').removeClass('active');
-						$('#telesim-' + window + ' > img.telesim-repeat').attr('title', 'Enable looping');
-						$('#telesim-video-' + window).attr('loop', false);
+						$("#telesim-video-"+window).prop('muted', true);
+						telesim.videoObj[ window ].play();
+					} else {
+						telesim.videoObj[ window ].play();							
 					}
+				}
+				
+				// check for stop
+				if( responseTelesimObj[ window ].command & TELESIM_STOP ) {
+					telesim.videoObj[ window ].pause();
+				}
+				
+				// check for seek
+				if( responseTelesimObj[ window ].command & TELESIM_SEEK ) {
+					if ( telesim.lastSeek != parseFloat(responseTelesimObj[ window ].param)  ) {
+						telesim.videoObj[ window ].currentTime = parseFloat(responseTelesimObj[ window ].param );
+					}
+					telesim.lastSeek = parseFloat(responseTelesimObj[ window ].param);
+				}
+
+				// check for loop enable and loop disable
+				if( responseTelesimObj[ window ].command & TELESIM_LOOP_ENABLE ) {
+					$('#telesim-' + window + ' > img.telesim-repeat').addClass('active');
+					$('#telesim-' + window + ' > img.telesim-repeat').attr('title', 'Disable looping');
+					$('#telesim-video-' + window).attr('loop', true);						
+				}
+				if( responseTelesimObj[ window ].command & TELESIM_LOOP_DISABLE ) {
+					$('#telesim-' + window + ' > img.telesim-repeat').removeClass('active');
+					$('#telesim-' + window + ' > img.telesim-repeat').attr('title', 'Enable looping');
+					$('#telesim-video-' + window).attr('loop', false);
 				}
 			}
 		},
@@ -407,8 +439,9 @@ console.log("------");
 		testPlay: function(window) {
 telesim.videoObj[ window ] = document.getElementById('telesim-video-' + window);
 simmgr.sendChange({ 
-	'set:telesim:command' : window + ":" + TELESIM_START,
-	'set:telesim:param' : window + ":" + parseFloat(telesim.videoObj[ window ].currentTime).toString(),
+	'set:telesim:command' : window + ":" + (TELESIM_START | TELESIM_SEEK | LOOP_ENABLE),
+//	'set:telesim:param' : window + ":" + parseFloat(telesim.videoObj[ window ].currentTime).toString(),
+	'set:telesim:param' : window + ":" + parseFloat(180).toString(),
 	'set:telesim:next' : window + ":" + (parseInt(telesim.imageNext[window]) + 1).toString()
 });
 		},
