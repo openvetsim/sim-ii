@@ -380,6 +380,9 @@ See gpl.html
 			// clear takes priority over everyhting.  if clear, no more checks.
 			if( responseTelesimObj[ window ].command & TELESIM_CLEAR) {
 				telesim.clearTelesimImage( window );
+
+				// set dropdown
+				$('#telesim-select-' + window).children('option[value="none"]').prop('selected', true);				
 			} else if(typeof telesim.imageList[ window ][responseTelesimObj[ window ].name] !== "undefined" &&
 				responseTelesimObj[ window ].command & TELESIM_LOAD ) {
 				
