@@ -39,6 +39,10 @@ See gpl.html
 		videoObj: new Array,
 		lastSeek: 0,
 		coord: "",
+		loopState: {
+			0: TELESIM_LOOP_ENABLE,
+			1: TELESIM_LOOP_ENABLE
+		},
 		init: function() {
 			// check if localStorage exists
 			if( typeof(localStorage.telesim) === "undefined" ) {
@@ -209,6 +213,9 @@ See gpl.html
 					}
 					
 					// hide telesim right dev
+					telesim.clearTelesimImage( 0 );
+					telesim.clearTelesimImage( 1 );
+
 					$('.telesim-right').hide();
 
 					// if vitals, rescale
@@ -224,7 +231,11 @@ See gpl.html
 		},
 
 		// handler for adding an image
-		addTelesimImage: function( window, imageObj ) {			
+		addTelesimImage: function( window, imageObj ) {		
+			if( localStorage.telesim == 0 ) {
+				return;
+			}
+			
 			// get type of image: static, movie, or auscultation and create file URL
 			var fileExt = imageObj.filename.split('.')[imageObj.filename.split('.').length - 1].toLowerCase();
 			var imageURL = BROWSER_SCENARIOS + scenario.currentScenarioFileName + '/media/' + imageObj.filename;
@@ -252,7 +263,7 @@ See gpl.html
 //														'<a class="telesim-image" href="javascript: void(2);" onclick="telesim.testPause(' + window + ')"> Pause</a>' + 
 //														'<a class="telesim-image" href="javascript: void(2);" onclick="telesim.testSeek(' + window + ')"> Seek</a>' + 
 //														'<img src="' + BROWSER_IMAGES + 'repeat.png" class="telesim-repeat telesim-image" title="Enable looping">');
-						$('#telesim-' + window).append('<img src="' + BROWSER_IMAGES + 'repeat.png" class="telesim-repeat telesim-image" title="Enable looping">');
+						$('#telesim-' + window).append('<div class="repeat-wrapper telesim-image telesim-repeat "></div>');
 					}
 					$('#telesim-' + window).append('<video id="telesim-video-' + window + '"  width="100%" class="telesim-image" src="'+ imageURL +
 														'" ' + options + '>' + 
@@ -260,9 +271,18 @@ See gpl.html
 													'</video>');
 													
 					// bind loop button
-					$('img.telesim-repeat').click(function() {
+					$('#telesim-' + window + ' .repeat-wrapper').click(function() {
 						// is looping already active
-						if( $(this).hasClass('active') ) {
+						if( $(this).hasClass('disabled') ) {
+							// *** stub to send status for enabling looping on this window video
+							// prototype code
+							// add active status
+							simmgr.sendChange( { 
+								'set:telesim:command' : window + ":" + TELESIM_LOOP_ENABLE,
+								'set:telesim:next' : window + ":" + (parseInt(telesim.imageNext[window]) + 1).toString()
+							} );
+							telesim.loopState[ window ] = TELESIM_LOOP_ENABLE;
+						} else {
 							// *** stub to send status for disabling on looping this window video
 							// prototype code
 							// remove active status
@@ -270,14 +290,7 @@ See gpl.html
 								'set:telesim:command' : window + ":" + TELESIM_LOOP_DISABLE,
 								'set:telesim:next' : window + ":" + (parseInt(telesim.imageNext[window]) + 1).toString()
 							} );					
-						} else {
-							// *** stub to send status for enabling looping on this window video
-							// prototype code
-							// add active status
-							simmgr.sendChange( { 
-								'set:telesim:command' : window + ":" + TELESIM_LOOP_ENABLE,
-								'set:telesim:next' : window + ":" + (parseInt(telesim.imageNext[window]) + 1).toString()
-							} );					
+							telesim.loopState[ window ] = TELESIM_LOOP_DISABLE;
 						}
 					});
 					
@@ -324,6 +337,11 @@ See gpl.html
 					
 					// add in auscultation
 					if( typeof imageObj.auscultation_points !== "undefined" ) {
+						// add back backgrouind color fir auscultation
+						if( profile.isVitalsMonitor ) {
+							$('#telesim-' + window).css( 'background-color', 'white' );	
+						}
+						
 						$('#telesim-' + window + ' img').attr('width', imageObj.scale_width_pct + '%');
 						$('#telesim-' + window + ' img').css({
 							top: imageObj.offset_top_px + 'px',
@@ -331,14 +349,24 @@ See gpl.html
 							position: 'absolute'
 						});
 						
+						var offsetLeftVitals = '0';
+						var offsetTopVitals = '0';
+						if(typeof imageObj.offset_top_vitals != 'undefined' && profile.isVitalsMonitor ) {
+							offsetLeftVitals = imageObj.offset_left_vitals;
+							offsetTopVitals = imageObj.offset_top_vitals;
+						}
+						
 						$.each( imageObj.auscultation_points.auscultation_point, function( key, auscObj ){
+							var offsetTopPx = ( parseInt( offsetTopVitals ) + parseInt( auscObj.offset_top_px ) ).toString();
+							var offsetLeftPx = ( parseInt( offsetLeftVitals ) + parseInt( auscObj.offset_left_px ) ).toString();
+							
 							if ( typeof(auscObj.xPosition) != 'undefined' )
 							{
-								$('#telesim-' + window).append('<div class="ausc-hotspot telesim-image" data-coord="' + auscObj.side + '-' + auscObj.yPosition +'-' + auscObj.xPosition + '" style="top: ' + auscObj.offset_top_px + 'px; left: ' + auscObj.offset_left_px + 'px;">' + auscObj.name + '</div>');
+								$('#telesim-' + window).append('<div class="ausc-hotspot telesim-image" data-coord="' + auscObj.side + '-' + auscObj.yPosition +'-' + auscObj.xPosition + '" style="top: ' + offsetTopPx + 'px; left: ' + offsetLeftPx + 'px;">' + auscObj.name + '</div>');
 							}
 							else
 							{
-								$('#telesim-' + window).append('<div class="ausc-hotspot telesim-image" data-coord="' + auscObj.side + '-' + auscObj.row +'-' + auscObj.col + '" style="top: ' + auscObj.offset_top_px + 'px; left: ' + auscObj.offset_left_px + 'px;">' + auscObj.name + '</div>');
+								$('#telesim-' + window).append('<div class="ausc-hotspot telesim-image" data-coord="' + auscObj.side + '-' + auscObj.row +'-' + auscObj.col + '" style="top: ' + offsetTopPx + 'px; left: ' + offsetLeftPx + 'px;">' + auscObj.name + '</div>');
 							}
 						});
 						
@@ -365,7 +393,10 @@ See gpl.html
 							simmgr.sendChange( { 'set:auscultation:side' : 0 } );
 							evt.stopImmediatePropagation();				
 						});
+					} else if( profile.isVitalsMonitor ) {
+						$('#telesim-' + window).css( 'background', 'none' );	
 					}
+
 					break;
 			}
 		},
@@ -373,6 +404,7 @@ See gpl.html
 		clearTelesimImage: function( window ) {
 			// remove image to window
 			$('#telesim-' + window +' > .telesim-image').remove();
+			$('#telesim-' + window).css( 'background', 'none' );
 			telesim.videoObj[ window ] = {};			
 		},
 		
@@ -425,15 +457,21 @@ See gpl.html
 					telesim.lastSeek = parseFloat(responseTelesimObj[ window ].param);
 				}
 
-				// check for loop enable and loop disable
-				if( responseTelesimObj[ window ].command & TELESIM_LOOP_ENABLE ) {
-					$('#telesim-' + window + ' > img.telesim-repeat').addClass('active');
-					$('#telesim-' + window + ' > img.telesim-repeat').attr('title', 'Disable looping');
+				// check for loop enable and loop disable, default to current state of looping
+				var currentLoopState = telesim.loopState[ window ];
+				if( parseInt( responseTelesimObj[ window ].command ) & TELESIM_LOOP_ENABLE ) {
+					currentLoopState = TELESIM_LOOP_ENABLE;
+				} else if ( parseInt( responseTelesimObj[ window ].command ) & TELESIM_LOOP_DISABLE ) {
+					currentLoopState = TELESIM_LOOP_DISABLE;					
+				}
+				if( currentLoopState == TELESIM_LOOP_ENABLE ) {
+					$('#telesim-' + window + ' > .repeat-wrapper').removeClass('disabled');
+					$('#telesim-' + window + ' > .repeat-wrapper').attr('title', 'Video Looping Enabled - Click to Disable');
 					$('#telesim-video-' + window).attr('loop', true);						
 				}
-				if( responseTelesimObj[ window ].command & TELESIM_LOOP_DISABLE ) {
-					$('#telesim-' + window + ' > img.telesim-repeat').removeClass('active');
-					$('#telesim-' + window + ' > img.telesim-repeat').attr('title', 'Enable looping');
+				if( currentLoopState == TELESIM_LOOP_DISABLE ) {
+					$('#telesim-' + window + ' > .repeat-wrapper').addClass('disabled');
+					$('#telesim-' + window + ' > .repeat-wrapper').attr('title', 'Video Looping Disabled - Click to Enable');
 					$('#telesim-video-' + window).attr('loop', false);
 				}
 			}

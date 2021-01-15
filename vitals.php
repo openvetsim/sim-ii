@@ -131,8 +131,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				simmgr.init();
 				$('#telesim-0').css({
 					position: 'absolute',
+					width: '300px',
+					height: '300px',
 					top: '0',
-					right: '-230px',
+					right: '-300px',
+					'background': 'none',
+					'border': 'none',
 					'transform'                : 'scale(0.8)',
 					'transform-origin'         : '0 0',
 					'-moz-transform-origin'    : '0 0',         // Firefox
@@ -144,8 +148,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				});
 				$('#telesim-1').css({
 					position: 'absolute',
-					top: '180px',
-					right: '-230px',
+					width: '300px',
+					height: '300px',
+					top: '257px',
+					right: '-300px',
+					'background': 'none',
+					'border': 'none',
+					'margin-top': '0',
 					'transform'                : 'scale(0.8)',
 					'transform-origin'         : '0 0',
 					'-moz-transform-origin'    : '0 0',         // Firefox

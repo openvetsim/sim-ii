@@ -302,6 +302,28 @@ a:hover {
 	background-color: white;
 }
 
+.repeat-wrapper {
+	width: 20px;
+	height: 20px;
+	float: right;
+	background-image: url("../images/repeat.png");
+	background-size: cover;
+	text-align: center;
+	line-height: 20px;
+	cursor: pointer;
+	font-weight: bold;
+	font-size: 24px;
+	color: black;
+	background-color: #66ff66;
+	
+}
+	.repeat-wrapper.disabled::after {
+		content: "/";
+	}
+	.repeat-wrapper.disabled {
+		background-color: #EB7A7A;
+	}
+
 div.telesim-right video {
 
 }
