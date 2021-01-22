@@ -217,6 +217,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 					<div class="alt-control control-Tperi">
 						<a class="alt-control-title color-blue" href="javascript: void(0)" onclick="modal.Tperi(); return false;">Temp</a>
 						<a class="alt-control-rate color-blue" href="javascript: void(0)" onclick="modal.Tperi(); return false;" id="display-Tperi">123</a>
+						<div id="clock">
+							11:22:33
+						</div>
 					</div>
 					<div class="alt-control awRR">
 						<a class="alt-control-title color-white" href="javascript: void(0)" onclick="modal.awRR(); return false;">awRR</a>

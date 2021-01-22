@@ -139,7 +139,7 @@ console.log('defib: here');
 	getStatus : function () {
 		// get unique time stamp
 		simmgr.timeStamp = new Date().getTime();
-		
+			
 		$.ajax({
 			url: BROWSER_CGI + 'simstatus.cgi',
 			type: 'get',
@@ -169,7 +169,7 @@ console.log('defib: here');
 						controls.heartRate.setSynch();
 					}
 				}
-				
+								
 				/************ cardiac **************/
 				if ( typeof(response.cardiac) != "undefined" )
 				{
@@ -928,6 +928,7 @@ if( profile.isVitalsMonitor ) {
 							$('.logout.debrief').hide();
 							switch(newScenarioState) {
 								case 'STOPPED':
+									$('#clock').hide();
 									scenario.currentScenarioState = scenario.scenarioState.STOPPED;
 									if ( profile.isVitalsMonitor == false ) {
 										scenario.stopScenario();
@@ -939,6 +940,7 @@ console.log("New scenario state STOPPED");
 									break;
 								
 								case 'PAUSED':
+									$('#clock').hide();
 									scenario.currentScenarioState = scenario.scenarioState.PAUSED;
 									if ( profile.isVitalsMonitor == false ) {
 										scenario.pauseScenario();
@@ -948,6 +950,7 @@ console.log("New scenario state PAUSED");
 									break;
 								
 								case 'RUNNING':
+									$('#clock').show();
 									scenario.currentScenarioState = scenario.scenarioState.RUNNING;
 									if ( profile.isVitalsMonitor == false ) {
 										scenario.continueScenario();
@@ -957,9 +960,16 @@ console.log("New scenario state RUNNING");
 									break;
 								
 								default:
+									$('#clock').hide();
 									break;
 							}
 						}
+						
+						// update clock
+						if( newScenarioState == 'RUNNING' ) {
+							$('#clock').html( response.scenario.clockDisplay );
+						}
+
 					}
 					
 					// scenario selection

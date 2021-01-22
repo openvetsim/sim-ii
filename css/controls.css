@@ -99,14 +99,26 @@ See gpl.html
 	}
 	.alt-control p, .alt-control a{
 		float: left;
-		font-size: 45px;
+		font-size: 35px;
 	}
 		.alt-control.with-sub p, .alt-control.with-sub a {
 			margin-bottom: -2px;
 		}
 		.alt-control.control-Tperi {
-			width: 175px;
+			width: 167px;
 			margin-right: 0px;
+		}
+			 #display-Tperi .vs-lower-label {
+				font-size: 20px;
+			}
+		
+		
+		.alt-control.control-Tperi #clock {
+			float: left;
+			clear: both;
+			margin-top: 20px;
+			color: white;
+			font-size: 25px;
 		}
 		.alt-control.awRR {
 			width: 140px;
@@ -165,7 +177,7 @@ button.nvs-button {
 			margin: 0px 0 0px 0;
 		}
 		#vs-nbp a.alt-control-rate {
-			font-size: 45px;
+			font-size: 35px;
 			width: 320px;
 			float: left;
 			margin: 15px 0 0 0;
