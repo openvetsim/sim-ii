@@ -119,6 +119,8 @@ See gpl.html
 			margin-top: 20px;
 			color: white;
 			font-size: 25px;
+			border: 1px solid white;
+			padding: 6px;
 		}
 		.alt-control.awRR {
 			width: 140px;
