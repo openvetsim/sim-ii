@@ -462,8 +462,8 @@ console.log(controls['awRR'].increment);
 			<div id="telesim-1" class="float-left ii-border telesim-right">
 				<select id="telesim-select-1" class="telesim-select">
 					<option value="">Please select</option>
-
 				</select>
+				<div id="telesim-size" class="expand">+</div>
 			</div>
 			
 			<div id="media-col">

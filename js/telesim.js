@@ -23,6 +23,12 @@ See gpl.html
 	const TELESIM_LOAD = 16;
 	const TELESIM_LOOP_ENABLE = 32;
 	const TELESIM_LOOP_DISABLE = 64;
+	const TELESIM_VITALS_EXPAND = 128;
+	const TELESIM_VITALS_REDUCE = 256;
+
+	const TELESIM_WINDOW_WIDTH = '300px';
+	const TELESIM_WINDOW_1_TOP = '257px';
+	const TELESIM_WINDOW_1_RIGHT = '-300px';
 	
 /*	const TELESIM_STOP = 0;
 	const TELESIM_START = 1;
@@ -39,6 +45,7 @@ See gpl.html
 		videoObj: new Array,
 		lastSeek: 0,
 		coord: "",
+		window_1_size: TELESIM_VITALS_REDUCE,
 		loopState: {
 			0: TELESIM_LOOP_ENABLE,
 			1: TELESIM_LOOP_ENABLE
@@ -269,7 +276,7 @@ See gpl.html
 														'" ' + options + '>' + 
 														'<source src="'+ imageURL +'" type="video/' + fileExt + '">' + 
 													'</video>');
-													
+								
 					// bind loop button
 					$('#telesim-' + window + ' .repeat-wrapper').click(function() {
 						// is looping already active
@@ -399,19 +406,51 @@ See gpl.html
 
 					break;
 			}
+			
+			if( window == '1' && !profile.isVitalsMonitor ) {
+				// bind event
+				$('#telesim-size').show().unbind().click(function() {
+					if( $(this).hasClass('expand') ) {
+						$(this).removeClass('expand').addClass('reduce');
+						$(this).html('-');
+						
+						// send change to vitals
+						simmgr.sendChange( { 
+							'set:telesim:command' : window + ":" + TELESIM_VITALS_EXPAND,
+							'set:telesim:next' : window + ":" + (parseInt(telesim.imageNext[window]) + 1).toString()
+						} );
+					} else {
+						$(this).removeClass('reduce').addClass('expand');
+						$(this).html('+');								
+						
+						// send change to vitals
+						simmgr.sendChange( { 
+							'set:telesim:command' : window + ":" + TELESIM_VITALS_REDUCE,
+							'set:telesim:next' : window + ":" + (parseInt(telesim.imageNext[window]) + 1).toString()
+						} );
+					}
+					
+				});
+			}
 		},
 		
 		clearTelesimImage: function( window ) {
 			// remove image to window
 			$('#telesim-' + window +' > .telesim-image').remove();
 			$('#telesim-' + window).css( 'background', 'none' );
-			telesim.videoObj[ window ] = {};			
+			telesim.videoObj[ window ] = {};
 		},
 		
 		processTelesimCommand: function( responseTelesimObj, window ) {
 			// clear takes priority over everyhting.  if clear, no more checks.
 			if( responseTelesimObj[ window ].command & TELESIM_CLEAR) {
 				telesim.clearTelesimImage( window );
+				if( window == 1 ) {
+					$('#telesim-size').hide();
+					$('#telesim-size').removeClass('reduce').addClass('expand');
+					$('#telesim-size').html('+');								
+
+				}
 
 				// set dropdown
 				$('#telesim-select-' + window).children('option[value="none"]').prop('selected', true);				
@@ -424,6 +463,16 @@ See gpl.html
 				
 				// set dropdown
 				$('#telesim-select-' + window).children('option[value="' + responseTelesimObj[ window ].name + '"]').prop('selected', true);				
+			}
+			
+			// check if we need to expand the window
+			if( profile.isVitalsMonitor && ( parseInt(responseTelesimObj[ window ].command) & TELESIM_VITALS_EXPAND ) ) {
+				telesim.window_1_size = TELESIM_VITALS_EXPAND;
+				telesim.window1Expand();
+			} 
+			if( profile.isVitalsMonitor && ( parseInt(responseTelesimObj[ window ].command) & TELESIM_VITALS_REDUCE ) ) {
+				telesim.window_1_size = TELESIM_VITALS_REDUCE;
+				telesim.window1Reduce();
 			}
 
 			// check if loaded object is a video
@@ -475,6 +524,24 @@ See gpl.html
 					$('#telesim-video-' + window).attr('loop', false);
 				}
 			}
+		},
+		
+		window1Reduce: function() {
+			$('#telesim-1').css({
+				width: TELESIM_WINDOW_WIDTH,
+				top: TELESIM_WINDOW_1_TOP,
+				right: TELESIM_WINDOW_1_RIGHT,
+				left: 'auto'
+			});			
+		},
+		
+		window1Expand: function() {
+			$('#telesim-1').css({
+				width: '110%',
+				top: '0px',
+				right: 'auto',
+				left: '0px'
+			});
 		},
 		
 		testPlay: function(window) {

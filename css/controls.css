@@ -119,6 +119,8 @@ See gpl.html
 			margin-top: 20px;
 			color: white;
 			font-size: 25px;
+			border: 1px solid white;
+			padding: 6px;
 		}
 		.alt-control.awRR {
 			width: 140px;
@@ -279,6 +281,29 @@ img.telesim-repeat {
 
 	img.telesim-repeat.active {
 		background-color: #FFB3B3;
+	}
+	
+#telesim-size {
+	position: absolute;
+	top: 1px;
+	right: 25px;
+	color: white;
+	height: 19px;
+	width: 19px;
+	text-align: center;
+	border-radius: 20px;
+	cursor: pointer;
+	font-size: 20px;
+	font-weight: bold;
+}
+
+	#telesim-size.expand {
+		background-color: green;
+		line-height: 20px;
+	}
+	#telesim-size.reduce {
+		background-color: red;
+		line-height: 17px;
 	}
 
 

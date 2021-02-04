@@ -100,6 +100,24 @@ console.log("Current Scenario State: " + this.currentScenarioState);
 		$('#scenario-select select').prop('disabled', false);
 		$('#start-video').prop('disabled', false);
 		$('.profile-display.scenario img').hide();
+		
+		// if in telesim, clear out images
+		if( !profile.isVitalsMonitor && localStorage.telesim == 1 ) {
+			simmgr.sendChange( { 
+				'set:telesim:name' : "0:none",
+				'set:telesim:command' : "0:" + TELESIM_CLEAR,
+				'set:telesim:param' : "0:0",
+				'set:telesim:next' : "0:" + (parseInt(telesim.imageNext[0]) + 1).toString()
+			} );					
+			simmgr.sendChange( { 
+				'set:telesim:name' : "1:none",
+				'set:telesim:command' : "1:" + TELESIM_CLEAR,
+				'set:telesim:param' : "1:0",
+				'set:telesim:next' : "1:" + (parseInt(telesim.imageNext[0]) + 1).toString()
+			} );
+		}
+
+		
 		return;
 	},
 	

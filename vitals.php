@@ -148,10 +148,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				});
 				$('#telesim-1').css({
 					position: 'absolute',
-					width: '300px',
+					width: TELESIM_WINDOW_WIDTH,
 					height: '300px',
-					top: '257px',
-					right: '-300px',
+					top: TELESIM_WINDOW_1_TOP,
+					right: TELESIM_WINDOW_1_RIGHT,
 					'background': 'none',
 					'border': 'none',
 					'margin-top': '0',
@@ -163,6 +163,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 					'-moz-transform'           : 'scale(0.8)', // Firefox
 					'-ms-transform'            : 'scale(0.8)', // IE
 					'-webkit-transform'        : 'scale(0.8)'  // Opera/Safari
+				});
+				
+				// test link
+				$('#test-link a').click(function() {
+console.log('telesim.imageNext[0]: ' + telesim.imageNext[0]);
+console.log('telesim.imageNext[1]: ' + telesim.imageNext[1]);
+/*
+telesim.imageNext[0] = 0;
+telesim.imageNext[1] = 0;
+console.log('telesim.imageNext[0]: ' + telesim.imageNext[0]);
+console.log('telesim.imageNext[1]: ' + telesim.imageNext[1]);
+*/
 				});
 
 			});
@@ -220,6 +232,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 						<div id="clock">
 							11:22:33
 						</div>
+						<div id="test-link" style="clear: both; float: left;"><a href="javascript: void(2);">Test</a></div>
 					</div>
 					<div class="alt-control awRR">
 						<a class="alt-control-title color-white" href="javascript: void(0)" onclick="modal.awRR(); return false;">awRR</a>
