@@ -1070,6 +1070,15 @@ console.log("New scenario state RUNNING");
 						}
 					}
 				}
+
+				/************ controller ip **************/
+				if(typeof(response.controllers) != "undefined" && response.controllers[1] != controls.controllers.ip) {
+					controls.controllers.ip = response.controllers[1];
+					$('#controller-ip a').html(response.controllers[1]);
+					$('#controller-ip a').attr('href', 'http://' + response.controllers[1]);
+				}
+				
+				
 			},
 
 			error: function( jqXHR,  textStatus,  errorThrown){

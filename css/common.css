@@ -272,6 +272,16 @@ a:hover {
 	cursor:move;
 }
 
+#controller-ip {
+	margin: 10px 0 0 10px;
+	float: left;
+	clear: both;
+	font-weight: bold;
+}
+	#controller-ip a {
+		color: rgb(127, 29, 29);
+	}
+
 /* mannequin */
 #mannequin {
 	height: 400px;

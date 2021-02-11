@@ -125,7 +125,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 	
 	// version
 	define('VERSION_MAJOR', 1);
-	define('VERSION_MINOR', 0);
+	define('VERSION_MINOR', 1);
 	
 	// mobilized
 //	define('MOBILIZED', FALSE);
