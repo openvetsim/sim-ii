@@ -1072,13 +1072,16 @@ console.log("New scenario state RUNNING");
 				}
 
 				/************ controller ip **************/
-				if(typeof(response.controllers) != "undefined" && response.controllers[1] != controls.controllers.ip) {
+				if(typeof(response.controllers) != "undefined" && typeof(response.controllers[1]) != "undefined" && response.controllers[1] != controls.controllers.ip) {
 					controls.controllers.ip = response.controllers[1];
-					$('#controller-ip a').html(response.controllers[1]);
-					$('#controller-ip a').attr('href', 'http://' + response.controllers[1]);
+					if( controls.controllers.ip == "" ) {
+						$('#controller-ip').html("No controller found");
+					} else {
+						$('#controller-ip').html('Controller found at IP address: <a href=""></a>');
+						$('#controller-ip a').html(response.controllers[1]);
+						$('#controller-ip a').attr('href', 'http://' + response.controllers[1]);
+					}
 				}
-				
-				
 			},
 
 			error: function( jqXHR,  textStatus,  errorThrown){

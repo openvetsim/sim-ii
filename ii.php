@@ -446,7 +446,7 @@ console.log(controls['awRR'].increment);
 					<button id="media-button" class="scenario-button float-left">Show Media</button>
 				</div>
 				<div id="controller-ip">
-					Controller found at IP address: <a href="" target=_blank></a>
+					No controller found
 				</div>
 			</div>
 			<div id="event-monitor" class="float-right ii-border">
