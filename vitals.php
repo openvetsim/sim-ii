@@ -166,17 +166,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				});
 				
 				// test link
-				$('#test-link a').click(function() {
+/*				$('#test-link a').click(function() {
 console.log('telesim.imageNext[0]: ' + telesim.imageNext[0]);
 console.log('telesim.imageNext[1]: ' + telesim.imageNext[1]);
-/*
+
 telesim.imageNext[0] = 0;
 telesim.imageNext[1] = 0;
 console.log('telesim.imageNext[0]: ' + telesim.imageNext[0]);
 console.log('telesim.imageNext[1]: ' + telesim.imageNext[1]);
-*/
-				});
 
+				});
+*/
 			});
 			
 
@@ -232,7 +232,7 @@ console.log('telesim.imageNext[1]: ' + telesim.imageNext[1]);
 						<div id="clock">
 							11:22:33
 						</div>
-						<div id="test-link" style="clear: both; float: left;"><a href="javascript: void(2);">Test</a></div>
+						<!-- <div id="test-link" style="clear: both; float: left;"><a href="javascript: void(2);">Test</a></div> -->
 					</div>
 					<div class="alt-control awRR">
 						<a class="alt-control-title color-white" href="javascript: void(0)" onclick="modal.awRR(); return false;">awRR</a>
