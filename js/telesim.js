@@ -45,11 +45,13 @@ See gpl.html
 		videoObj: new Array,
 		lastSeek: 0,
 		coord: "",
+		lastCommandWasLoadAndPlay: false,
 		window_1_size: TELESIM_VITALS_REDUCE,
 		loopState: {
 			0: TELESIM_LOOP_ENABLE,
 			1: TELESIM_LOOP_ENABLE
 		},
+		
 		init: function() {
 			// check if localStorage exists
 			if( typeof(localStorage.telesim) === "undefined" ) {
@@ -308,11 +310,18 @@ See gpl.html
 					if( !profile.isVitalsMonitor ) {
 						telesim.videoObj[ window ].onplay = function() {
 							telesim.lastSeek = 0;
-							simmgr.sendChange({ 
-								'set:telesim:command' : window + ":" + TELESIM_START,
-								'set:telesim:param' : window + ":" + parseFloat(telesim.videoObj[ window ].currentTime).toString(),
-								'set:telesim:next' : window + ":" + (parseInt(telesim.imageNext[window]) + 1).toString()
-							});
+							if ( lastCommandWasLoadAndPlay == true )
+							{
+								lastCommandWasLoadAndPlay = false;
+							}
+							else
+							{
+								simmgr.sendChange({ 
+									'set:telesim:command' : window + ":" + TELESIM_START,
+									'set:telesim:param' : window + ":" + parseFloat(telesim.videoObj[ window ].currentTime).toString(),
+									'set:telesim:next' : window + ":" + (parseInt(telesim.imageNext[window]) + 1).toString()
+								});
+							}
 						}
 						telesim.videoObj[ window ].onpause = function() {
 							simmgr.sendChange({ 
@@ -489,8 +498,20 @@ See gpl.html
 						$("#telesim-video-"+window).prop('muted', true);
 						telesim.videoObj[ window ].play();
 					} else {
+						if ( ( parseInt(responseTelesimObj[ window ].command) & ( TELESIM_START | TELESIM_LOAD ) ) == ( TELESIM_START | TELESIM_LOAD ) )
+						{
+							lastCommandWasLoadAndPlay = true;
+						}
+						else
+						{
+							lastCommandWasLoadAndPlay = false;
+						}
 						telesim.videoObj[ window ].play();							
 					}
+				}
+				else
+				{
+					lastCommandWasLoadAndPlay = false;
 				}
 				
 				// check for stop
