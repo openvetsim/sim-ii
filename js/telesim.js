@@ -29,6 +29,7 @@ See gpl.html
 	const TELESIM_WINDOW_WIDTH = '300px';
 	const TELESIM_WINDOW_1_TOP = '257px';
 	const TELESIM_WINDOW_1_RIGHT = '-300px';
+	const TELESIM_TRANSFORM_SCALE = 0.8;
 	
 /*	const TELESIM_STOP = 0;
 	const TELESIM_START = 1;
@@ -373,8 +374,16 @@ See gpl.html
 						}
 						
 						$.each( imageObj.auscultation_points.auscultation_point, function( key, auscObj ){
-							var offsetTopPx = ( parseInt( offsetTopVitals ) + parseInt( auscObj.offset_top_px ) ).toString();
-							var offsetLeftPx = ( parseInt( offsetLeftVitals ) + parseInt( auscObj.offset_left_px ) ).toString();
+							var offsetTop = ( parseInt( offsetTopVitals ) + parseInt( auscObj.offset_top_px ) );
+							var offsetLeft = ( parseInt( offsetLeftVitals ) + parseInt( auscObj.offset_left_px ) );
+							
+							if( profile.isVitalsMonitor ) {
+								offsetTop = offsetTop / TELESIM_TRANSFORM_SCALE;
+								offsetLeft = offsetLeft / TELESIM_TRANSFORM_SCALE;								
+							}
+							
+							var offsetTopPx = offsetTop.toString();
+							var offsetLeftPx = offsetLeft.toString();
 							
 							if ( typeof(auscObj.xPosition) != 'undefined' )
 							{
@@ -386,6 +395,11 @@ See gpl.html
 							}
 						});
 						
+						// rescale hot spots sizing
+						if( profile.isVitalsMonitor ) {
+							$('.ausc-hotspot').addClass('vitals');
+						}
+
 						// ausculation points in top right telesim port
 						$('.ausc-hotspot').click( function( evt ) {
 							evt.stopImmediatePropagation();

@@ -339,6 +339,11 @@ div.telesim-right video {
 	position: absolute;
 	cursor: pointer;
 }
+	.ausc-hotspot.vitals {
+		height: 18px;
+		width: 18px;
+		line-height: 18px;
+	}
 .ausc-hotspot.active {
 	background-color: red;
 }
