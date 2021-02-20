@@ -456,8 +456,11 @@ See gpl.html
 		},
 		
 		processTelesimCommand: function( responseTelesimObj, window ) {
+//console.log('-----');
+console.log('Window: ' + window);
+console.dir(responseTelesimObj[window]);
 			// clear takes priority over everyhting.  if clear, no more checks.
-			if( responseTelesimObj[ window ].command & TELESIM_CLEAR) {
+			if( parseInt(responseTelesimObj[ window ].command) & TELESIM_CLEAR) {
 				telesim.clearTelesimImage( window );
 				if( window == 1 ) {
 					$('#telesim-size').hide();
@@ -469,7 +472,7 @@ See gpl.html
 				// set dropdown
 				$('#telesim-select-' + window).children('option[value="none"]').prop('selected', true);				
 			} else if(typeof telesim.imageList[ window ][responseTelesimObj[ window ].name] !== "undefined" &&
-				responseTelesimObj[ window ].command & TELESIM_LOAD ) {
+				parseInt(responseTelesimObj[ window ].command) & TELESIM_LOAD ) {
 				
 				// check for load first, then process remaining btmapped commands only if video
 				// perform load
@@ -508,12 +511,12 @@ See gpl.html
 				}
 				
 				// check for stop
-				if( responseTelesimObj[ window ].command & TELESIM_STOP ) {
+				if( parseInt(responseTelesimObj[ window ].command) & TELESIM_STOP ) {
 					telesim.videoObj[ window ].pause();
 				}
 				
 				// check for seek
-				if( responseTelesimObj[ window ].command & TELESIM_SEEK ) {
+				if( parseInt(responseTelesimObj[ window ].command) & TELESIM_SEEK ) {
 					if ( telesim.lastSeek != parseFloat(responseTelesimObj[ window ].param)  ) {
 						telesim.videoObj[ window ].currentTime = parseFloat(responseTelesimObj[ window ].param );
 					}
