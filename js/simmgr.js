@@ -520,11 +520,11 @@ console.log('defib: here');
 					}
 					
 					// select
-console.log('--------------');
-console.log('Next 0: ' + telesim.imageNext[0]);
-console.dir(response.telesim[0]);
-console.log('Next 1: ' + telesim.imageNext[1]);
-console.dir(response.telesim[1]);
+//console.log('--------------');
+//console.log('Next 0: ' + telesim.imageNext[0]);
+//console.dir(response.telesim[0]);
+//console.log('Next 1: ' + telesim.imageNext[1]);
+//console.dir(response.telesim[1]);
 					if( response.telesim[0].next != telesim.imageNext[0] && typeof telesim.imageList[0] != "undefined" ) {
 						telesim.imageNext[0] = response.telesim[0].next;
 						telesim.processTelesimCommand( response.telesim, 0 );

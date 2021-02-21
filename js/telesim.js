@@ -466,8 +466,8 @@ See gpl.html
 		
 		processTelesimCommand: function( responseTelesimObj, window ) {
 //console.log('-----');
-console.log('Window: ' + window);
-console.dir(responseTelesimObj[window]);
+//console.log('Window: ' + window);
+//console.dir(responseTelesimObj[window]);
 			// clear takes priority over everyhting.  if clear, no more checks.
 			if( parseInt(responseTelesimObj[ window ].command) & TELESIM_CLEAR) {
 				telesim.clearTelesimImage( window );
