@@ -1076,10 +1076,14 @@ console.log("New scenario state RUNNING");
 					controls.controllers.ip = response.controllers[1];
 					if( controls.controllers.ip == "" ) {
 						$('#controller-ip').html("No controller found");
-					} else {
-						$('#controller-ip').html('Controller found at IP address: <a href=""></a>');
-						$('#controller-ip a').html(response.controllers[1]);
-						$('#controller-ip a').attr('href', 'http://' + response.controllers[1]);
+					}
+					else
+					{
+						$('#controller-ip').html('Controller found at IP address:<br>');
+						jQuery.each(response.controllers, function(){
+							var str = "<a href='http://"+this+"'>"+this+"</a><br>";
+							$('#controller-ip').append(str);
+						});
 					}
 				}
 			},
