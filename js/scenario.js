@@ -58,6 +58,7 @@ console.log("Current Scenario State: " + this.currentScenarioState);
 									
 		$('#scenario-terminate-button').unbind().click(function() {
 			simmgr.sendChange( {'set:scenario:state' : 'Terminate'} );
+			scenario.recordStartStop(false );
 		});
 		
 		// bind change of scenario dropdown
@@ -81,6 +82,7 @@ console.log("Current Scenario State: " + this.currentScenarioState);
 	// scenario will get put into 'RUNNING' state
 	// set START button to PAUSE SCENARIO
 	// expose TERMINATE SCENARIO BUTTON
+	// NOTE: This function is never used
 	startScenario: function() {
 		$('#scenario-button').css({'background-color': buttons.connectColor, 
 									border: '1px solid ' + buttons.connectColor
@@ -89,7 +91,6 @@ console.log("Current Scenario State: " + this.currentScenarioState);
 		$('#scenario-select select').prop('disabled', true);
 		$('#start-video').prop('disabled', true);
 		$('.profile-display.scenario img').show();
-		
 		return;
 	},
 
@@ -100,7 +101,6 @@ console.log("Current Scenario State: " + this.currentScenarioState);
 		$('#scenario-select select').prop('disabled', false);
 		$('#start-video').prop('disabled', false);
 		$('.profile-display.scenario img').hide();
-		
 		// if in telesim, clear out images
 		if( !profile.isVitalsMonitor && localStorage.telesim == 1 ) {
 			simmgr.sendChange( { 
@@ -141,12 +141,41 @@ console.log("Current Scenario State: " + this.currentScenarioState);
 		$('.profile-display.scenario img').show();
 		return;
 	},
-	
+	recordStartStop: function(start) {
+		var chk = $('#start-video').attr('checked');
+		console.log("chk", chk );
+		if ( chk == 'checked')
+		{
+			setTimeout(function() {
+				var cmd;
+				if ( start )
+					cmd = 'StartRecording';
+				else
+					cmd = 'StopRecording';
+				var obs = new OBSWebSocket();
+				obs.connect().then(
+				function (){		
+					obs.send(cmd).then(
+							function(){console.log("Recording Started");},
+							function(result){console.log("Recording Start Failed");} );
+					obs.disconnect();
+				},
+				function (result){
+					console.log("obs.send failed", result);
+				})
+				.catch()
+				{
+					//console.log("obs.connect failed",  result);
+				};
+			}, 3000 );
+		}
+	},
 	sendNextScenarioState: function() {
 		switch(this.currentScenarioState) {
 			// if stopped, send currently selected scenario
 			case this.scenarioState.STOPPED:
 				simmgr.sendChange( {'set:scenario:state' : 'Running'} );
+				scenario.recordStartStop(true );
 				break;
 			
 			// if paused, send running
