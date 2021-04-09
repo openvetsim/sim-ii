@@ -174,7 +174,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 		<?php require_once(SERVER_INCLUDES . "header.php"); ?>
 		<?php
 		// This is forTeleSim
-		exec("simSoundInit" );
+//		exec("simSoundInit" );
 	/*
 		if ( file_exists("../sim-sounds/soundList.php" ) )
 		{

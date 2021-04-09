@@ -310,6 +310,12 @@ console.log('defib: here');
 					// heart sound name
 					if(typeof(response.cardiac.heart_sound) != "undefined") {
 						controls.heartSound.soundName = response.cardiac.heart_sound;
+						
+						if ( typeof(simsound) != 'undefined' )
+						{
+							simsound.lookupHeartSound();
+						}
+
 					}
 
 					// heart sound mute
