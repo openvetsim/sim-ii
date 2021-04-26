@@ -1145,7 +1145,8 @@ console.log("New scenario state RUNNING");
 							var str = "<a href='http://"+this+"'>"+this+"</a><br>";
 							$('#controller-ip').append(str);
 						});
-						
+					}
+				}
 				/************ auscultation **************/
 				if(typeof(response.auscultation) != "undefined" ) {
 					controls.auscultation = response.auscultation;
