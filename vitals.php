@@ -1,6 +1,6 @@
 <?php
 /*
-sim-ii: 
+vitals.php:
 
 Copyright (C) 2019  VetSim, Cornell University College of Veterinary Medicine Ithaca, NY
 
@@ -53,16 +53,26 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 <!DOCTYPE html >
 <html>
   <head>
-    <?php require_once(SERVER_INCLUDES . "header.php"); ?>
+    <?php 
+		require_once(SERVER_INCLUDES . "header.php"); 
+	
+		// This is forTeleSim
+		exec("simSoundInit" );
+		if ( file_exists("../sim-sounds/soundList.php" ) )
+		{
+			require_once("../sim-sounds/soundList.php" );
+			echo "<script type='text/javascript' src='".BROWSER_SCRIPTS."simsound.js'></script>\n";
+		}
+	?>
 	<script type="text/javascript">
 			var windowScaleFactor = 1;
 			
-			function doWindowScale() {			
+			function doWindowScale( scaleFactor ) {			
 				// Resize Chart based on Window Size
 				// Chart is 650 x 400 with 11px on left and 1px left, right and bottom
 				var Wwidth = $(window).width();
 				var Wheight = $(window).height();
-				console.log("Screen size ", Wwidth, Wheight );
+// console.log("Screen size ", Wwidth, Wheight );
 				// Calculate max scale for width and height
 				var zoomW = ( ( Wwidth - 40 ) / (650) ) * 100;
 				var zoomH = ( ( Wheight - 40 ) / (400) ) * 100;
@@ -73,7 +83,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				else
 					zoomSet = zoomW;
 				
-				windowScaleFactor = zoomSet / 100;
+				windowScaleFactor = (zoomSet / 100) * scaleFactor;
 				$('#vsm').css({ 
 					'transform'                : 'scale('+windowScaleFactor+')',
 					'transform-origin'         : '0 0',
@@ -84,10 +94,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 					'-ms-transform'            : 'scale('+windowScaleFactor+')', // IE
 					'-webkit-transform'        : 'scale('+windowScaleFactor+')'  // Opera/Safari
 				});
-				console.log("Transform: "+windowScaleFactor );
+// console.log("Transform: "+windowScaleFactor );
+
 			}
 			$( window ).resize(function() {
-				doWindowScale();
+				doWindowScale( 1.0 );
 			});
 			$(document).ready(function() {
 				// init profile data
@@ -110,11 +121,64 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				//media.init();
 				//log.init();
 				
+				if( !profile.isVitalsMonitor ) {
+					telesim.init();
+				}
+				
 				// init patient info
 				profile.initPatientInfo();
 				
 				simmgr.init();
+				$('#telesim-0').css({
+					position: 'absolute',
+					width: '300px',
+					height: '300px',
+					top: '0',
+					right: '-300px',
+					'background': 'none',
+					'border': 'none',
+					'transform'                : 'scale(0.8)',
+					'transform-origin'         : '0 0',
+					'-moz-transform-origin'    : '0 0',         // Firefox
+					'-ms-transform-origin'     : '0 0',         // IE
+					'-webkit-transform-origin' : '0 0',         // Opera/Safari
+					'-moz-transform'           : 'scale(0.8)', // Firefox
+					'-ms-transform'            : 'scale(0.8)', // IE
+					'-webkit-transform'        : 'scale(0.8)'  // Opera/Safari
+				});
+				$('#telesim-1').css({
+					position: 'absolute',
+					width: TELESIM_WINDOW_WIDTH,
+					height: '300px',
+					top: TELESIM_WINDOW_1_TOP,
+					right: TELESIM_WINDOW_1_RIGHT,
+					'background': 'none',
+					'border': 'none',
+					'margin-top': '0',
+					'transform'                : 'scale(0.8)',
+					'transform-origin'         : '0 0',
+					'-moz-transform-origin'    : '0 0',         // Firefox
+					'-ms-transform-origin'     : '0 0',         // IE
+					'-webkit-transform-origin' : '0 0',         // Opera/Safari
+					'-moz-transform'           : 'scale(0.8)', // Firefox
+					'-ms-transform'            : 'scale(0.8)', // IE
+					'-webkit-transform'        : 'scale(0.8)'  // Opera/Safari
+				});
+				
+				// test link
+/*				$('#test-link a').click(function() {
+console.log('telesim.imageNext[0]: ' + telesim.imageNext[0]);
+console.log('telesim.imageNext[1]: ' + telesim.imageNext[1]);
+
+telesim.imageNext[0] = 0;
+telesim.imageNext[1] = 0;
+console.log('telesim.imageNext[0]: ' + telesim.imageNext[0]);
+console.log('telesim.imageNext[1]: ' + telesim.imageNext[1]);
+
+				});
+*/
 			});
+			
 
 		</script>
 <style type="text/css" media="screen">
@@ -165,6 +229,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 					<div class="alt-control control-Tperi">
 						<a class="alt-control-title color-blue" href="javascript: void(0)" onclick="modal.Tperi(); return false;">Temp</a>
 						<a class="alt-control-rate color-blue" href="javascript: void(0)" onclick="modal.Tperi(); return false;" id="display-Tperi">123</a>
+						<div id="clock">
+							11:22:33
+						</div>
+						<!-- <div id="test-link" style="clear: both; float: left;"><a href="javascript: void(2);">Test</a></div> -->
 					</div>
 					<div class="alt-control awRR">
 						<a class="alt-control-title color-white" href="javascript: void(0)" onclick="modal.awRR(); return false;">awRR</a>
@@ -181,6 +249,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 						<a id="display-nbp-hr" class="alt-control-rate color-red" href="javascript: void(0)" onclick="modal.nbp(); return false;"><span style="font-size: 24px;">PR</span> <span id="displayed-reportedHR">75</span></a>
 					</div>
 				</div>
+				<div id="telesim-0" class="float-left ii-border telesim-right"></div>
+				<div id="telesim-1" class="float-left ii-border telesim-right"></div>
+
 			</div>
 </body>
 </html>

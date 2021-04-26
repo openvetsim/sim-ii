@@ -1,6 +1,6 @@
 <?php
 /*
-sim-ii: 
+sim-ii.php: 
 
 Copyright (C) 2019  VetSim, Cornell University College of Veterinary Medicine Ithaca, NY
 
@@ -172,7 +172,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 <html>
 	<head>
 		<?php require_once(SERVER_INCLUDES . "header.php"); ?>
-		
+		<?php
+		// This is forTeleSim
+//		exec("simSoundInit" );
+	/*
+		if ( file_exists("../sim-sounds/soundList.php" ) )
+		{
+			require_once("../sim-sounds/soundList.php" );
+			echo "<script type='text/javascript' src='".BROWSER_SCRIPTS."simsound.js'></script>\n";
+		}
+	*/
+		// End TeleSim
+		?>
 		<script type="text/javascript">
 			var uploadErrorCode = <?= $uploadErrorCode; ?>;
 			var userID = <?= $uid ?>;
@@ -201,6 +212,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				buttons.init();
 				events.init();
 				scenario.init();
+				telesim.init();
 //				media.init();
 //				log.init();
 
@@ -301,6 +313,9 @@ console.log(controls['awRR'].increment);
 					<li >
 						<a href="javascript:void(2);" onclick="modal.showUsers();">Users</a>
 					</li>
+					<li class="tele-sim disabled">
+						<a href="javascript:void(2);" onclick="telesim.toggleTeleSim(); return false;">Enable TeleSim</a>
+					</li>
 					<li class="menu-events">
 						<a href="javascript:void(2);" onclick="modal.showEvents(); return false;">Events</a>
 					</li>
@@ -347,14 +362,17 @@ console.log(controls['awRR'].increment);
 				<h2 id="indicator-arrest">Arrest</h2>
 
 				<div id="vocals-dog-control" class="dog-control">
-					<a id="vocals-dog-control-title" href="javascript: void(2)" onclick="modal.vocals(); return false;">Vocals</a>
+					<a class="control-title" id="vocals-dog-control-title" href="javascript: void(2)" onclick="modal.vocals(); return false;">Vocals</a>
+					<a class="control-tele-sim" id="vocals-dog-control-icon" href="javascript: void(2);" onclick="modal.vocals(); return false;"><img src="" width="" title="" alt=""></a>
 					<a class="sound-mute" id="vocals-mute" href="javascript: void(2)" onclick="modal.vocals(); return false;"><img src="<?= BROWSER_IMAGES; ?>sound_mute.png"></a>
 				</div>
 				<div id="left-femoral-pulse-dog-control" class="dog-control">
-					<a id="left-femoral-pulse-dog-control-title" href="javascript: void(2)" onclick="modal.pulseStrength('left', 'femoral'); return false;">Pulse Strength</a>
+					<a class="control-title" id="left-femoral-pulse-dog-control-title" href="javascript: void(2)" onclick="modal.pulseStrength('left', 'femoral'); return false;">Pulse Strength</a>
+					<a class="control-tele-sim" id="left-femoral-pulse-dog-control-icon" href="javascript: void(2);" onclick="modal.pulseStrength('left', 'femoral'); return false;"><img src="" width="" title="" alt=""></a>
 				</div>
 				<div id="right-femoral-pulse-dog-control" class="dog-control">
-					<a id="right-femoral-pulse-dog-control-title" href="javascript: void(2)" onclick="modal.pulseStrength('right', 'femoral'); return false;">Pulse Strength</a>
+					<a class="control-title" id="right-femoral-pulse-dog-control-title" href="javascript: void(2)" onclick="modal.pulseStrength('right', 'femoral'); return false;">Pulse Strength</a>
+					<a class="control-tele-sim" id="right-femoral-pulse-dog-control-icon" href="javascript: void(2);" onclick="modal.pulseStrength('right', 'femoral'); return false;"><img src="" width="" title="" alt=""></a>
 				</div>
 				<div id="left-dorsal-pulse-dog-control" class="dog-control">
 					<a id="left-dorsal-pulse-dog-control-title" href="javascript: void(2)" onclick="modal.pulseStrength('left', 'dorsal'); return false;">Pulse Strength</a>
@@ -363,19 +381,23 @@ console.log(controls['awRR'].increment);
 					<a id="right-dorsal-pulse-dog-control-title" href="javascript: void(2)" onclick="modal.pulseStrength('right', 'dorsal'); return false;">Pulse Strength</a>
 				</div>
 				<div id="left-lung-dog-control" class="dog-control">
-					<a id="left-lung-dog-control-title" href="javascript: void(2)" onclick="modal.leftLung(); return false;">Left Lung</a>
+					<a class="control-title" id="left-lung-dog-control-title" href="javascript: void(2)" onclick="modal.leftLung(); return false;">Left Lung</a>
+					<a class="control-tele-sim" id="left-lung-dog-control-icon" href="javascript: void(2);" onclick="modal.leftLung(); return false;"><img src="" width="" title="" alt=""></a>
 					<a class="sound-mute" id="left-lung-mute" href="javascript: void(2)" onclick="modal.leftLung(); return false;"><img src="<?= BROWSER_IMAGES; ?>sound_mute.png"></a>
 				</div>
 				<div id="right-lung-dog-control" class="dog-control">
-					<a id="right-lung-dog-control-title" href="javascript: void(2)" onclick="modal.rightLung(); return false;">Right Lung</a>
+					<a class="control-title" id="right-lung-dog-control-title" href="javascript: void(2)" onclick="modal.rightLung(); return false;">Right Lung</a>
+					<a class="control-tele-sim" id="right-lung-dog-control-icon" href="javascript: void(2);" onclick="modal.rightLung(); return false;"><img src="" width="" title="" alt=""></a>
 					<a class="sound-mute" id="right-lung-mute" href="javascript: void(2)" onclick="modal.rightLung(); return false;"><img src="<?= BROWSER_IMAGES; ?>sound_mute.png"></a>
 				</div>
 				<div id="heart-sound-dog-control" class="dog-control">
-					<a id="heart-sound-dog-control-title" href="javascript: void(2)" onclick="modal.heartSound(); return false;">Heart Sound</a>
+					<a class="control-tele-sim" id="heart-sound-dog-control-icon" href="javascript: void(2)" onclick="modal.heartSound(); return false;"><img src="" width="" title="" alt=""></a>
+					<a class="control-title" id="heart-sound-dog-control-title" href="javascript: void(2)" onclick="modal.heartSound(); return false;">Heart Sound</a>
 					<a class="sound-mute" id="heart-sound-mute" href="javascript: void(2)" onclick="modal.heartSound(); return false;"><img src="<?= BROWSER_IMAGES; ?>sound_mute.png"></a>
 				</div>
 				<div id="chest-dog-control" class="dog-control">
-					<a id="chest-dog-control-title" href="javascript: void(2)" onclick="modal.chestRise(); return false;">Chest Movement</a>
+					<a class="control-title" id="chest-dog-control-title" href="javascript: void(2)" onclick="modal.chestRise(); return false;">Chest Movement</a>
+					<a class="control-tele-sim" id="chest-dog-control-icon" href="javascript: void(2);" onclick="modal.chestRise(); return false;"><img src="" width="" title=""></a>
 				</div>
 			</div>
 			
@@ -424,6 +446,24 @@ console.log(controls['awRR'].increment);
 					<button id="ekg-sound" class="pause">Turn EKG Sound Off!</button>
 					<button id="switch-resp-now">Switch Resp Patterns!</button>
 				</div> -->
+			</div>
+			
+<!--			<div id="telesim-top" class="float-left ii-border telesim-right" style="background-image: url('<?= BROWSER_SCENARIOS; ?>/default/images/top-dog.png')">
+				<div class="ausc-hotspot" data-coord="1-1-1" style="top: 75px; left: 100px;">1</div>
+				<div class="ausc-hotspot" data-coord="1-2-1" style="top: 75px; left: 125px;">2</div>
+				<div class="ausc-hotspot" data-coord="1-3-1" style="top: 100px; left: 100px;">3</div>
+				<div class="ausc-hotspot" data-coord="1-4-1" style="top: 100px; left: 125px;">4</div>
+			</div> -->
+			<div id="telesim-0" class="float-left ii-border telesim-right">
+				<select id="telesim-select-0" class="telesim-select">
+					<option value="">Please select</option>
+				</select>
+			</div>
+			<div id="telesim-1" class="float-left ii-border telesim-right">
+				<select id="telesim-select-1" class="telesim-select">
+					<option value="">Please select</option>
+				</select>
+				<div id="telesim-size" class="expand">+</div>
 			</div>
 			
 			<div id="media-col">

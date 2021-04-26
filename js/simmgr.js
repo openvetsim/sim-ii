@@ -32,6 +32,7 @@ var simmgr = {
 	
 	init : function() {
 		console.log("simmgr: init" );
+		console.log("simmgr: is local display: "  + simmgr.isLocalDisplay());
 		if(typeof userID != "undefined") {
 			console.log("uid: " + userID );
 			if ( userID == 5 )
@@ -93,7 +94,7 @@ var simmgr = {
 						controls.awRR.setSynch();
 					}
 				}
-				if ( simmgr.isLocalDisplay() )
+				if ( simmgr.isTeleSim() || simmgr.isLocalDisplay() )
 				{
 					if ( response.cardiac.pulseCount != simmgr.pulseCount )
 					{
@@ -138,7 +139,7 @@ console.log('defib: here');
 	getStatus : function () {
 		// get unique time stamp
 		simmgr.timeStamp = new Date().getTime();
-		
+			
 		$.ajax({
 			url: BROWSER_CGI + 'simstatus.cgi',
 			type: 'get',
@@ -168,7 +169,7 @@ console.log('defib: here');
 						controls.heartRate.setSynch();
 					}
 				}
-				
+								
 				/************ cardiac **************/
 				if ( typeof(response.cardiac) != "undefined" )
 				{
@@ -309,6 +310,12 @@ console.log('defib: here');
 					// heart sound name
 					if(typeof(response.cardiac.heart_sound) != "undefined") {
 						controls.heartSound.soundName = response.cardiac.heart_sound;
+						
+						if ( typeof(simsound) != 'undefined' )
+						{
+							simsound.lookupHeartSound();
+						}
+
 					}
 
 					// heart sound mute
@@ -503,6 +510,38 @@ console.log('defib: here');
 					buttons.setVSButton('Tperi');
 					controls.Tperi.displayValue();
 				}
+				
+				// telesim
+				if(typeof(response.telesim) != "undefined" ) {
+/*					if( response.telesim.enable != localStorage.telesim && profile.isVitalsMonitor ) {
+						telesim.setTeleSim( response.telesim.enable );
+					}
+*/
+					if( profile.isVitalsMonitor ) {
+						if( response.telesim.enable == 0 && $('.telesim-right').is(':visible') ) {
+							telesim.setTeleSim( 0 );
+						} else if( response.telesim.enable == 1 && $('.telesim-right').is(':hidden') ) {
+							telesim.setTeleSim( 1 );						
+						}
+					}
+					
+					// select
+//console.log('--------------');
+//console.log('Next 0: ' + telesim.imageNext[0]);
+//console.dir(response.telesim[0]);
+//console.log('Next 1: ' + telesim.imageNext[1]);
+//console.dir(response.telesim[1]);
+					if( response.telesim[0].next != telesim.imageNext[0] && typeof telesim.imageList[0] != "undefined" ) {
+						telesim.imageNext[0] = response.telesim[0].next;
+						telesim.processTelesimCommand( response.telesim, 0 );
+					}
+					
+					if( response.telesim[1].next != telesim.imageNext[1] && typeof telesim.imageList[1] != "undefined" ) {
+						telesim.imageNext[1] = response.telesim[1].next;
+						telesim.processTelesimCommand( response.telesim, 1 );
+					}
+					
+				}
 
 				/************ vocals **************/
 				if(typeof(response.vocals) != "undefined" ) {
@@ -691,6 +730,10 @@ console.log('defib: here');
 					if(typeof(response.respiration.rate) != "undefined") {
 						if( response.respiration.rate != controls.awRR.modalRate ) {
 							controls.awRR.modalRate = response.respiration.rate;
+							if ( typeof(simsound) != 'undefined' )
+							{
+								simsound.lookupLungSound();
+							}
 						}
 					}
 					
@@ -813,7 +856,14 @@ if( profile.isVitalsMonitor ) {
 					/***** Left Lung *****/
 					// left lung sound
 					if(typeof(response.respiration.left_lung_sound) != "undefined") {
-						controls.leftLung.fileName = response.respiration.left_lung_sound;
+						if ( controls.leftLung.fileName != response.respiration.left_lung_sound )
+						{
+							controls.leftLung.fileName = response.respiration.left_lung_sound;
+							if ( typeof(simsound) != 'undefined' )
+							{
+								simsound.lookupLungSound();
+							}
+						}
 					}
 					
 					// left lung mute
@@ -889,6 +939,7 @@ if( profile.isVitalsMonitor ) {
 							$('.logout.debrief').hide();
 							switch(newScenarioState) {
 								case 'STOPPED':
+									$('#clock').hide();
 									scenario.currentScenarioState = scenario.scenarioState.STOPPED;
 									if ( profile.isVitalsMonitor == false ) {
 										scenario.stopScenario();
@@ -900,6 +951,7 @@ console.log("New scenario state STOPPED");
 									break;
 								
 								case 'PAUSED':
+									$('#clock').hide();
 									scenario.currentScenarioState = scenario.scenarioState.PAUSED;
 									if ( profile.isVitalsMonitor == false ) {
 										scenario.pauseScenario();
@@ -909,6 +961,7 @@ console.log("New scenario state PAUSED");
 									break;
 								
 								case 'RUNNING':
+									$('#clock').show();
 									scenario.currentScenarioState = scenario.scenarioState.RUNNING;
 									if ( profile.isVitalsMonitor == false ) {
 										scenario.continueScenario();
@@ -918,9 +971,16 @@ console.log("New scenario state RUNNING");
 									break;
 								
 								default:
+									$('#clock').hide();
 									break;
 							}
 						}
+						
+						// update clock
+						if( newScenarioState == 'RUNNING' ) {
+							$('#clock').html( response.scenario.clockDisplay );
+						}
+
 					}
 					
 					// scenario selection
@@ -936,6 +996,7 @@ console.log("New scenario state RUNNING");
 						}
 						profile.initPatientInfo();
 						media.init();
+						telesim.init();
 					}
 					
 					if ( profile.isVitalsMonitor == false ) {
@@ -1084,6 +1145,17 @@ console.log("New scenario state RUNNING");
 							var str = "<a href='http://"+this+"'>"+this+"</a><br>";
 							$('#controller-ip').append(str);
 						});
+						
+				/************ auscultation **************/
+				if(typeof(response.auscultation) != "undefined" ) {
+					controls.auscultation = response.auscultation;
+					
+					// has auscultation been cancelled
+					if( response.auscultation.side == 0 ) {
+						telesim.clearAuscultation();	
+					} else {
+						var coord = response.auscultation.side + '-' + response.auscultation.row + '-' + response.auscultation.col;
+						telesim.setAuscultation( coord );
 					}
 				}
 			},
@@ -1142,5 +1214,38 @@ console.log("New scenario state RUNNING");
 	isLocalDisplay: function()
 	{
 		return ( SERVER_ADDR == REMOTE_ADDR );
+	},
+	
+	isTeleSim: function()
+	{
+		if ( typeof(localStorage.telesim) !== "undefined"  && localStorage.telesim == 1 )
+		{
+			return ( true );
+		}
+		return ( false );
+	},
+	
+	resetQuickInterval: function()
+	{
+		if ( simmgr.isLocalDisplay() )
+		{
+			if ( simmgr.isTeleSim() )
+			{
+				simmgr.quickInterval = 40;
+			}
+			else
+			{
+				simmgr.quickInterval = 15;
+			}
+		}
+		else if ( typeof userID != "undefined" && userID == 5 )
+		{
+			// This is the Demo user
+			simmgr.quickInterval = 200;
+		}
+		else
+		{
+			simmgr.quickInterval = 40;
+		}
 	}
 }
