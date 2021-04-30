@@ -4,6 +4,10 @@ sim-ii: Copyright (C) 2019  VetSim, Cornell University College of Veterinary Med
 See gpl.html
 */
 	var controls = {
+		controllers: {
+			ip: ""				// controller IP address
+		},
+		
 		defib: {
 			last: -1,			// count of defib to flag a new defib cycle, -1 indicates uninitialized...
 			shock: 0			// currently in defib cycle...

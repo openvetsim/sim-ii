@@ -58,6 +58,7 @@ console.log("Current Scenario State: " + this.currentScenarioState);
 									
 		$('#scenario-terminate-button').unbind().click(function() {
 			simmgr.sendChange( {'set:scenario:state' : 'Terminate'} );
+			scenario.recordStartStop(false );
 		});
 		
 		// bind change of scenario dropdown
@@ -74,8 +75,6 @@ console.log("Current Scenario State: " + this.currentScenarioState);
 				}, 1000);
 			}
 		});
-		
-		
 	},
 	
 	// start scenario
@@ -83,6 +82,7 @@ console.log("Current Scenario State: " + this.currentScenarioState);
 	// scenario will get put into 'RUNNING' state
 	// set START button to PAUSE SCENARIO
 	// expose TERMINATE SCENARIO BUTTON
+	// NOTE: This function is never used
 	startScenario: function() {
 		$('#scenario-button').css({'background-color': buttons.connectColor, 
 									border: '1px solid ' + buttons.connectColor
@@ -91,7 +91,6 @@ console.log("Current Scenario State: " + this.currentScenarioState);
 		$('#scenario-select select').prop('disabled', true);
 		$('#start-video').prop('disabled', true);
 		$('.profile-display.scenario img').show();
-		
 		return;
 	},
 
@@ -102,6 +101,23 @@ console.log("Current Scenario State: " + this.currentScenarioState);
 		$('#scenario-select select').prop('disabled', false);
 		$('#start-video').prop('disabled', false);
 		$('.profile-display.scenario img').hide();
+		// if in telesim, clear out images
+		if( !profile.isVitalsMonitor && localStorage.telesim == 1 ) {
+			simmgr.sendChange( { 
+				'set:telesim:name' : "0:none",
+				'set:telesim:command' : "0:" + TELESIM_CLEAR,
+				'set:telesim:param' : "0:0",
+				'set:telesim:next' : "0:" + (parseInt(telesim.imageNext[0]) + 1).toString()
+			} );					
+			simmgr.sendChange( { 
+				'set:telesim:name' : "1:none",
+				'set:telesim:command' : "1:" + TELESIM_CLEAR,
+				'set:telesim:param' : "1:0",
+				'set:telesim:next' : "1:" + (parseInt(telesim.imageNext[0]) + 1).toString()
+			} );
+		}
+
+		
 		return;
 	},
 	
@@ -125,12 +141,41 @@ console.log("Current Scenario State: " + this.currentScenarioState);
 		$('.profile-display.scenario img').show();
 		return;
 	},
-	
+	recordStartStop: function(start) {
+		var chk = $('#start-video').attr('checked');
+		console.log("chk", chk );
+		if ( chk == 'checked')
+		{
+			setTimeout(function() {
+				var cmd;
+				if ( start )
+					cmd = 'StartRecording';
+				else
+					cmd = 'StopRecording';
+				var obs = new OBSWebSocket();
+				obs.connect().then(
+				function (){		
+					obs.send(cmd).then(
+							function(){console.log("Recording Started");},
+							function(result){console.log("Recording Start Failed");} );
+					obs.disconnect();
+				},
+				function (result){
+					console.log("obs.send failed", result);
+				})
+				.catch()
+				{
+					//console.log("obs.connect failed",  result);
+				};
+			}, 3000 );
+		}
+	},
 	sendNextScenarioState: function() {
 		switch(this.currentScenarioState) {
 			// if stopped, send currently selected scenario
 			case this.scenarioState.STOPPED:
 				simmgr.sendChange( {'set:scenario:state' : 'Running'} );
+				scenario.recordStartStop(true );
 				break;
 			
 			// if paused, send running
@@ -158,7 +203,18 @@ console.log("Current Scenario State: " + this.currentScenarioState);
 				scenario.scenarioEvents = response.events;
 				scenario.scenarioMedia = response.media;
 				scenario.scenarioVocals = response.vocals;
-
+				if ( typeof(response.soundtags) !== 'undefined' )
+				{
+					scenario.soundtags = response.soundtags;
+					if ( typeof(simsound) !== 'undefined' )
+					{
+						simsound.parseTags();
+					}
+				}
+				
+				if( typeof(response.telesim) !== 'undefined' ) {
+					scenario.telesim = response.telesim;
+				}
 				// update scenario dropdown if needed
 				$('#scenario-select select').val(scenario.currentScenarioFileName);
 			}

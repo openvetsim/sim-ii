@@ -272,6 +272,16 @@ a:hover {
 	cursor:move;
 }
 
+#controller-ip {
+	margin: 10px 0 0 10px;
+	float: left;
+	clear: both;
+	font-weight: bold;
+}
+	#controller-ip a {
+		color: rgb(127, 29, 29);
+	}
+
 /* mannequin */
 #mannequin {
 	height: 400px;
@@ -283,6 +293,70 @@ a:hover {
 		color: black;
 		position: absolute;
 	}
+	
+	#mannequin.tele-sim {
+		width: 250px;
+	}
+	
+#telesim-0 {
+	height: 200px;
+	width: 239px;
+	position: relative;
+	background-color: white;
+}
+#telesim-1 {
+	height: 188px;
+	width: 239px;
+	position: relative;
+	margin-top: 10px;
+	background-color: white;
+}
+
+.repeat-wrapper {
+	width: 20px;
+	height: 20px;
+	float: right;
+	background-image: url("../images/repeat.png");
+	background-size: cover;
+	text-align: center;
+	line-height: 20px;
+	cursor: pointer;
+	font-weight: bold;
+	font-size: 24px;
+	color: black;
+	background-color: #66ff66;
+	
+}
+	.repeat-wrapper.disabled::after {
+		content: "/";
+	}
+	.repeat-wrapper.disabled {
+		background-color: #EB7A7A;
+	}
+
+div.telesim-right video {
+
+}
+
+.ausc-hotspot {
+	height: 15px;
+	width: 15px;
+	background-color: blue;
+	color: white;
+	border-radius: 50%;
+	text-align: center;
+	line-height: 15px;
+	position: absolute;
+	cursor: pointer;
+}
+	.ausc-hotspot.vitals {
+		height: 18px;
+		width: 18px;
+		line-height: 18px;
+	}
+.ausc-hotspot.active {
+	background-color: red;
+}
 
 /* canvas */
 #vsm {
