@@ -34,6 +34,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				
 		// get admin record for login
 		static public function isUserLoginValid($userEmail, $passWord) {
+			if ( key_exists('NO_DB', $_SESSION ) )
+			{
+				$row['UserFirstName'] = "";
+				$row['UserLastName'] = "";
+				$row['UserID'] = 1;
+				$row['isUserLoggedIn'] = TRUE;
+				return ( $row );
+			}
 			$cleanUserEmail = dbClass::cleanMySQLInput($userEmail);
 			$result = dbClass::dbSelectQueryResult("
 								SELECT * FROM Users
@@ -55,6 +63,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 		
 		// get users rows
 		static public function getAllUserRows() {
+			if ( key_exists('NO_DB', $_SESSION ) )
+			{
+				$row['UserFirstName'] = "";
+				$row['UserLastName'] = "";
+				$row['UserID'] = 1;
+				$row['isUserLoggedIn'] = TRUE;
+				$rows[0] = $row;
+				return ( $rows );
+			}
 			$rows = dbClass::dbSelectQueryResult("
 								SELECT * FROM Users
 								ORDER BY UserLastName ASC
@@ -64,6 +81,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 		
 		// get users row
 		static public function getUserRow($userID) {
+			if ( key_exists('NO_DB', $_SESSION ) )
+			{
+				$row['UserFirstName'] = "";
+				$row['UserLastName'] = "";
+				$row['UserID'] = 1;
+				$row['isUserLoggedIn'] = TRUE;
+				return ( $row );
+			}
 			if(dbClass::isIndex($userID) === FALSE) {
 				return FALSE;
 			}
@@ -104,6 +129,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 		
 		static public function getUserNameFromSession() {
 			if(isset($_SESSION['User']['UserID']) === TRUE && dbClass::isIndex($_SESSION['User']['UserID']) === TRUE) {
+				if ( key_exists('NO_DB', $_SESSION ) )
+				{
+					return "";
+				}
 				$cleanUserID = $_SESSION['User']['UserID'];
 				
 				$result = dbClass::dbSelectQueryResult("
@@ -115,12 +144,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				} else {
 					return $_SESSION['User']['UserFirstName'] . " " . $_SESSION['User']['UserLastName'];
 				}
+				
 			} else {
 				return FALSE;
 			}
 		}
 		
 		static public function getUserRowFromSession() {
+			if ( key_exists('NO_DB', $_SESSION ) )
+			{
+				$row['UserFirstName'] = "";
+				$row['UserLastName'] = "";
+				$row['UserID'] = 1;
+				$row['isUserLoggedIn'] = TRUE;
+				return ( $row );
+			}
 			if(isset($_SESSION['User']['UserID']) === TRUE && dbClass::isIndex($_SESSION['User']['UserID']) === TRUE) {
 				$cleanUserID = $_SESSION['User']['UserID'];
 				

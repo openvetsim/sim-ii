@@ -1,4 +1,8 @@
 <?php
+ini_set('display_errors', 'On');
+error_reporting(E_ALL | E_STRICT);
+
+
 /*
 sim-ii: 
 
@@ -18,16 +22,22 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>
 */
 
-	// ii-php: Instructor interface
+	//printf("<pre>\n" );
+	//print_r($_SERVER );
 	
 	require_once('init.php');
 	
-	$status = adminClass::isUserLoggedIn();
-	if($status === FALSE) {
-		header('location: index.php');
+	if ( ! $noDB )
+	{
+		$status = adminClass::isUserLoggedIn();
+		if($status === FALSE) {
+			header('location: index.php');
+		}
 	}
-	
 	$userRow = adminClass::getUserRowFromSession();
+	//printf("<pre>userRow\n" );
+	//print_r($userRow );
+	
 	$userName = $userRow['UserFirstName'] . " " . $userRow['UserLastName'];
 	$uid = $userRow['UserID'];
 	$sessionID = session_id();

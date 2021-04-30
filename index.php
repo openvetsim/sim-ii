@@ -23,6 +23,26 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 
 	define("SERVER_ACTIVE_SCENARIOS", SERVER_SCENARIOS );
 	define("BROWSER_ACTIVE_SCENARIOS", BROWSER_SCENARIOS );
+	
+	if ( key_exists('NO_DB', $_SESSION ) )
+	{
+		header('location: /sim-ii/ii.php');
+		exit();
+	}
+	else if ( ( key_exists('OS', $_SERVER) && strcmp($_SERVER['OS'], "Windows" ) == 0 ) ||
+	 ( key_exists('SERVER_SOFTWARE', $_SERVER) && strncmp($_SERVER['SERVER_SOFTWARE'], "PHP ", 4 ) == 0 ) )
+{
+	$_SESSION['User']['UserFirstName'] = "";
+	$_SESSION['User']['UserLastName'] = "";
+	$_SESSION['User']['UserID'] = 1;
+	$_SESSION['User']['isUserLoggedIn'] = TRUE;
+	
+	$_SESSION['NO_DB'] = TRUE;
+	//header('location: /sim-ii/ii.php');
+	//exit();
+}
+else
+{
 	// delete session data
 	adminClass::removeUserfromSession();
 	
@@ -146,7 +166,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 			$loginErrorFlag = 1;
 		}
 	}
-	
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -197,6 +217,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				<input type="hidden" name="userID" value="5" />
 			</form>
 			<div class="clearer"></div>
+			<pre>
+			<?php print_r($_SERVER ); print_r($_SESSION );?>
+			</pre>
 		</div>	
 	</body>
 </html>

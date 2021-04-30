@@ -76,7 +76,7 @@ var simmgr = {
 	getQuickStatus : function () {
 		// get unique time stamp
 		simmgr.timeStamp = new Date().getTime();
-		
+		console.log(BROWSER_CGI + "simstatus.cgi  quick" );
 		$.ajax({
 			url: BROWSER_CGI + 'simstatus.cgi',
 			type: 'get',
@@ -138,13 +138,14 @@ console.log('defib: here');
 	getStatus : function () {
 		// get unique time stamp
 		simmgr.timeStamp = new Date().getTime();
-		
+		console.log("calling simstatus.cgi" );
 		$.ajax({
 			url: BROWSER_CGI + 'simstatus.cgi',
 			type: 'get',
 			dataType: 'json',
 			data: { status: simmgr.timeStamp },
 			success: function(response,  textStatus, jqXHR ) {
+				console.log("status returns length: ", response.length );
 				if ( simmgr.isLocalDisplay() )
 				{
 /*

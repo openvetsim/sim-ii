@@ -34,7 +34,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 			exit();
 		}
 	}
-
+	
 	$userRow = adminClass::getUserRowFromSession();
 	$uid = $userRow['UserID'];
 	$sessionID = session_id();
@@ -67,6 +67,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 	$scenarioProfileArray = scenarioXML::getScenarioProfileArray($fileName);
 	if($scenarioProfileArray === FALSE) {
 		$returnVal['status'] = AJAX_STATUS_FAIL;
+		$returnVal['cause'] = "scenarioProfileArray failed";
 		echo json_encode($returnVal);
 		exit();		
 	}
@@ -74,6 +75,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 	$scenarioHeaderArray = scenarioXML::getScenarioHeaderArray($fileName);
 	if($scenarioHeaderArray === FALSE) {
 		$returnVal['status'] = AJAX_STATUS_FAIL;
+		$returnVal['cause'] = "scenarioHeaderArray failed";
 		echo json_encode($returnVal);
 		exit();		
 	}
@@ -81,6 +83,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 	$scenarioEventsArray = scenarioXML::getScenarioEventsArray($fileName);
 	if($scenarioEventsArray === FALSE) {
 		$returnVal['status'] = AJAX_STATUS_FAIL;
+		$returnVal['cause'] = "getScenarioEventsArray failed";
 		echo json_encode($returnVal);
 		exit();		
 	}
@@ -88,6 +91,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 	$scenarioMediaArray = scenarioXML::getScenarioMediaArray($fileName);
 	if($scenarioEventsArray === FALSE) {
 		$returnVal['status'] = AJAX_STATUS_FAIL;
+		$returnVal['cause'] = "getScenarioMediaArray failed";
 		echo json_encode($returnVal);
 		exit();		
 	}
@@ -95,6 +99,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 	$scenarioVocalsArray = scenarioXML::getScenarioVocalsArray($fileName);
 	if($scenarioEventsArray === FALSE) {
 		$returnVal['status'] = AJAX_STATUS_FAIL;
+		$returnVal['cause'] = "getScenarioVocalsArray failed";
 		echo json_encode($returnVal);
 		exit();		
 	}

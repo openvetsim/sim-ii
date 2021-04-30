@@ -35,6 +35,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 	$logFileName = dbClass::valuesFromPost('fileName');
 	if(file_exists(SERVER_SIM_LOGS . $logFileName) === FALSE) {
 		$returnVal['status'] = AJAX_STATUS_FAIL;
+		$returnVal['fileName'] = $logFileName;
 		echo json_encode($returnVal);
 		exit();
 	}
@@ -42,6 +43,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 	$logRecordCount = dbClass::valuesFromPost('recordCount');
 	if(ctype_digit($logRecordCount) === FALSE) {
 		$returnVal['status'] = AJAX_STATUS_FAIL;
+		$returnVal['logRecordCount'] = $logRecordCount;
 		echo json_encode($returnVal);
 		exit();
 	}
@@ -51,6 +53,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 
 	if(count($logArray) == 0) {
 		$returnVal['status'] = AJAX_STATUS_FAIL;
+		$returnVal['arrayCount'] = count($logArray);
 		echo json_encode($returnVal);
 		exit();	
 	}
