@@ -77,7 +77,7 @@ var simmgr = {
 	getQuickStatus : function () {
 		// get unique time stamp
 		simmgr.timeStamp = new Date().getTime();
-		console.log(BROWSER_CGI + "simstatus.cgi  quick" );
+		//console.log(BROWSER_CGI + "simstatus.cgi  quick" );
 		$.ajax({
 			url: BROWSER_CGI + 'simstatus.cgi',
 			type: 'get',
@@ -145,7 +145,7 @@ console.log('defib: here');
 			dataType: 'json',
 			data: { status: simmgr.timeStamp },
 			success: function(response,  textStatus, jqXHR ) {
-				console.log("status returns length: ", response.length );
+				//console.log("status returns length: ", response.length );
 				if ( simmgr.isLocalDisplay() )
 				{
 /*
@@ -531,14 +531,17 @@ console.log('defib: here');
 //console.dir(response.telesim[0]);
 //console.log('Next 1: ' + telesim.imageNext[1]);
 //console.dir(response.telesim[1]);
-					if( response.telesim[0].next != telesim.imageNext[0] && typeof telesim.imageList[0] != "undefined" ) {
-						telesim.imageNext[0] = response.telesim[0].next;
-						telesim.processTelesimCommand( response.telesim, 0 );
-					}
-					
-					if( response.telesim[1].next != telesim.imageNext[1] && typeof telesim.imageList[1] != "undefined" ) {
-						telesim.imageNext[1] = response.telesim[1].next;
-						telesim.processTelesimCommand( response.telesim, 1 );
+					if ( typeof(response.telesim[0]) !== 'undefined' )
+					{
+						if( response.telesim[0].next != telesim.imageNext[0] && typeof telesim.imageList[0] != "undefined" ) {
+							telesim.imageNext[0] = response.telesim[0].next;
+							telesim.processTelesimCommand( response.telesim, 0 );
+						}
+						
+						if( response.telesim[1].next != telesim.imageNext[1] && typeof telesim.imageList[1] != "undefined" ) {
+							telesim.imageNext[1] = response.telesim[1].next;
+							telesim.processTelesimCommand( response.telesim, 1 );
+						}
 					}
 					
 				}
