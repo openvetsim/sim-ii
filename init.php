@@ -28,16 +28,29 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 	$sessionID = session_id();
 	
 		// ii-php: Instructor interface
-	if ( key_exists('NO_DB', $_SESSION ) ||
-		( key_exists('OS', $_SERVER) && strncmp($_SERVER['OS'], "Windows", 7 ) == 0  ) ||
-	    ( key_exists('SERVER_SOFTWARE', $_SERVER) && strncmp($_SERVER['SERVER_SOFTWARE'], "PHP ", 4 ) == 0 ) )
+	if ( key_exists('NO_DB', $_SESSION ) && key_exists('User', $_SESSION ) && $_SESSION['User']['isUserLoggedIn'] == TRUE )
 	{
-		$noDB = TRUE;
-		$_SESSION['NO_DB'] = 1;
+		$noDB = $_SESSION['NO_DB'];
 	}
 	else
 	{
-		$noDB = FALSE;
+		if ( key_exists('NO_DB', $_SESSION ) ||
+			( key_exists('OS', $_SERVER) && strncmp($_SERVER['OS'], "Windows", 7 ) == 0  ) ||
+			( key_exists('SERVER_SOFTWARE', $_SERVER) && strncmp($_SERVER['SERVER_SOFTWARE'], "PHP ", 4 ) == 0 ) )
+		{
+			$noDB = TRUE;
+			$_SESSION['NO_DB'] = 1;
+			
+				$_SESSION['User']['UserFirstName'] = "";
+				$_SESSION['User']['UserLastName'] = "";
+				$_SESSION['User']['UserID'] = 1;
+				$_SESSION['User']['isUserLoggedIn'] = TRUE;
+			
+		}
+		else
+		{
+			$noDB = FALSE;
+		}
 	}
 	
 	// debug
