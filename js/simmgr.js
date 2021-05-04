@@ -23,6 +23,7 @@ var simmgr = {
 	pulseCountVpc: 0,
 	quickInterval : 40,
 	statusInterval : 500,
+	longStatusInterval : 500,
 	running : 0,
 	audioPlayStarted : 0,
 	mediaPlayStarted : 0,
@@ -84,6 +85,7 @@ var simmgr = {
 			dataType: 'json',
 			data: { qstat : simmgr.timeStamp },
 			success: function(response,  textStatus, jqXHR ) {
+				
 				if ( response.respiration.breathCount != simmgr.breathCount )
 				{
 					simmgr.breathCount = response.respiration.breathCount;
@@ -1162,10 +1164,24 @@ console.log("New scenario state RUNNING");
 						telesim.setAuscultation( coord );
 					}
 				}
+				if ( simmgr.running == -1 )
+				{
+					simmgr.running = 1;
+					clearTimeout(simmgr.quickTimer );
+					clearTimeout(simmgr.statusTimer );
+					simmgr.quickTimer = setTimeout(function() { simmgr.getQuickStatus(); }, simmgr.quickInterval );
+					simmgr.statusTimer = setTimeout(function() { simmgr.getStatus(); }, simmgr.statusInterval );
+				}
 			},
 
 			error: function( jqXHR,  textStatus,  errorThrown){
-				console.log("error: "+textStatus+" : "+errorThrown );
+				console.log("AJAX error: ", textStatus, errorThrown );
+				if ( textStatus == "error" )
+				{
+					simmgr.running = -1;
+					$(".welcome-title").html("The Server is not responding" ).css({'color':'red'});
+					simmgr.statusTimer = setTimeout(function() { simmgr.getStatus(); }, simmgr.longStatusInterval );
+				}
 			},
 			complete: function(jqXHR,  textStatus ){
 				if ( simmgr.running == 1 )

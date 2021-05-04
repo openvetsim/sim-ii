@@ -1,12 +1,10 @@
 <?php
 ini_set('display_errors', 'On');
 error_reporting(E_ALL | E_STRICT);
-
-
 /*
-sim-ii.php: 
+ii.php: 
 
-Copyright (C) 2019  VetSim, Cornell University College of Veterinary Medicine Ithaca, NY
+Copyright (C) 2019-2021  VetSim, Cornell University College of Veterinary Medicine Ithaca, NY
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,9 +20,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>
 */
 
-	//printf("<pre>\n" );
-	//print_r($_SERVER );
-	
+	// ii-php: Instructor interface
+
 	require_once('init.php');
 	
 	if ( ! $noDB )
@@ -34,10 +31,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 			header('location: index.php');
 		}
 	}
-	$userRow = adminClass::getUserRowFromSession();
-	//printf("<pre>userRow\n" );
-	//print_r($userRow );
-	
+	$userRow = adminClass::getUserRowFromSession();	
 	$userName = $userRow['UserFirstName'] . " " . $userRow['UserLastName'];
 	$uid = $userRow['UserID'];
 	$sessionID = session_id();
