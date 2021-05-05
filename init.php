@@ -166,8 +166,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 	define('AJAX_STATUS_LOGIN_FAIL', 2);
 	
 	// version
-	define('VERSION_MAJOR', 'WVS-1');
-	define('VERSION_MINOR', 4);
+	define('VERSION_MAJOR', '1');
+	define('VERSION_MINOR', '4-WVS');
 	
 	// mobilized
 //	define('MOBILIZED', FALSE);
