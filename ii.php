@@ -191,11 +191,42 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 		<script type="text/javascript">
 			var uploadErrorCode = <?= $uploadErrorCode; ?>;
 			var userID = <?= $uid ?>;
+			var noDB = <?= $noDB ?>;
 			document.cookie = "userID="+userID+"; path=/";
 			var isVitalsMonitor = 0;	// Student Display Flag
 			$(document).ready(function() {
 				// hide debrief menu item
 				$('.logout.debrief').hide();
+				
+				if ( noDB )
+				{
+					$("#logout_close").html('<a href="javascript: void(2);" class="event-link" >Close</a>'	 );
+					$("#logout_close").click(function() {
+						if ( confirm("This will close the Simulator Application. Is this what you want to do?" ) )
+						{
+							var data = {'close': 565}
+							$.ajax({
+								url: BROWSER_CGI + 'simstatus.cgi',
+								type: 'get',
+								dataType: 'json',
+								data: data,
+								success: function(response,  textStatus, jqXHR ) {
+									if ( typeof(response.close) !== 'undefined' && response.close == 565 )
+									{
+										window.top.close();
+									}
+									else
+									{
+										alert("Application Close Failed" );
+									}
+								},
+								error: function( jqXHR,  textStatus,  errorThrown){
+									console.log("error: "+textStatus+" : "+errorThrown );
+								}
+							});		
+						}
+					});
+				}
 				
 				// init menu
 				menu.init();
@@ -323,7 +354,7 @@ console.log(controls['awRR'].increment);
 					<li class="menu-events">
 						<a href="javascript:void(2);" onclick="modal.showEvents(); return false;">Events</a>
 					</li>
-					<li class="logout">
+					<li class="logout" id="logout_close">
 						<a href="index.php" class="event-link">Logout</a>						
 					</li>
 					<li class="logout debrief">
