@@ -556,7 +556,7 @@ See gpl.html
 
 			chart.heartRate = cardiac.rate;
 			controls.heartRate.value = cardiac.rate;
-			if ( typeof simsound !== 'undefined' )
+			if ( simmgr.isTeleSim() == true && typeof simsound !== 'undefined' )
 			{
 				simsound.lookupHeartSound();
 			}
@@ -660,7 +660,7 @@ See gpl.html
 						y = chart.getEKGNoisePixel();						
 					} else if(chart.status.cardiac.synch == true || chart.ekg.patternIndex > 0) {
 						y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex][chart.ekg.patternIndex] * -1;
-						if ( typeof simsound !== 'undefined' && chart.status.cardiac.synch == true )
+						if ( simmgr.isTeleSim() == true  && typeof simsound !== 'undefined' && chart.status.cardiac.synch == true )
 						{
 							simsound.playHeartSound();
 						}
@@ -683,7 +683,7 @@ See gpl.html
 					} else if(chart.status.cardiac.synch == true || chart.ekg.patternIndex > 0) {
 						y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex][chart.ekg.patternIndex] * -1;
 						
-						if ( typeof simsound !== 'undefined' )
+						if ( simmgr.isTeleSim() == true && typeof simsound !== 'undefined' )
 						{
 							//simsound.playHeartSound();
 						}
@@ -834,7 +834,7 @@ See gpl.html
 				y = 0;
 			} else if ( ( profile.isVitalsMonitor == false ) || ( controls.CO2.leadsConnected == true ) ) {
 				if(chart.status.resp.synch == true ) {	// Restart Cycle
-					if ( typeof simsound !== 'undefined' )
+					if ( simmgr.isTeleSim() == true && typeof simsound !== 'undefined' )
 					{
 						simsound.playLungSound();
 					}
@@ -936,7 +936,7 @@ See gpl.html
 				}
 			} else if ( ( profile.isVitalsMonitor == true ) || ( controls.CO2.leadsConnected == false ) ) {
 				if(chart.status.resp.synch == true ) {	// Restart Cycle
-					if ( typeof simsound !== 'undefined' )
+					if ( simmgr.isTeleSim() == true && typeof simsound !== 'undefined' )
 					{
 						simsound.playLungSound();
 					}

@@ -311,7 +311,7 @@ console.log('defib: here');
 					if(typeof(response.cardiac.heart_sound) != "undefined") {
 						controls.heartSound.soundName = response.cardiac.heart_sound;
 						
-						if ( typeof(simsound) != 'undefined' )
+						if ( simmgr.isTeleSim() == true && typeof(simsound) != 'undefined' )
 						{
 							simsound.lookupHeartSound();
 						}
