@@ -348,6 +348,9 @@ console.log(controls['awRR'].increment);
 					<li >
 						<a href="javascript:void(2);" onclick="modal.showUsers();">Users</a>
 					</li>
+					<li >
+						<a href="javascript:void(2);" onclick="window.open('vitals.php','temp','resizable');">Vitals</a>
+					</li>
 					<li class="tele-sim disabled">
 						<a href="javascript:void(2);" onclick="telesim.toggleTeleSim(); return false;">Enable TeleSim</a>
 					</li>

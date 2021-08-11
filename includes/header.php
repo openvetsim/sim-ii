@@ -14,7 +14,7 @@ See gpl.html
 		$page = basename($_SERVER["SCRIPT_FILENAME"], '.php');
 		if ( strcmp($page, 'vitals' ) == 0 )
 		{
-			echo "Vet School Simulator"; 
+			echo "Patient Vitals Monitor"; 
 		}
 		else
 		{
