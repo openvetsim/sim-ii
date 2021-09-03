@@ -39,7 +39,7 @@ if (preg_match('/\.(?:mp4|mp3|wav)$/', $_SERVER["SCRIPT_FILENAME"])) {
 	{ 
 		print fread($fm,min(1024*16,$end-$cur));
 		$cur+=1024*16;
-		usleep(1000);
+//		usleep(1000);
 	}
 	return ( true );
 }
