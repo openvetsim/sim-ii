@@ -147,7 +147,7 @@ See gpl.html
 			inhalationDuration: 0,	// duration of inhalation in msec
 			exhalationDuration: 0,	// duration of exhalation in msec
 			patternComplete: false,	// flag for resp pattern complete
-			inhalationPatternIndex: 4,	
+			inhalationPatternIndex: 0,	
 									// pattern index for resp low to high.
 			exhalationPatternIndex: 4,	
 									// pattern index for resp high to low.
@@ -158,7 +158,8 @@ See gpl.html
 			manualBreathDisplayCount: 0,			// count of where we are in the display delay for ETCO2
 			breathStart: false,		// flag to indicate if a new breating waveform is starting.
 			blankTimer: 0,			// timer to blank vitals ETCO2
-			rrBlankCount: 2			// count of breath waveforms before displaying valid awRR
+			rrBlankCount: 2,		// count of breath waveforms before displaying valid awRR
+			currentetCO2value: 0		// variable to hold ETCO2 value at the start of a breath waveform
 		},
 		
 		cursorWidth: 10,			// width of cursor in pixels
@@ -379,17 +380,26 @@ See gpl.html
 			// init rhythm patterns
 			chart.resp.rhythm['high-to-low'] = new Array;
 			chart.resp.rhythm['low-to-high'] = new Array;
+			chart.resp.rhythm['high'] = new Array;
 			chart.resp.rhythm['high-to-low'][0] = [	
-				60,52,44,36,28,24,20,15,8,0
+				61.5493449,60.72807351,58.85943707,50.48641877,
+				36.93296859,24.22481363,11.00608487,2.468408594,0.877075091,
+				0.334116028,0.292495125,0
+//				60,52,44,36,28,24,20,15,8
 			];
 			chart.resp.rhythm['high-to-low'][1] = [	
-				60,44,36,20,8,0
+				61.5493449,60.72807351,58.85943707,50.48641877,
+				36.93296859,24.22481363,11.00608487,2.468408594,0.877075091,
+				0.334116028,0.292495125,0
+//				60,52,44,36,28,24,20,15,8
 			];
 			chart.resp.rhythm['high-to-low'][2] = [	
-				44,36,20,8
+				61.5493449,60.72807351,58.85943707,50.48641877,
+				36.93296859,24.22481363,11.00608487,2.468408594,0.877075091,
+				0.334116028,0.292495125,0			
 			];
 			chart.resp.rhythm['high-to-low'][3] = [	
-				40, 20
+				60.72807351, 50.48641877, 24.22481363, 2.468408594, 0.334116028
 			];
 			chart.resp.rhythm['high-to-low'][4] = [	
 				30
@@ -401,33 +411,59 @@ See gpl.html
 				0,0,0
 			];
 			chart.resp.rhythm['low-to-high'][0] = [	
-				0,8,15,20,24,28,36,44,52,60
+				0.110304316,0.204757313,0.444808642,1.440832926,3.047279566,
+				5.909726892,12.58774301,24.91583508,37.12211491,44.30213386,
+				46.80024109,48.49503321,49.89641132,50.9500952,51.83944314,
 			];
 			chart.resp.rhythm['low-to-high'][1] = [	
-				0,8,20,36,44,60
+				0.204757313,0.444808642,1.440832926,3.047279566,
+				5.909726892,12.58774301,24.91583508,37.12211491,44.30213386,
+				46.80024109,48.49503321,49.89641132,50.9500952
 			];
 			chart.resp.rhythm['low-to-high'][2] = [	
-				8,20,36,44
+				1.440832926,
+				5.909726892,24.91583508,44.30213386,
+				48.49503321,50.9500952
 			];
 			chart.resp.rhythm['low-to-high'][3] = [	
-				20, 40
+				12.58774301,// 37.12211491,
+				46.80024109,// 49.89641132,
+				50.9500952
 			];
 			chart.resp.rhythm['low-to-high'][4] = [	
 				30
 			];
 
-			chart.resp.rhythm['high'] = [	
-				62,62
+			chart.resp.rhythm['high'][0] = [	
+				52,62
+			];
+			chart.resp.rhythm['high'][1] = [	
+				54,62
+			];
+			chart.resp.rhythm['high'][2] = [	
+				54,62
+			];
+			chart.resp.rhythm['high'][3] = [	
+				56,62
+			];
+			chart.resp.rhythm['high'][4] = [	
+				56,62
 			];
 			
 			chart.resp.manualBreathPattern = [	// approximate 300 msec waveform
-				0,0,0,0,0,0,0,0,0,0,
-				0,0,0,0,0,0,0,0,0,0,
-				20,44,62,62,62,62,62,62,62,62,
-				62,62,62,62,62,62,62,62,62,62,
-				62,62,62,62,62,62,62,62,62,62,
-				62,62,62,62,62,62,62,62,44,20,
-				0,0,0
+				0.110304233,0.110304233,0.110304233,0.110304233,0.110304233,
+				0.110304233,0.110304233,0.110304233,0.110304233,0.110304233,
+				0.110304316,0.204757313,0.444808642,1.440832926,3.047279566,
+				5.909726892,12.58774301,24.91583508,37.12211491,44.30213386,
+				46.80024109,48.49503321,49.89641132,50.9500952,51.83944314,
+				52.67463999,53.16772702,53.59644724,53.8281222,54.26381362,
+				54.49252225,54.93136691,55.1664858,55.59261397,56.04765394,
+				56.25591856,56.46471241,56.92293194,57.36708998,57.80026169,
+				58.01810818,58.40573427,58.67420683,59.01728293,59.37400285,
+				59.78660762,60.2297822,60.4456987,60.89843097,61.10002117,
+				61.55049417,61.5493449,60.72807351,58.85943707,50.48641877,
+				36.93296859,24.22481363,11.00608487,2.468408594,0.877075091,
+				0.334116028,0.292495125,0
 			];
 			
 			// get max value
@@ -448,7 +484,9 @@ See gpl.html
 
 			// start the pattern
 			chart.resp.interval = setInterval(chart.drawRespPixel, chart.resp.drawInterval, "resp");
-// console.log("ekg y offset: " + chart.ekg.yOffset);
+
+//console.log("chart.resp.interval: " + chart.resp.interval);
+//console.log("chart.resp.drawInterval: " + chart.resp.drawInterval);
 
 			// init respiration
 			chart.updateRespRate();
@@ -539,7 +577,7 @@ See gpl.html
 			
 			if ( typeof ( chart.ekg.rhythm[chart.ekg.rhythmIndex] ) === 'undefined' || typeof chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.rateIndex] == 'undefined')
 			{
-				console.log("No EKG Rhythm "+chart.ekg.rhythmIndex );
+//				console.log("No EKG Rhythm "+chart.ekg.rhythmIndex );
 				chart.ekg.rhythmIndex = 'asystole';	// Flatline
 				chart.ekg.rateIndex = 0;
 			}
@@ -605,11 +643,6 @@ See gpl.html
 				if(chart.ekg.stopFlag == true) {
 					y = 0;
 					controls.heartRate.audio.pause();
-				} else if(chart.ekg.rhythmIndex == 'defib') {
-					y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.patternIndex];
-					
-					// increment pointers
-					chart.ekg.patternIndex++;				
 				} else if(controls.cpr.inProgress == true) {
 					y = chart.ekg.rhythm.cpr[chart.ekg.cprwaveformIndex][chart.ekg.patternIndex];
 					controls.heartRate.value = 120;
@@ -625,6 +658,11 @@ See gpl.html
 //						y -= (chart.ekg.noiseMax / 2);
 //					}
 //					chart.ekg.patternIndex = 0;					
+				} else if(chart.ekg.rhythmIndex == 'defib') {
+					y = chart.ekg.rhythm[chart.ekg.rhythmIndex][chart.ekg.patternIndex];
+					
+					// increment pointers
+					chart.ekg.patternIndex++;				
 				} else if(chart.ekg.rhythmIndex == 'sinus' || chart.ekg.rhythmIndex == 'vtach1' || chart.ekg.rhythmIndex == 'vtach2') {
 					// check if we are doing a vpc.  VPC synch will only get set when the vpc needs to be generated
 					if(chart.status.cardiac.vpcSynch == true && chart.ekg.patternIndex == 0 && chart.status.cardiac.synch == false) {
@@ -814,11 +852,10 @@ See gpl.html
 					controls.manualRespiration.inProgress = false;
 					y = 0;
 				} else {
-					if(chart.resp.manualBreathPattern[controls.manualRespiration.manualBreathIndex] <= chart.displayETCO2.max) {
-						y = chart.resp.manualBreathPattern[controls.manualRespiration.manualBreathIndex] * -1;
-                    } else {
-						y = chart.displayETCO2.max * -1;
-                    }
+					//scale the y value to the current ETCO2
+					y = chart.resp.manualBreathPattern[controls.manualRespiration.manualBreathIndex] * -1 * chart.resp.currentetCO2value / controls.etCO2.maxValue;
+//console.log("manual breath: " + y);
+					// advance to the next point in the waveform
 					controls.manualRespiration.manualBreathIndex++;
 				}
 				
@@ -841,6 +878,8 @@ See gpl.html
 // console.log("Periodcount: " + chart.resp.periodCount);
 // console.log("rate: " + simmgr.respResponse.rate);
 					chart.updateRespRate();
+					//store the current etCO2 value for this breath in case it is changed mid-breath
+					chart.resp.currentetCO2value = controls.etCO2.value
 					
 					// clear out synch bit
 					chart.status.resp.synch = false;
@@ -858,7 +897,9 @@ See gpl.html
 					chart.resp.rhythmIndex = 'low';	// start pattern with pattern low...start of inhalation
 					
 					// length of current pattern segment being displayed
-					chart.resp.length = chart.resp.inhalationDuration;
+					chart.resp.length = chart.resp.inhalationDuration-1;
+//console.log("chart.resp.inhalationDuration: " + chart.resp.inhalationDuration);
+//console.log("chart.resp.exhalationDuration: " + chart.resp.exhalationDuration);
 					
 					// max value
 					if(chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.patternIndex] > chart.displayETCO2.max) {
@@ -868,16 +909,27 @@ See gpl.html
 					}
 				}
 				else {
-					if(chart.resp.rhythmIndex == 'high-to-low' || chart.resp.rhythmIndex == 'low-to-high') {
+					if(chart.resp.rhythmIndex == 'low-to-high') {
+						y = chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.risePatternIndex][chart.resp.patternIndex] * -1 * chart.resp.rhythm['high'][chart.resp.risePatternIndex][0]/52;
+					} else if(chart.resp.rhythmIndex == 'high-to-low'){
 						y = chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.risePatternIndex][chart.resp.patternIndex] * -1;
-					} else if(chart.resp.rhythmIndex == 'low' || chart.resp.rhythmIndex == 'rest' || chart.resp.rhythmIndex == 'high'){
+					} else if(chart.resp.rhythmIndex == 'low' || chart.resp.rhythmIndex == 'rest'){
 						y = chart.resp.rhythm[chart.resp.rhythmIndex][0] * -1;
+					} else if (chart.resp.rhythmIndex == 'high'){
+						y = -1* (chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.risePatternIndex][0] + ((chart.resp.patternIndex/(chart.resp.length-1)) * (chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.risePatternIndex][1]-chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.risePatternIndex][0])))
+//console.log("y: " + y);
+//console.log("chart.displayETCO2.max * -1: " + chart.displayETCO2.max * -1);
+
 					}
+
+					//scale the y value to the current ETCO2
+					y = y * chart.resp.currentetCO2value / controls.etCO2.maxValue
+//console.log("y: " + y);
 					
 					// check that y is not over max value
-					if(y < (chart.displayETCO2.max * -1)) {
-						y = chart.displayETCO2.max * -1;
-					}
+					// if(y < (chart.displayETCO2.max * -1)) {
+					//	y = chart.displayETCO2.max * -1;
+					// }
 					
 					// increment pixel count and index into pattern
 					chart.resp.pixelCount++;
@@ -891,36 +943,42 @@ See gpl.html
 								// breathing rate is greater than zero than advance to next waveform, else stay in low and reset pattern
 								if(simmgr.respResponse.rate > 0) {
 									chart.resp.rhythmIndex = 'low-to-high';
-									chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.risePatternIndex].length;
+									chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.risePatternIndex].length-1;
 								}
 								chart.resp.patternIndex = 0;								
 								break;
 							
 							case 'low-to-high': // Exhalation (low to high)
 								chart.resp.rhythmIndex = 'high';
-								chart.resp.length = chart.resp.exhalationDuration;
+								chart.resp.length = chart.resp.exhalationDuration - chart.resp.length - chart.resp.rhythm['high-to-low'][chart.resp.risePatternIndex].length-1;
+//console.log("length of high: " + chart.resp.length);
 								chart.resp.patternIndex = 0;								
 								break;
 
 							case 'high': // Hold Out (hold high)
 								chart.resp.rhythmIndex = 'high-to-low';
-								chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.risePatternIndex].length;
-								chart.resp.patternIndex = 0;								
-								break;
-
-							case 'high-to-low':	// Depletion of CO2 (high to low)
-								chart.resp.rhythmIndex = 'rest';
-								chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex].length;
+								chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex][chart.resp.risePatternIndex].length-1;
 								chart.resp.patternIndex = 0;
 								controls.etCO2.changeInProgressStatus = ETCO2_NEW_WAVEFORM_COMPLETED;
 									if ( profile.isVitalsMonitor ) {
 										controls.etCO2.displayValue();
-									}
+									}								
+								break;
+
+							case 'high-to-low':	// Depletion of CO2 (high to low)
+//console.log("got to end of high to low");
+								chart.resp.rhythmIndex = 'rest';
+								chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex].length-1;
+								chart.resp.patternIndex = 0;
+//								controls.etCO2.changeInProgressStatus = ETCO2_NEW_WAVEFORM_COMPLETED;
+//									if ( profile.isVitalsMonitor ) {
+//										controls.etCO2.displayValue();
+//									}
 								break;
 
 							case 'rest':	// rest between breaths...stay in cycle until synch pulse
 								chart.resp.rhythmIndex = 'rest';
-								chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex].length;
+								chart.resp.length = chart.resp.rhythm[chart.resp.rhythmIndex].length-1;
 								chart.resp.patternIndex = 0;
 								if(controls.etCO2.changeInProgressStatus == ETCO2_NEW_WAVEFORM_COMPLETED) {
 									controls.etCO2.changeInProgressStatus = ETCO2_OK;
@@ -1108,24 +1166,44 @@ See gpl.html
 			{
 				// calculate total length of breathing pattern
 				chart.resp.periodCount = Math.round(((60 / simmgr.respResponse.rate) * 1000) / chart.resp.drawInterval);
+//console.log("periodCount: " + chart.resp.periodCount);
+//console.log("simmgr.respResponse.rate: " + simmgr.respResponse.rate);
+
+				// calculate exhalation duration
+				// Maximum length of expiration is 3 seconds, so truncate at cycle length > 4.5sec
+				if( (60/simmgr.respResponse.rate) > 4.5 )
+					{
+						chart.resp.exhalationDuration = Math.floor((3 * 1000) / chart.resp.drawInterval);
+					} else {
+						//chart.resp.exhalationDuration = Math.floor(simmgr.respResponse.exhalation_duration / chart.resp.drawInterval);
+						chart.resp.exhalationDuration = Math.floor(chart.resp.periodCount * 2 / 3);
+					}
 				
 				// calculate inhalation duration
-				chart.resp.inhalationDuration = Math.floor(simmgr.respResponse.inhalation_duration / chart.resp.drawInterval);
+				chart.resp.inhalationDuration = chart.resp.periodCount - chart.resp.exhalationDuration;
+
 				
-				// calculate exhalation duration
-				chart.resp.exhalationDuration = Math.floor(simmgr.respResponse.exhalation_duration / chart.resp.drawInterval);
+
+//console.log("exhalation_duration: " + chart.resp.exhalationDuration)
+//console.log("chart.resp.inhalationDuration: " + chart.resp.inhalationDuration)
+
 				
 				// rise / fall pattern used fo rising and falling edge patterns
 				if(simmgr.respResponse.rate < 10) {
 					chart.resp.risePatternIndex = 0;
-				} else if(simmgr.respResponse.rate <= 15 ) {
+				} else if(simmgr.respResponse.rate <= 20) {
 					chart.resp.risePatternIndex = 1;								
 				} else if(simmgr.respResponse.rate <= 30) {
 					chart.resp.risePatternIndex = 2;								
 				} else if(simmgr.respResponse.rate <= 50) {
-					chart.resp.risePatternIndex = 3;								
+					chart.resp.risePatternIndex = 3;
+					//chart.resp.exhalationDuration = Math.floor(chart.resp.periodCount / 2);	
+					//chart.resp.inhalationDuration = chart.resp.periodCount - chart.resp.exhalationDuration;							
 				} else {
 					chart.resp.risePatternIndex = 4;
+					chart.resp.exhalationDuration = Math.floor(chart.resp.periodCount / 2);	
+					chart.resp.inhalationDuration = chart.resp.periodCount - chart.resp.exhalationDuration;							
+
 				}
 			}
 			else
