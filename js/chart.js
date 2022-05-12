@@ -853,6 +853,7 @@ See gpl.html
 					y = 0;
 				} else {
 					//scale the y value to the current ETCO2
+					chart.resp.currentetCO2value = controls.etCO2.value
 					y = chart.resp.manualBreathPattern[controls.manualRespiration.manualBreathIndex] * -1 * chart.resp.currentetCO2value / controls.etCO2.maxValue;
 //console.log("manual breath: " + y);
 					// advance to the next point in the waveform
