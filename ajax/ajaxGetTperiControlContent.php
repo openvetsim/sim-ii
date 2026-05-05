@@ -31,11 +31,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 		echo json_encode($returnVal);
 		exit();
 	}
-	
+
 	$title = dbClass::valuesFromPost('ModalTitle');
 	$controlTitle = dbClass::valuesFromPost('ControlTitle');
 	$modalUnitsLabel = dbClass::valuesFromPost('ModalUnits');
-	
+
 	$content = '
 		<h1 id="modal-title">' . $title . '</h1>
 		<hr / class="modal-divider">
@@ -44,16 +44,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 			<p class="modal-input-label">Current</p>
 			<p class="modal-input-label new-value">New</p>
 			<a class="control-incr-decr-rate decr-rate clearer float-left" href="javascript: void(2);"><<</a>
-			
+
 			<input value="0" class="strip-value current float-left" readonly="readonly" disabled="disabled">
-			
+
 			<!-- old slider -->
-			<!-- <div class="control-slider-1"></div>
-			<input value="0" class="strip-value new"> -->
-			
+			<!-- <div class="control-slider-1"></div> -->
+
 			<!-- New slider -->
-			<input value="0" class="strip-value new control-slider-1 float-left" data-highlight="true">		
-			
+			<div value="0" class="control-slider-1 float-left" data-highlight="true"></div>
+			<input value="0" class="strip-value new display-new">
+
 			<a class="control-incr-decr-rate incr-rate float-left" href="javascript: void(2);">>></a>
 			<div class="clearer"></div>
 		</div>

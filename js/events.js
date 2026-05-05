@@ -7,7 +7,7 @@ See gpl.html
 		currentLogRecord: 1,
 		currentLogFileName: '',
 		defaultComment: 'Please enter comment for log',
-		
+
 		init: function() {
 			// set up list of events for this scenario into modal
 			$.ajax({
@@ -27,22 +27,23 @@ See gpl.html
 								$(this).next('ul').hide();
 							} else {
 								$(this).html("-").addClass('expanded');
-								$(this).next('ul').show();					
+								$(this).next('ul').show();
 							}
 						});
 					}
-					
+
 					// remove previous events
 					$('.event-priority').remove();
-					
+
 					// Clear prior hotkeys
 					hotkeys.clearAll();
-					
+
 					// get priority events if any
 					if(typeof response.priority != 'undefined' && response.priority.length > 0) {
 						var content = '<li class="event-priority event-divider">|</li><li class="event-priority">Quick Event Links:</li>';
 						var hotkey = '';
 						response.priority.forEach(function(element, index, event) {
+							hotkey = '';
 							if ( typeof element.hotkey !== 'undefined' && element.hotkey.length != 0 )
 							{
 								hotkey = ' ('+element.hotkey+')';
@@ -51,7 +52,12 @@ See gpl.html
 						});
 						$('ul#main-nav li.menu-events').after(content);
 					}
-					
+
+					// alert if a hotlink has been defined with a (b) or (c)
+					if( response.hotLinkDup == 'true' ) {
+						alert( "Predefined hotkeys (b) or (c) cannot be redefined.  Hotkey definition has been ignored" );
+					}
+
 					// Set defined hotkeys, if any
 					if(typeof response.hotkeys != 'undefined' && response.hotkeys.length > 0) {
 						response.hotkeys.forEach(function(key ) {
@@ -61,10 +67,10 @@ See gpl.html
 					}
 				}
 			});
-						
+
 			// force event monitor to scroll to bottom and hide div for modal
 			$("#event-monitor").scrollTop(1000);
-			
+
 			// bind comments
 			$('#comment-input').focus(function() {
 				if($(this).val() == events.defaultComment) {
@@ -91,22 +97,22 @@ See gpl.html
 				evt.which = null;
 			});
 		},
-		
+
 		sendEventLibraryClick: function(eventObj) {
 			$(eventObj).prev('img').show();
 //			$('#event-monitor table').append('<tr><td class="time-stamp">00:02:00</td><td class="event">Event: ' + $(eventObj).attr('data-category') + ':' + $(eventObj).html() + '</td></tr>');
 //			$("#event-monitor").scrollTop($('#event-monitor table').height());
-			
+
 			// code stub to send event to sim mgr
 			simmgr.sendChange({'set:event:event_id': $(eventObj).attr('data-event-id')});
 			modal.closeModal();
 		},
-		
+
 		sendPriorityEvent: function(eventID) {
 			// code stub to send event to sim mgr
 			simmgr.sendChange({'set:event:event_id': eventID});
 		},
-		
+
 		addEventsFromLog: function() {
 			// set up list of events for this scenario into modal
 			$.ajax({
@@ -122,5 +128,5 @@ See gpl.html
 				}
 			});
 		}
-		
+
 	}

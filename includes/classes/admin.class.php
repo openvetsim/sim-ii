@@ -1,6 +1,6 @@
 <?php
 /*
-sim-ii: 
+sim-ii:
 
 Copyright (C) 2019  VetSim, Cornell University College of Veterinary Medicine Ithaca, NY
 
@@ -18,11 +18,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>
 */
 	class adminClass {
-				
+
 		function __construct() {
 
 		}
-		
+
 		// salt for encoding passwords
 		public static function generateSalt() {
 			$salt = "";
@@ -31,9 +31,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 			}
 			return $salt;
 		}
-				
+
 		// get admin record for login
 		static public function isUserLoginValid($userEmail, $passWord) {
+			if ( key_exists('NO_DB', $_SESSION ) )
+			{
+				$row['UserFirstName'] = "";
+				$row['UserLastName'] = "";
+				$row['UserID'] = 1;
+				$row['isUserLoggedIn'] = TRUE;
+				return ( $row );
+			}
 			$cleanUserEmail = dbClass::cleanMySQLInput($userEmail);
 			$result = dbClass::dbSelectQueryResult("
 								SELECT * FROM Users
@@ -52,22 +60,39 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				}
 			}
 		}
-		
+
 		// get users rows
 		static public function getAllUserRows() {
+			if ( key_exists('NO_DB', $_SESSION ) )
+			{
+				$row['UserFirstName'] = "";
+				$row['UserLastName'] = "";
+				$row['UserID'] = 1;
+				$row['isUserLoggedIn'] = TRUE;
+				$rows[0] = $row;
+				return ( $rows );
+			}
 			$rows = dbClass::dbSelectQueryResult("
 								SELECT * FROM Users
 								ORDER BY UserLastName ASC
 								");
 			return $rows;
 		}
-		
+
 		// get users row
 		static public function getUserRow($userID) {
+			if ( key_exists('NO_DB', $_SESSION ) )
+			{
+				$row['UserFirstName'] = "";
+				$row['UserLastName'] = "";
+				$row['UserID'] = 1;
+				$row['isUserLoggedIn'] = TRUE;
+				return ( $row );
+			}
 			if(dbClass::isIndex($userID) === FALSE) {
 				return FALSE;
 			}
-			
+
 			$rows = dbClass::dbSelectQueryResult("
 								SELECT * FROM Users
 								WHERE UserID = $userID
@@ -77,7 +102,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 			}
 			return $rows[0];
 		}
-		
+
 		// is admin logged in
 		static public function isUserLoggedIn() {
 			if(isset($_SESSION['User']['isUserLoggedIn']) == TRUE && $_SESSION['User']['isUserLoggedIn'] == TRUE && self::getUserNameFromSession() !== FALSE) {
@@ -86,7 +111,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				return FALSE;
 			}
 		}
-		
+
 		// admin session variables
 		static public function addUserToSession($userRow) {
 			$_SESSION['User']['UserFirstName'] = $userRow['UserFirstName'];
@@ -95,19 +120,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 			$_SESSION['User']['isUserLoggedIn'] = TRUE;
 			return;
 		}
-		
+
 		static public function removeUserFromSession() {
 			unset($_SESSION['User']);
 
 			return;
 		}
-		
+
 		static public function getUserNameFromSession() {
 			if(isset($_SESSION['User']['UserID']) === TRUE && dbClass::isIndex($_SESSION['User']['UserID']) === TRUE) {
+				if ( key_exists('NO_DB', $_SESSION ) )
+				{
+					return "";
+				}
 				$cleanUserID = $_SESSION['User']['UserID'];
-				
+
 				$result = dbClass::dbSelectQueryResult("
-									SELECT * FROM Users 
+									SELECT * FROM Users
 									WHERE UserID = '$cleanUserID'
 									");
 				if(count($result) != 1) {
@@ -115,17 +144,26 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				} else {
 					return $_SESSION['User']['UserFirstName'] . " " . $_SESSION['User']['UserLastName'];
 				}
+
 			} else {
 				return FALSE;
 			}
 		}
-		
+
 		static public function getUserRowFromSession() {
+			if ( key_exists('NO_DB', $_SESSION ) )
+			{
+				$row['UserFirstName'] = "";
+				$row['UserLastName'] = "";
+				$row['UserID'] = 1;
+				$row['isUserLoggedIn'] = TRUE;
+				return ( $row );
+			}
 			if(isset($_SESSION['User']['UserID']) === TRUE && dbClass::isIndex($_SESSION['User']['UserID']) === TRUE) {
 				$cleanUserID = $_SESSION['User']['UserID'];
-				
+
 				$row = dbClass::dbSelectQueryResult("
-									SELECT * FROM Users 
+									SELECT * FROM Users
 									WHERE UserID = '$cleanUserID'
 									");
 				if(count($row) != 1) {
@@ -137,6 +175,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				return FALSE;
 			}
 		}
-			
+
 	}
 ?>

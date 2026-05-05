@@ -1,6 +1,6 @@
 <?php
 /*
-sim-ii: 
+sim-ii:
 
 Copyright (C) 2019  VetSim, Cornell University College of Veterinary Medicine Ithaca, NY
 
@@ -18,21 +18,47 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>
 */
 
-	// init.php: Common initialization file 
-	
+	// init.php: Common initialization file
+
 //ini_set('display_errors', 'On');
 //error_reporting(E_ALL);
 
 	// session
 	session_start();
 	$sessionID = session_id();
-	
+
+		// ii-php: Instructor interface
+	if ( key_exists('NO_DB', $_SESSION ) && key_exists('User', $_SESSION ) && $_SESSION['User']['isUserLoggedIn'] == TRUE )
+	{
+		$noDB = $_SESSION['NO_DB'];
+	}
+	else
+	{
+		if ( key_exists('NO_DB', $_SESSION ) ||
+			( key_exists('OS', $_SERVER) && strncmp($_SERVER['OS'], "Windows", 7 ) == 0  ) ||
+			( key_exists('SERVER_SOFTWARE', $_SERVER) && strncmp($_SERVER['SERVER_SOFTWARE'], "PHP ", 4 ) == 0 ) )
+		{
+			$noDB = TRUE;
+			$_SESSION['NO_DB'] = 1;
+
+				$_SESSION['User']['UserFirstName'] = "";
+				$_SESSION['User']['UserLastName'] = "";
+				$_SESSION['User']['UserID'] = 1;
+				$_SESSION['User']['isUserLoggedIn'] = TRUE;
+
+		}
+		else
+		{
+			$noDB = FALSE;
+		}
+	}
+
 	// debug
 	define("DEBUG", TRUE);
 	if(DEBUG === TRUE) {
 		define("DB_DEBUG", TRUE);
 	} else {
-		define("DB_DEBUG", FALSE);	
+		define("DB_DEBUG", FALSE);
 	}
 	$parts = explode('/',$_SERVER['SCRIPT_NAME'], 3 );
 	if ( count($parts) > 2 )
@@ -44,21 +70,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 		$top_dir = "ii";
 	}
 	// server defines
-	define("SERVER_ROOT", $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . $top_dir . DIRECTORY_SEPARATOR);
+	define ("DIR_SEP", "/" );
+	define("SERVER_ROOT", $_SERVER['DOCUMENT_ROOT'] . DIR_SEP . $top_dir . DIR_SEP);
 
 	// sever locations
-	define("SERVER_INCLUDES", SERVER_ROOT . "includes" . DIRECTORY_SEPARATOR);
-	define("SERVER_CLASSES", SERVER_INCLUDES . "classes" . DIRECTORY_SEPARATOR);
-	define("SERVER_SIM_LOGS", $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "simlogs" . DIRECTORY_SEPARATOR);	
-	define("SERVER_SCENARIOS", $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "scenarios" . DIRECTORY_SEPARATOR);	
-	define("SERVER_SCENARIOS_PATIENTS", SERVER_SCENARIOS . "patients" . DIRECTORY_SEPARATOR);	
-	define("SERVER_DEMO_SCENARIOS", $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "demo" . DIRECTORY_SEPARATOR);
-	
+	define("SERVER_INCLUDES", SERVER_ROOT . "includes" . DIR_SEP);
+	define("SERVER_CLASSES", SERVER_INCLUDES . "classes" . DIR_SEP);
+	define("SERVER_SIM_LOGS", $_SERVER['DOCUMENT_ROOT'] . DIR_SEP . "simlogs" . DIR_SEP);
+	define("SERVER_SCENARIOS", $_SERVER['DOCUMENT_ROOT'] . DIR_SEP . "scenarios" . DIR_SEP);
+	define("SERVER_SCENARIOS_PATIENTS", SERVER_SCENARIOS . "patients" . DIR_SEP);
+	define("SERVER_DEMO_SCENARIOS", $_SERVER['DOCUMENT_ROOT'] . DIR_SEP . "demo" . DIR_SEP);
+
 	// server location for ini files
-//	define("SERVER_PROFILES",  SERVER_SCENARIOS . "profiles" . DIRECTORY_SEPARATOR);
-//	define("SERVER_PROFILES", $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "profiles" . DIRECTORY_SEPARATOR);	
-//	define("SERVER_VOCALS", SERVER_SCENARIOS . "vocals" . DIRECTORY_SEPARATOR);
-//	define("SERVER_MEDIA", SERVER_SCENARIOS . "media" . DIRECTORY_SEPARATOR);
+//	define("SERVER_PROFILES",  SERVER_SCENARIOS . "profiles" . DIR_SEP);
+//	define("SERVER_PROFILES", $_SERVER['DOCUMENT_ROOT'] . DIR_SEP . "profiles" . DIR_SEP);
+//	define("SERVER_VOCALS", SERVER_SCENARIOS . "vocals" . DIR_SEP);
+//	define("SERVER_MEDIA", SERVER_SCENARIOS . "media" . DIR_SEP);
 
 	// browser defines
 	if(isset($_SERVER['HTTPS']) == true) {
@@ -73,37 +100,52 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 	else
 	{
 		define("SERVER_FULL", $_SERVER["SERVER_NAME"] );
-	
+
 	}
-//	define("BROWSER_HTML", SERVER_FULL . DIRECTORY_SEPARATOR .  $top_dir . DIRECTORY_SEPARATOR);
-//	define("BROWSER_HTML", $_SERVER["HTTP_HOST"].DIRECTORY_SEPARATOR);
+//	define("BROWSER_HTML", SERVER_FULL . DIR_SEP .  $top_dir . DIR_SEP);
+//	define("BROWSER_HTML", $_SERVER["HTTP_HOST"].DIR_SEP);
 	define("BROWSER_HTML", "" );
 //	define("BROWSER_ROOT", HOST_PROTOCOL . BROWSER_HTML);
 	define("BROWSER_ROOT", "" );
-	define("BROWSER_PROFILES_IMAGES", ".." . DIRECTORY_SEPARATOR . "scenarios" . DIRECTORY_SEPARATOR . "images" . DIRECTORY_SEPARATOR);
-	define("BROWSER_CGI",  ".." . DIRECTORY_SEPARATOR . "cgi-bin" . DIRECTORY_SEPARATOR);
-	define("BROWSER_SCENARIOS", ".." . DIRECTORY_SEPARATOR . "scenarios" . DIRECTORY_SEPARATOR);
-	define("BROWSER_DEMO_SCENARIOS", ".." . DIRECTORY_SEPARATOR . "demo" . DIRECTORY_SEPARATOR);
-//	define("BROWSER_SCENARIOS_IMAGES", BROWSER_SCENARIOS . "images" . DIRECTORY_SEPARATOR);
-//	define("BROWSER_SCENARIOS_PATIENTS", BROWSER_SCENARIOS . "patients" . DIRECTORY_SEPARATOR);
-//	define("BROWSER_SCENARIOS_MEDIA", BROWSER_SCENARIOS . "media" . DIRECTORY_SEPARATOR);
-//	define("BROWSER_SCENARIOS_VOCALS", BROWSER_SCENARIOS . "vocals" . DIRECTORY_SEPARATOR);
-	
-	define("BROWSER_CSS", BROWSER_ROOT . "css" . DIRECTORY_SEPARATOR);
-	define("BROWSER_IMAGES", BROWSER_ROOT . "images" . DIRECTORY_SEPARATOR);
-	define("BROWSER_VOCALS",  BROWSER_ROOT . "vocals" . DIRECTORY_SEPARATOR);
-	define("BROWSER_AJAX", BROWSER_ROOT . "ajax" . DIRECTORY_SEPARATOR);
-	define("BROWSER_SCRIPTS", BROWSER_ROOT . "js" . DIRECTORY_SEPARATOR);
-	
-	define("SERVER_ADDR", $_SERVER['SERVER_ADDR'] );
+	define("BROWSER_PROFILES_IMAGES", ".." . DIR_SEP . "scenarios" . DIR_SEP . "images" . DIR_SEP);
+
+	if($noDB)
+	{
+		define("BROWSER_CGI", "http://" . $_SERVER["SERVER_NAME"] . ":40845" . DIR_SEP);
+	}
+	else
+	{
+		define("BROWSER_CGI",  ".." . DIR_SEP . "cgi-bin" . DIR_SEP);
+	}
+	define("BROWSER_SCENARIOS", ".." . DIR_SEP . "scenarios" . DIR_SEP);
+	define("BROWSER_DEMO_SCENARIOS", ".." . DIR_SEP . "demo" . DIR_SEP);
+//	define("BROWSER_SCENARIOS_IMAGES", BROWSER_SCENARIOS . "images" . DIR_SEP);
+//	define("BROWSER_SCENARIOS_PATIENTS", BROWSER_SCENARIOS . "patients" . DIR_SEP);
+//	define("BROWSER_SCENARIOS_MEDIA", BROWSER_SCENARIOS . "media" . DIR_SEP);
+//	define("BROWSER_SCENARIOS_VOCALS", BROWSER_SCENARIOS . "vocals" . DIR_SEP);
+
+	define("BROWSER_CSS", BROWSER_ROOT . "css" . DIR_SEP);
+	define("BROWSER_IMAGES", BROWSER_ROOT . "images" . DIR_SEP);
+	define("BROWSER_VOCALS",  BROWSER_ROOT . "vocals" . DIR_SEP);
+	define("BROWSER_AJAX", BROWSER_ROOT . "ajax" . DIR_SEP);
+	define("BROWSER_SCRIPTS", BROWSER_ROOT . "js" . DIR_SEP);
+
+	if ( array_key_exists("SERVER_ADDR", $_SERVER ) )
+	{
+		define("SERVER_ADDR", $_SERVER['SERVER_ADDR'] );
+	}
+	else if ( array_key_exists("SERVER_NAME", $_SERVER ) )
+	{
+		define("SERVER_ADDR", $_SERVER['SERVER_NAME'] );
+	}
 	define("REMOTE_ADDR", $_SERVER['REMOTE_ADDR'] );
-	
+
 	// Default DB select
 	define('DB_DEFAULT', 'vet');
-	
+
 	// pepper for password encryption
 	define("PEPPER", "vetschool");
-	
+
 	// define for file transfers
 	define('FILE_NO_ERROR', 0);
 	define('FILE_INVALID_TYPE', 1);
@@ -116,34 +158,42 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 	define('FILE_SCENARIO_INVALID', 8);
 	define('FILE_SCENARIO_DUP', 9);
 	define('SHOW_SCENARIO_MANAGER', 10);
-	
+
 	// AJAX defines
 	// AJAX Constants
 	define('AJAX_STATUS_OK', 0);
 	define('AJAX_STATUS_FAIL', 1);
 	define('AJAX_STATUS_LOGIN_FAIL', 2);
-	
+
 	// version
-	define('VERSION_MAJOR', 1);
-	define('VERSION_MINOR', '6-M');
-	
+	define('VERSION_MAJOR', '2');
+	define('VERSION_MINOR', '1-WVS');
+
 	// mobilized
 //	define('MOBILIZED', FALSE);
 	define('MOBILIZED', TRUE);
-	
+
 	// define temp directory for scenario
 	define('TMP_SCENARIO_DIR', '/var/www/html/temp/'.$sessionID.'/' );
-		
+
 	/************************************/
 	// requires for global classes
-	require_once(SERVER_CLASSES . "admin.class.php");
-	require_once(SERVER_CLASSES . "db.class.php");
+	if ( $noDB )
+	{
+		require_once(SERVER_CLASSES . "adminWin.class.php");
+		require_once(SERVER_CLASSES . "dbWin.class.php");
+	}
+	else
+	{
+		require_once(SERVER_CLASSES . "admin.class.php");
+		require_once(SERVER_CLASSES . "db.class.php");
+	}
 	require_once(SERVER_CLASSES . "file.class.php");
 	require_once(SERVER_CLASSES . "model.class.php");
 	require_once(SERVER_CLASSES . "log.class.php");
 	require_once(SERVER_CLASSES . "controls.class.php");
 	require_once(SERVER_CLASSES . "scenarioXML.class.php");
-	
+
 	// Excel class -- optional
 //	require_once(SERVER_CLASSES.'PHPExcel.php');
 //	require_once(SERVER_CLASSES.'PHPExcel/IOFactory.php');
@@ -152,5 +202,5 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 	// mail class -- optional
 //	require_once(SERVER_CLASSES . "mail.class.php");
 
-	
+
 ?>

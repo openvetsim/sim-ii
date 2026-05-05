@@ -1,8 +1,10 @@
 <?php
+ini_set('display_errors', 'On');
+error_reporting(E_ALL | E_STRICT);
 /*
-sim-ii.php: 
+ii.php:
 
-Copyright (C) 2019  VetSim, Cornell University College of Veterinary Medicine Ithaca, NY
+Copyright (C) 2019-2021  VetSim, Cornell University College of Veterinary Medicine Ithaca, NY
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,19 +21,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 */
 
 	// ii-php: Instructor interface
-	
+
 	require_once('init.php');
-	
-	$status = adminClass::isUserLoggedIn();
-	if($status === FALSE) {
-		header('location: index.php');
+
+	if ( ! $noDB )
+	{
+		$status = adminClass::isUserLoggedIn();
+		if($status === FALSE) {
+			header('location: index.php');
+		}
 	}
-	
 	$userRow = adminClass::getUserRowFromSession();
 	$userName = $userRow['UserFirstName'] . " " . $userRow['UserLastName'];
 	$uid = $userRow['UserID'];
 	$sessionID = session_id();
-	
+
 	$uploadErrorCode = FILE_NO_ERROR;
 
 	// If Demo user, then we use a temporary directory for Scenarios
@@ -47,15 +51,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 		define("SERVER_ACTIVE_SCENARIOS", SERVER_SCENARIOS );
 		define("BROWSER_ACTIVE_SCENARIOS", BROWSER_SCENARIOS );
 	}
-	
+
 	// are deleting a scenario?
 	$deleteScenarioDir = dbClass::valuesFromGet('ddir');
 	if($deleteScenarioDir != '') {
 		if(fileClass::deleteDir(SERVER_ACTIVE_SCENARIOS . $deleteScenarioDir)) {
 			$uploadErrorCode = SHOW_SCENARIO_MANAGER;
-		} 
+		}
 	}
-	
+
 	// process POST and see if we added a new scenario
 	$scenarioDir = '';
 	if(isset($_POST['scenario-submit']) === TRUE) {
@@ -64,7 +68,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 		if($fileUploadError == UPLOAD_ERR_OK) {
 			// delete temp directory
 			fileClass::deleteDir(TMP_SCENARIO_DIR);
-			
+
 			// make temp directory and unpack archive
 			@mkdir(TMP_SCENARIO_DIR, 0777, TRUE );
 
@@ -74,19 +78,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 			if ($resource === TRUE) {
 				$scenarioZip->extractTo(TMP_SCENARIO_DIR);
 				$scenarioZip->close();
-				
+
 				fileClass::setDirModeRecursive(TMP_SCENARIO_DIR, 0777);
 				$uploadErrorCode = FILE_EXTRACT_ZIP_OK;
 			} else {
 				$uploadErrorCode = FILE_EXTRACT_ZIP_FAIL;
 				fileClass::deleteDir(TMP_SCENARIO_DIR);
-			}			
+			}
 		}
-		
+
 		// validate archive if extract is OK
 		if($uploadErrorCode == FILE_EXTRACT_ZIP_OK) {
 			if(!fileClass::validateScenarioArchive()) {
-				$uploadErrorCode = FILE_SCENARIO_INVALID;				
+				$uploadErrorCode = FILE_SCENARIO_INVALID;
 				fileClass::deleteDir(TMP_SCENARIO_DIR);
 			} else {
 				// check for duplicate scenario directories
@@ -97,11 +101,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				} else {
 					// move the temp directory to a new scenario
 					fileClass::copyDir(TMP_SCENARIO_DIR, SERVER_ACTIVE_SCENARIOS . $parts['filename'] . '/', 0777);
-					fileClass::deleteDir(TMP_SCENARIO_DIR);					
+					fileClass::deleteDir(TMP_SCENARIO_DIR);
 				}
 			}
 		}
-/*	
+/*
 		$parts = pathinfo($_FILES['scenario-file-select']['name']);
 		$ext = $parts['extension'];
 		if($ext == 'zip') {
@@ -119,12 +123,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 					@mkdir(TMP_SCENARIO_DIR, 0777);
 					$scenarioZip->extractTo(TMP_SCENARIO_DIR);
 					$scenarioZip->close();
-					
+
 					$fileListArray = fileClass::getSPLFileList(TMP_SCENARIO_DIR);
 					foreach($fileListArray as $fileName) {
 						chmod($fileName, 0777);
 					}
-					
+
 					// copy from temp directory to new scenario folder
 					fileClass::copyDir(TMP_SCENARIO_DIR, SERVER_ACTIVE_SCENARIOS . $parts['filename'] . '/', 0777);
 					fileClass::deleteDir(TMP_SCENARIO_DIR);
@@ -138,7 +142,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 		}
 */
 	}
-	
+
 	// get scenario list
 	$scenarioFolderList = scandir(SERVER_ACTIVE_SCENARIOS);
 	$scenarioContent = '';
@@ -147,19 +151,32 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 			if( $scenarioFolder == '.' || $scenarioFolder == '..' || $scenarioFolder == '.git' ) {
 				continue;
 			}
-			
+
+			// does the folder name have any embedded spaces?
+			if( strpos( $scenarioFolder, " " ) !== FALSE ) {
+				$newScenarioFolderName = str_replace( " ", "_", $scenarioFolder );
+				rename( SERVER_ACTIVE_SCENARIOS . $scenarioFolder, SERVER_ACTIVE_SCENARIOS . $newScenarioFolderName );
+				$scenarioFolder = $newScenarioFolderName;
+			}
+
 			if(file_exists(SERVER_ACTIVE_SCENARIOS . $scenarioFolder . DIRECTORY_SEPARATOR . 'main.xml') === TRUE) {
 				$scenarioHeader = scenarioXML::getScenarioHeaderArray($scenarioFolder . DIRECTORY_SEPARATOR . 'main');
 				$fileName = $scenarioFolder . DIRECTORY_SEPARATOR . 'main';
 				$scenarioHeaderArray = scenarioXML::getScenarioHeaderArray($fileName);
-				$scenarioNameArray[$scenarioHeaderArray['title']['name']] = $scenarioFolder;
+
+				// add error message for invalid main.xml
+				if( gettype($scenarioHeaderArray) != "array" ) {
+					printf("<span style='color:red;'>Error in $scenarioFolder/main.xml</span>");
+				} else {
+					$scenarioNameArray[$scenarioHeaderArray['title']['name']] = $scenarioFolder;
+				}
 			}
 		}
 	}
 
 	// sort the scenario names
 	ksort($scenarioNameArray);
-			
+
 	foreach($scenarioNameArray as $scenarioName => $scenarioFolder) {
 		$scenarioContent .= '
 			<option value="' . $scenarioFolder . '">';
@@ -187,21 +204,66 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 		<script type="text/javascript">
 			var uploadErrorCode = <?= $uploadErrorCode; ?>;
 			var userID = <?= $uid ?>;
+			var noDB = <?= $noDB ?>;
+			window.vitalsWindow = 0;
+
 			document.cookie = "userID="+userID+"; path=/";
 			var isVitalsMonitor = 0;	// Student Display Flag
 			$(document).ready(function() {
+window.name = "WinVetSim II";
+console.log("Window name: " + window.name);
+
 				// hide debrief menu item
 				$('.logout.debrief').hide();
-				
+
+				if ( noDB )
+				{
+					$("#logout_close").click(function() {
+						if ( confirm("This will close the Simulator Application. Is this what you want to do?" ) )
+						{
+							simmgr.running = 0;
+							var data = {'close': 565}
+							$.ajax({
+								url: BROWSER_CGI + 'simstatus.cgi',
+								type: 'get',
+								dataType: 'json',
+								data: data,
+								success: function(response,  textStatus, jqXHR ) {
+									if ( typeof(response.close) !== 'undefined' && response.close == 565 )
+									{
+										// make sure vitals exists and is open
+										if( typeof( window.vitalsWindow ) === 'object' && !window.vitalsWindow.closed ) {
+											window.vitalsWindow.close();
+										}
+										// make sure diag exists and is open
+										if( typeof( simmgr.diagWindow ) === 'object' && !simmgr.diagWindow.closed ) {
+											simmgr.diagWindow.close();
+										}
+										window.close();
+
+									}
+									else
+									{
+										alert("Application Close Failed" );
+									}
+								},
+								error: function( jqXHR,  textStatus,  errorThrown){
+									console.log("error: "+textStatus+" : "+errorThrown );
+								}
+							});
+						}
+					});
+				}
+
 				// init menu
 				menu.init();
-				
+
 				// init profile data
 				scenario.loadScenario();
 				profile.init();
-				
+
 				chart.init();
-				
+
 				controls.heartRate.init();
 				controls.awRR.init();
 				controls.SpO2.init();
@@ -223,7 +285,7 @@ console.log(controls['awRR'].increment);
 				// init displayed values
 				$('#vs-heartRhythm p.display-rate').html(controls.heartRate.value);
 				$('#vs-awRR p.display-rate').html(controls.awRR.value);
-				
+
 				// demo controls -- will be removed for production
 				// demo beat now
 				/*
@@ -248,9 +310,9 @@ console.log(controls['awRR'].increment);
 						$(this).html('Turn EKG Sound ON!');
 						chart.ekg.beepFlag = false;
 					}
-				
+
 				});
-				
+
 				$('#switch-resp-now').click(function() {
 					if(chart.resp.rhythmIndex == 0) {
 						chart.resp.rhythmIndex = 1;
@@ -264,11 +326,11 @@ console.log(controls['awRR'].increment);
 				hotkeys.init();
 				controls.cpr.init();
 				controls.manualRespiration.init();
-				
+
 				if(uploadErrorCode == <?= FILE_EXTRACT_ZIP_OK; ?>) {
 					$('#scenario-click').click();
 				}
-				
+
 				// duplicate scenario?
 				if(uploadErrorCode == <?= FILE_SCENARIO_DUP; ?>) {
 					if(confirm('Duplicate scenario...overwrite?')) {
@@ -278,18 +340,24 @@ console.log(controls['awRR'].increment);
 					alert("Invalid scenario zip file.");
 				}
 			});
+
+			function burgerTransform(x) {
+				x.classList.toggle("change");
+				$( ".subnav" ).slideToggle();
+			}
+
 		</script>
 	</head>
 	<body>
 		<div id="sitewrapper">
 			<div id="admin-nav">
-				<h1>Open VetSim Instructor Interface - V<?= VERSION_MAJOR . '.' . VERSION_MINOR; ?></h1>
-				<h1 class="welcome-title">Welcome <?= $userName; ?></h1>
+				<h1>Open VetSim Instructor Interface</h1>
+				<!-- <h1>Open VetSim Instructor Interface - V<?= VERSION_MAJOR . '.' . VERSION_MINOR; ?></h1> -->
+				<!-- <h1 class="welcome-title">Welcome <?= $userName; ?></h1> -->
 				<div class="profile-display scenario">
-					Scenario Name: 
+					Scenario:
 					<span id="scenario-name-display">Default Scenario</span>
-					&nbsp;&nbsp;|&nbsp;&nbsp;Scene Name:&nbsp;<span id="scene-name">Test</span>
-					&nbsp;&nbsp;|&nbsp;&nbsp;Scene ID:&nbsp;<span id="scene-id">1</span>
+					&nbsp;&nbsp;|&nbsp;&nbsp;Scene:&nbsp;<span id="scene-name">Test</span>&nbsp;-&nbsp;<span id="scene-id">1</span>
 				</div>
 				<ul id="main-nav">
 					<!-- <li class="with-sub-nav">
@@ -310,37 +378,43 @@ console.log(controls['awRR'].increment);
 							<li><a href="javascript: void(2);">Settings Another Item</a></li>
 						</ul>
 					</li> -->
-					<li >
+					<!-- <li >
 						<a href="javascript:void(2);" onclick="modal.showUsers();">Users</a>
-					</li>
+					</li> -->
 					<li >
-						<a href="javascript:void(2);" onclick="window.open('vitals.php','temp','resizable');">Vitals</a>
+						<a href="javascript:void(2);" onclick="window.vitalsWindow = window.open('vitals.php','vitals','resizable');">Vitals</a>
 					</li>
-					<li class="tele-sim disabled">
+					<!-- <li class="tele-sim disabled">
 						<a href="javascript:void(2);" onclick="telesim.toggleTeleSim(); return false;">Enable TeleSim</a>
-					</li>
+					</li> -->
 					<li class="menu-events">
-						<a href="javascript:void(2);" onclick="modal.showEvents(); return false;">Events</a>
+						<a href="javascript:void(2);" onclick="modal.showEvents(); return false;">Events (Hot Keys)</a>
 					</li>
-					<li class="logout">
-						<a href="index.php" class="event-link">Logout</a>						
-					</li>
-					<li class="logout debrief">
-						<a href="/sim-player/player.php" class="event-link">Debrief</a>						
-					</li>
-					<li class="logout">
-						<a href="javascript: void(2);" onclick="modal.manageScenarios();" class="event-link" id="scenario-click">Scenarios</a>						
+					<li class="logout burger-div">
+						<div class="burger" onclick="burgerTransform(this)">
+							<div class="bar1"></div>
+							<div class="bar2"></div>
+							<div class="bar3"></div>
+						</div>
 					</li>
 					<!-- <li class="logout">
-						<a href="../../editor/editor.php"  class="event-link breath-link">Editor</a>						
+						<a href="../../editor/editor.php"  class="event-link breath-link">Editor</a>
 					</li> -->
-					<li class="logout">
-						<a href="javascript: void(2);"  class="event-link cpr-link">Start Comps (c)</a>						
+					<li class="logout start-comps perm-hotkey">
+						<a href="javascript: void(2);"  class="event-link cpr-link">Start Comps (c)</a>
 					</li>
-					<li class="logout">
-						<a href="javascript: void(2);"  class="event-link breath-link">Manual Breath (b)</a>						
+					<li class="logout manual-breath perm-hotkey">
+						<a href="javascript: void(2);"  class="event-link breath-link">Manual Breath (b)</a>
 					</li>
 				</ul>
+			</div>
+			<div class="subnav">
+				<div class="subnav-content">
+					<a href="javascript: void(2);" onclick="modal.manageScenarios();" class="event-link" id="scenario-click">Scenarios</a>
+					<a href="javascript: void(2);" onclick="modal.aboutModal();" class="event-link" id="about-click">About</a>
+					<a href="/sim-player/player.php" class="event-link">Debrief</a>
+					<a href="javascript: void(2);" class="event-link" id="logout_close">Close</a>
+				</div>
 			</div>
 
 			<div id="mannequin" class="clearer float-left ii-border">
@@ -359,7 +433,7 @@ console.log(controls['awRR'].increment);
 				<img class="nvs-button" id="button-CO2" src="<?= BROWSER_IMAGES; ?>co2.png" alt="CO2 Icon">
 				<h2 id="button-bpcuff-title" class="nvs-button"></h2>
 				<img class="nvs-button" id="button-bpcuff" src="<?= BROWSER_IMAGES; ?>bpcuff.png" alt="bpcuff Icon">
-				
+
 				<!-- PEA and Cardiac Arrest Indicators -->
 				<h2 id="indicator-pea">PEA</h2>
 				<h2 id="indicator-arrest">Arrest</h2>
@@ -403,7 +477,7 @@ console.log(controls['awRR'].increment);
 					<a class="control-tele-sim" id="chest-dog-control-icon" href="javascript: void(2);" onclick="modal.chestRise(); return false;"><img src="" width="" title=""></a>
 				</div>
 			</div>
-			
+
 			<div id="vsm" class="float-left ii-border">
 				<h1><span id="startStopButton">VS</span> Monitor</h1>
 				<div id="vs-left-col">
@@ -450,7 +524,7 @@ console.log(controls['awRR'].increment);
 					<button id="switch-resp-now">Switch Resp Patterns!</button>
 				</div> -->
 			</div>
-			
+
 <!--			<div id="telesim-top" class="float-left ii-border telesim-right" style="background-image: url('<?= BROWSER_SCENARIOS; ?>/default/images/top-dog.png')">
 				<div class="ausc-hotspot" data-coord="1-1-1" style="top: 75px; left: 100px;">1</div>
 				<div class="ausc-hotspot" data-coord="1-2-1" style="top: 75px; left: 125px;">2</div>
@@ -468,7 +542,7 @@ console.log(controls['awRR'].increment);
 				</select>
 				<div id="telesim-size" class="expand">+</div>
 			</div>
-			
+
 			<div id="media-col">
 				<div id="scenario-select" class="float-left clearer ii-border">
 					<h2 class="float-left clearer">Scenario Select:</h2>
@@ -498,13 +572,13 @@ console.log(controls['awRR'].increment);
 			</div>
 			<div id="comment-box" class="float-left ii-border">
 				<input type="text" id="comment-input" value="Please enter comment for log">
-				<button id="comment-button" class="scenario-button float-left">Log Comment</button>				
+				<button id="comment-button" class="scenario-button float-left">Log Comment</button>
 			</div>
 			<div id="event-library" class="float-left"></div>
 
 			<div class="clearer"></div>
 		</div> <!-- sitewrapper -->
-		
+
 		<!-- Modal -->
 		<div id="modal">
 			<div class="container">
