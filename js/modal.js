@@ -50,11 +50,11 @@ See gpl.html
 
 			var content = '<div style="text-align: center;"><img src="./images/k9logo.png" width="100px">';
 			content += '<h1>About Open VetSim Canine Simulator</h1></div><br/>';
-			content += 'Release 2.39<br/>';
-			content += 'Instructor Interface Release 2.3-WVS<br/>';
+			content += 'Release 2.40<br/>';
+			content += 'Instructor Interface Release 2.4-WVS<br/>';
 			content += 'Win Vet Sim Release ' + simmgr.wvsVersion + '<br/>';
 			content += controllerIP + '<br/>';
-			content += 'Controller Firmware Version:  1.1.8<br/>';
+			content += 'Controller Firmware Version:  1.1.10<br/>';
 			content += '------------------------------------<br/>';
 			content += 'Tech Support: <a href="mailto: tech@k9cprtrainer.dog?subject=Open Vet Sim Tech Request">tech@k9cprtrainer.dog</a><br/>';
 			content += '------------------------------------<br/>';

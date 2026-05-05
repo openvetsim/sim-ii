@@ -5,6 +5,18 @@ sim-ii: Copyright (C) 2019-2022  VetSim, Cornell University College of Veterinar
 
 ---
 
+## Release 2.40 Change Notes
+
+Release 2.40 is a version bump release with no functional code changes beyond updated version identifiers.
+
+### Version Bumps (`js/modal.js`)
+
+- `Release 2.39` → `Release 2.40`
+- `Instructor Interface Release 2.3-WVS` → `Instructor Interface Release 2.4-WVS`
+- `Controller Firmware Version: 1.1.8` → `Controller Firmware Version: 1.1.10`
+
+---
+
 ## Release 2.39 Change Notes
 
 Release 2.39 completes the jQuery-UI 1.13.2 slider refactoring across all remaining modals, gates unavailable sound options in the UI, adds CPR keyboard shortcuts, improves error diagnostics throughout the AJAX layer, removes the scenario file upload UI in favor of folder-based installation, and fixes a truncated `phpDefinesToJs.php`.
