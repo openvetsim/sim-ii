@@ -167,7 +167,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 	
 	// version
 	define('VERSION_MAJOR', '2');
-	define('VERSION_MINOR', '3-WVS');
+	define('VERSION_MINOR', '41-WVS');
 	
 	// mobilized
 //	define('MOBILIZED', FALSE);

@@ -5,7 +5,8 @@ See gpl.html
 */
 	var controls = {
 		controllers: {
-			ip: ""				// controller IP address
+			ip: "",				// controller IP address
+			fwVers: ""
 		},
 		
 		defib: {

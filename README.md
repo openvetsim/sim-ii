@@ -5,6 +5,34 @@ sim-ii: Copyright (C) 2019-2022  VetSim, Cornell University College of Veterinar
 
 ---
 
+## Release 2.41 Change Notes
+
+Release 2.41 adds dynamic controller firmware version fetching via a new Windows executable and AJAX endpoint, and bumps version strings throughout.
+
+### Dynamic Controller Firmware Version
+
+Previously the firmware version was hardcoded in the About modal. It is now fetched live from the connected controller:
+
+- **New `fetchversion.exe`** — Windows PE32+ executable (211KB) placed in the sim-ii root. Queries a controller by IP address and returns its firmware version string.
+- **New `ajax/ajaxGetCntrlStat.php`** — AJAX endpoint that calls `fetchversion.exe <ip>` via PHP `exec()` and returns `{ ver: "..." }`. Falls back gracefully with `"no data"` or `"failed"` on error.
+- **`js/controls.js`** — New `fwVers: ""` property added to the `controllers` object to store the fetched version.
+- **`js/simmgr.js`** — When a controller IP is detected, an AJAX call is made to `ajaxGetCntrlStat.php`. On success, `controls.controllers.fwVers` is populated; on failure it is set to `"Controller not found"`.
+- **`js/modal.js`** — `aboutModal()` now displays `Controller Firmware Version: ' + controls.controllers.fwVers` dynamically instead of the hardcoded `1.1.10`.
+
+### Version Bumps
+
+- **`init.php`**: `VERSION_MINOR` `2.3-WVS` → `41-WVS`
+- **`js/modal.js`**: `Release 2.40` → `Release 2.41`; `Instructor Interface Release 2.4-WVS` → `Instructor Interface Release 2.41-WVS`
+
+### New Files
+
+| File | Description |
+|------|-------------|
+| `fetchversion.exe` | Windows executable to query controller firmware version by IP |
+| `ajax/ajaxGetCntrlStat.php` | AJAX endpoint wrapping `fetchversion.exe` |
+
+---
+
 ## Release 2.40 Change Notes
 
 Release 2.40 is a version bump release with no functional code changes beyond updated version identifiers.

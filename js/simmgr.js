@@ -1174,6 +1174,23 @@ console.log("New scenario state RUNNING");
 									   
 						});
 						$('#controller-ip').html(str);
+						
+						// call fetch version
+						$.ajax({
+							url: '../sim-ii/ajax/ajaxGetCntrlStat.php',
+							type: 'get',
+							dataType: 'json',
+							data: { ip : controls.controllers.ip },
+							success: function(response,  textStatus, jqXHR ) {
+								if( response.ver != "no data" && response.ver != 'failed' ) {
+									controls.controllers.fwVers = response.ver;
+								} else {
+									controls.controllers.fwVers = "Controller not found";
+								}
+							}
+						});
+
+						
 					}
 				}
 				/************ auscultation **************/
