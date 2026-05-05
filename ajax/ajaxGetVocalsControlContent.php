@@ -69,7 +69,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				<!-- Old Slider
 				<div id="volume-slider"></div> -->
 				<!-- New slider -->
-				<input value="0" id="volume-slider" class="strip-value new control-slider-1 float-left lung" data-highlight="true">		
+				<div value="0" id="volume-slider" class="strip-value new control-slider-1 float-left lung" data-highlight="true"></div>	
 			</div>
 			<div class="clearer"></div>
 		</div>

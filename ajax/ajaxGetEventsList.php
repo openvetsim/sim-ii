@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 'On');
+error_reporting(E_ALL | E_STRICT);
+
 /*
 sim-ii
 
@@ -32,17 +35,41 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 	}
 	
 	// get profile info
-	$eventsArray = json_decode(str_replace("\\", "", dbClass::valuesFromPost('events')), TRUE);
-	if( ! $eventsArray || ! is_array($eventsArray) || count($eventsArray) == 0) {
+	$events = dbClass::valuesFromPost('events');
+	if( ! $events ) {
 		$returnVal['status'] = AJAX_STATUS_FAIL;
+		$returnVal['reason'] = "missing arg";
 		echo json_encode($returnVal);
 		exit();		
 	}
-			
+	$eventsArray = json_decode(str_replace("\\", "", $events), TRUE);
+	if( ! $events ) {
+		$returnVal['status'] = AJAX_STATUS_FAIL;
+		$returnVal['reason'] = "no array returned";
+		echo json_encode($returnVal);
+		exit();		
+	}	
+	if(  ! is_array($eventsArray) ) 
+	{
+		$returnVal['status'] = AJAX_STATUS_FAIL;
+		$returnVal['reason'] = "eventsArray is Type".gettype($eventsArray);
+		echo json_encode($returnVal);
+		exit();		
+	}
+	if(  count($eventsArray) < 1 ) 
+	{
+		$returnVal['status'] = AJAX_STATUS_FAIL;
+		$returnVal['reason'] = "eventsArray count is ".count($eventsArray);
+		echo json_encode($returnVal);
+		exit();		
+	}		
 	$content = '';
 	$priority = array();
 	$hotkeys = array();
 	
+	// flag for hot link duplication (b) or (c)
+	$returnVal['hotLinkDup'] = 'false';
+		
 	// get elements of event library
 	foreach($eventsArray['category'] as $eventCategory) {
 		$content .= '
@@ -82,10 +109,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				unset($eventArray['priority']);
 				unset($eventArray['hotkey']);
 			}
-			
+
 			foreach($eventArray as $event) {
+				// are we trying to redefine the reserved hot links
+				if( isset($event['hotkey']) && !checkHotkey($event['hotkey']) ) {
+						$returnVal['hotLinkDup'] = 'true';
+				}
+				
 				// Make sure the hotkey is valid. 
-				if ( ! in_array('hotkey', $event) || ! checkHotkey($event['hotkey'] ) )
+				if ( ! isset($event['hotkey']) || ! checkHotkey($event['hotkey'] ) )
 				{
 					$event['hotkey'] = '';
 				}
@@ -96,7 +128,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				if ( strlen($event['hotkey'] ) == 1 )
 				{
 					$content .= " (".$event['hotkey'].")";
-					$hotkeys[] = array ( 'hotkey' => $event['hotkey'], 'id' => $event['id'] );
+					$hotkeys[] = array ( 'title' => $event['title'], 'hotkey' => $event['hotkey'], 'id' => $event['id'] );
 				}
 				$content .= '
 						</li>					

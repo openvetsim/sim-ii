@@ -52,9 +52,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 		<select id="sound-select" class="modal-select">
 	';
 	foreach($lungSoundArray as $index => $value) {
+		// is this an unsupported sound
+		if( $index == "Stridor" || $index == "Stertor" ) {
+			$disabled = 'disabled';
+		} else {
+			$disabled = '';
+		}
+		
 		$select = ($fileName == $value) ? ' selected="selected" ' : '';
 		$lungSoundOption .= '
-			<option value="' . $value . '"' . $select . '>' . $index . '</option>
+			<option value="' . $value . '"' . $select . ' ' . $disabled . '>' . $index . '</option>
 		';
 	}
 	
@@ -87,7 +94,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				<div id="volume-slider"></div> -->
 				
 				<!-- New slider -->
-				<input value="0" id="volume-slider" class="strip-value new control-slider-1 float-left lung" data-highlight="true">		
+				<div value="0" id="volume-slider" class="strip-value new control-slider-1 float-left lung" data-highlight="true"></div>		
 				
 			</div>
 			<div class="clearer"></div>

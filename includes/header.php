@@ -14,7 +14,7 @@ See gpl.html
 		$page = basename($_SERVER["SCRIPT_FILENAME"], '.php');
 		if ( strcmp($page, 'vitals' ) == 0 )
 		{
-			echo "Patient Vitals Monitor";
+			echo "Patient Vitals Monitor"; 
 		}
 		else
 		{
@@ -22,7 +22,7 @@ See gpl.html
 		}
 ?>
 		</title>
-		<link rel="shortcut icon" href="favicon.ico" />
+		<link rel="shortcut icon" href="favicon.ico" />		
 
 <?php
 		define( 'LEGACY', FALSE );
@@ -46,12 +46,12 @@ See gpl.html
 ?>
 		<link rel="stylesheet" href="<?= BROWSER_CSS; ?>controls.css" type="text/css" />
 		<link rel="stylesheet" href="<?= BROWSER_CSS; ?>modal.css" type="text/css" />
-
+		
 <?php
 		// php defines in JS
 		require_once(SERVER_INCLUDES."phpDefinesToJs.php");
 		$ts = date("U");
-
+		
 		if( LEGACY ) {
 			echo '
 				<script type="text/javascript" src="scripts/jquery/2.2.1/jquery.min.js"></script>
@@ -71,7 +71,7 @@ See gpl.html
 //			echo '<script src="scripts/jquery.mobile.custom.min.js"></script>';
 		}
 ?>
-
+		
 		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>menu.js?v=<?= $ts ?>"></script>
 		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>chart.js?v=<?= $ts ?>"></script>
 		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>controls.js?v=<?= $ts ?>"></script>
@@ -82,7 +82,7 @@ See gpl.html
 		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>scenario.js?v=<?= $ts ?>"></script>
 		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>media.js?v=<?= $ts ?>"></script>
 		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>log.js?v=<?= $ts ?>"></script>
-		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>user.js?v=<?= $ts ?>"></script>
+		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>user.js?v=<?= $ts ?>"></script>		
 		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>simmgr.js?v=<?= $ts ?>"></script>
 		<script type="text/javascript" src="<?= BROWSER_SCRIPTS; ?>telesim.js?v=<?= $ts ?>"></script>
-
+		

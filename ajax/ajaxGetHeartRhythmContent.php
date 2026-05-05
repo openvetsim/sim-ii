@@ -108,7 +108,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 			<input value="0" class="strip-value new"> -->
 			
 			<!-- New slider -->
-			<input value="0" class="strip-value new control-slider-1 float-left" data-highlight="true">		
+			<div value="0" class="control-slider-1 float-left" data-highlight="true"></div>		
+			<input value="0" class="strip-value new">
 			
 			<a class="control-incr-decr-rate incr-rate" href="javascript: void(2);">>></a>
 			<div class="clearer"></div>

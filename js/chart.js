@@ -159,7 +159,8 @@ See gpl.html
 			breathStart: false,		// flag to indicate if a new breating waveform is starting.
 			blankTimer: 0,			// timer to blank vitals ETCO2
 			rrBlankCount: 2,		// count of breath waveforms before displaying valid awRR
-			currentetCO2value: 0		// variable to hold ETCO2 value at the start of a breath waveform
+			currentetCO2value: 0,		// variable to hold ETCO2 value at the start of a breath waveform
+			maxInhalationDuration: 0	// max duration ofr inhalation
 		},
 		
 		cursorWidth: 10,			// width of cursor in pixels
@@ -243,6 +244,7 @@ See gpl.html
 			];
 
 			// Ventricular Tachycardia
+			// BPM 0 - 80
 			chart.ekg.rhythm['vtach1'][0] = [
 				8, 8, 11, 21, 40, 56, 63, 67, 55, 37,
 				17, -7, -13, -16, -21, -23, -24, -25, -26, -26,
@@ -250,38 +252,46 @@ See gpl.html
 				13, 12, 12, 13, 13, 17, 16, 15, 11, 9,
 				9, 8, 8
 			];
+			// BPM 81 - 160
 			chart.ekg.rhythm['vtach1'][1] = [
 				8, 11, 21, 40, 56, 63, 67, 55, 37, 17,
 				-7, -13, -16, -23, -26, -24, -18, -11, -3, 5, 
 				11, 9, 8
 			];
+			// BPM 161 - 240
 			chart.ekg.rhythm['vtach1'][2] = [
 				8, 21, 40, 56, 63, 67, 37, 17,
 				-7, -13, -26, -18, -11, 
 				11, 8
 			]; 
+			// BPM 241 - 300
 			chart.ekg.rhythm['vtach1'][3] = [
 				8, 21, 40, 67, 37, 
 				-7, -13, -26, -11, 
-				11, 8
+				11
 			];
+
+			// BPM 0 - 80
 			chart.ekg.rhythm['vtach2'][0] = [
 				0, 0, 0, 0, 0, 1, 2, 3, 3, 4,
 				5, 3, -25, -52, -51, -49, -30, -19, -9, 11, 
 				24, 25, 27, 28, 31, 35, 39, 42, 43, 40, 
 				33, 25, 16, 9, 4, 0, 0, 0, 0, 0 
 			];
+			// BPM 81 - 160
 			chart.ekg.rhythm['vtach2'][1] = [
 				0, 1, 2, 3, 4, 5, 3, -25, -52, -30, 
 				-19, -9, 11, 25, 35, 42, 33, 25, 16, 4
 			];
+			// BPM 161- 240
 			chart.ekg.rhythm['vtach2'][2] = [
 				1, 3, 5, -25, -52, -30, 
-				-19, -9, 11, 25, 35, 42, 33, 25, 16, 1
+				-19, -9, 11, 25, 35, 42, 33, 25, 16
 			]; 
+			// BPM 241 - 300
 			chart.ekg.rhythm['vtach2'][3] = [
 				1, 5, 3, -25, -52, 
-				-19, 11, 42, 33, 16, 4
+				-19, 11, 42, 33, 16
 			];
 			chart.ekg.rhythm['vtach3'][0] = [
 				0, 1, 2, 3
@@ -344,7 +354,7 @@ See gpl.html
 				6, 11, 15, 10, 4, 1 
 			];
 			chart.ekg.rhythm['sinus'][3] = [
-				3, 7, 1, 3, 35, 64, -5, 4, 11, 17, 
+				3, 7, 1, 35, 64, -5, 4, 17, 
 				4, 1 
 			];
 			
@@ -469,6 +479,9 @@ See gpl.html
 			// get max value
 			chart.resp.max = chart.resp.rhythm['high'].max();
 			
+			// max inhalation duration
+			chart.resp.maxInhalationDuration = Math.floor( 1500 / chart.resp.drawInterval );
+			
 			// get max displayed value
 			chart.getETC02MaxDisplay();
 
@@ -560,17 +573,21 @@ See gpl.html
 					chart.ekg.rateIndex = 0;
 				} else if( cardiac.rate <= 160 ) {
 					chart.ekg.rateIndex = 1;
-				} else {
+				} else if( cardiac.rate <= 240 ) {
 					chart.ekg.rateIndex = 2;				
+				} else {
+					chart.ekg.rateIndex = 3;				
 				}		
 			} else if(chart.ekg.rhythmIndex == 'vtach2') {
-				if( cardiac.rate <= 100 ) {
+				if( cardiac.rate <= 80 ) {
 					chart.ekg.rateIndex = 0;
-				} else if(cardiac.rate <= 180) {
+				} else if( cardiac.rate <= 160 ) {
 					chart.ekg.rateIndex = 1;
+				} else if( cardiac.rate <= 240 ) {
+					chart.ekg.rateIndex = 2;				
 				} else {
-					chart.ekg.rateIndex = 2;			
-				}
+					chart.ekg.rateIndex = 3;				
+				}		
 			}  else if(chart.ekg.rhythmIndex == 'vtach3') {
 				chart.ekg.rateIndex = 0;
 			}
@@ -614,14 +631,17 @@ See gpl.html
 		},
 		
 		// routine to initialize vtach 3 R on T values based on heart rate sinusoidal
+		// updated amplitude setting per Dan F - 2024-03-04
 		initVtach3: function() {
 			chart.ekg.rhythm.vtach3[0] = new Array;	
 			xIncr = (controls.heartRate.value * chart.ekg.drawInterval * Math.PI) / 60000;
-			var amplitude = chart.ekg.height / 2;
+//			var amplitude = chart.ekg.height / 2;
+			var amplitude = chart.ekg.height / 2.5;
 			var offset = chart.ekg.height / 2;
 			var index = 0;
 			for(var x = 0; x <= Math.PI; x += xIncr) {
-				chart.ekg.rhythm.vtach3[0][index] = (Math.sin(x) * -amplitude) + 10;
+//				chart.ekg.rhythm.vtach3[0][index] = (Math.sin(x) * -amplitude) + 10;
+				chart.ekg.rhythm.vtach3[0][index] = (Math.sin(x*2) * -amplitude) + 10;
 				index++;
 			}
 		},
@@ -853,6 +873,7 @@ See gpl.html
 					y = 0;
 				} else {
 					//scale the y value to the current ETCO2
+					chart.resp.currentetCO2value = controls.etCO2.value
 					y = chart.resp.manualBreathPattern[controls.manualRespiration.manualBreathIndex] * -1 * chart.resp.currentetCO2value / controls.etCO2.maxValue;
 //console.log("manual breath: " + y);
 					// advance to the next point in the waveform
@@ -1204,6 +1225,11 @@ See gpl.html
 					chart.resp.exhalationDuration = Math.floor(chart.resp.periodCount / 2);	
 					chart.resp.inhalationDuration = chart.resp.periodCount - chart.resp.exhalationDuration;							
 
+				}
+				
+				// check for maximum inhalation duration
+				if( chart.resp.inhalationDuration > chart.resp.maxInhalationDuration ) {
+					chart.resp.inhalationDuration = chart.resp.maxInhalationDuration;
 				}
 			}
 			else

@@ -1,6 +1,6 @@
 <?php
 /*
-sim-ii:
+sim-ii: 
 
 Copyright (C) 2019  VetSim, Cornell University College of Veterinary Medicine Ithaca, NY
 
@@ -17,29 +17,29 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>
 */
-
-	class dbClass {
+	
+	class dbClass {		
 		private static $connection = 1;
 		function __construct($dbSelect = 'vet') {
 		}
 
-
+		
 		public static function dbConnect($dbSelect) {
 			return dbClass::$connection;
 		}
-
+		
 		public static function dbClose($connection) {
-
+			
 		}
-
+		
 		public static function dbSelectQueryResult($queryString, $passedConnection = '', $dbSelect = DB_DEFAULT) {
 			return FALSE;
 		}
-
+		
 		public static function cleanMySQLInput($instring) {
-			return $instring;
+			return $instring;		
 		}
-
+		
 		public static function cleanOutput($instring, $mode="normal") {
 			switch ($mode)
 			{
@@ -66,7 +66,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				}
 			}
 		}
-
+		
 			// sanitize functions
 		public static function valuesFromPost($varName) {
 
@@ -77,7 +77,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 			}
 			return $tempString;
 		}
-
+		
 		public static function valuesFromGet($varName) {
 
 			if(isset($_GET[$varName])){
@@ -87,7 +87,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 			}
 			return $tempString;
 		}
-
+		
 		public static function valuesFromSession($varName) {
 			if(isset($_SESSION[$varName])){
 				$tempString = $_SESSION[$varName];
@@ -96,22 +96,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 			}
 			return $tempString;
 		}
-
+		
 		public static function isIndex($input) {
 			if(is_int((int)$input) === TRUE && $input > 0) {
 				return TRUE;
 			} else {
 				return FALSE;
 			}
-		}
-
+		} 
+		
 		public static function isInt($input) {
 			if(filter_var($input, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0))) === FALSE) {
 				return FALSE;
 			} else {
 				return TRUE;
 			}
-		}
-
+		} 
+		
 	}
 ?>

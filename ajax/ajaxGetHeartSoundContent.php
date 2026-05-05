@@ -52,8 +52,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 	';
 	foreach($heartSoundArray as $index => $value) {
 		$select = ($soundName == $index) ? ' selected="selected" ' : '';
+		
+		// is this an unsupported sound
+		if( $index == "normal" || $index == "systolic_murmur" ) {
+			$disabled = '';
+		} else {
+			$disabled = 'disabled';
+		}
+
 		$heartSoundOption .= '
-			<option value="' . $index . '"' . $select . '>' . $value . '</option>
+			<option value="' . $index . '"' . $select . ' ' .  $disabled . '>' . $value . '</option>
 		';
 	}
 	
@@ -79,7 +87,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				<div id="volume-slider"></div> -->
 				
 				<!-- New slider -->
-				<input value="0" id="volume-slider" class="strip-value new control-slider-1 float-left heart" data-highlight="true">		
+				<div value="0" id="volume-slider" class="strip-value new control-slider-1 float-left heart" data-highlight="true"></div>	
 			</div>
 			<div class="clearer"></div>
 		</div>

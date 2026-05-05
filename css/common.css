@@ -5,9 +5,9 @@ See gpl.html
 */
 @import url("./whitespace-reset.css");
 
-body {
+body { 
 	font: Arial, serif;
-	font-family: Arial, serif;
+	font-family: Arial, serif; 
 	font-size: 13px;
 	line-height: 18px;
 	color: #666666;
@@ -16,25 +16,25 @@ body {
 	position: relative;
 	background-color: #FFFFFF;
 	}
-
+	
 a, a:visited {
 	color: #72c7bc;
 	text-decoration: none;
 	outline: none;
 	}
-a:hover {
+a:hover { 
 	text-decoration: none;
 	outline: none;
 }
 
 /* Common assets */
-#sitewrapper {
+#sitewrapper { 
 	padding: 0 20px 30px 20px;
 	margin: -10px auto 0px;
 	width: 1180px;
 	position: relative;
 }
-
+	
 	#admin_header {
 		width: 100%;
 		background-color: #FFFFFF;
@@ -45,7 +45,7 @@ a:hover {
 		clear: both;
 		float: left;
 	}
-
+	
 	#admin_header h1 {
 		color: #B31B1B;
 		font-size: 21px;
@@ -61,7 +61,7 @@ a:hover {
 			clear: none;
 		}
 
-
+	
 	#admin_header ul {
 		clear: both;
 		float: left;
@@ -86,7 +86,7 @@ a:hover {
 			#admin_header ul li a{
 				color: #000;
 			}
-
+	
 		#admin_login form fieldset {
 			border: none;
 		}
@@ -108,7 +108,7 @@ a:hover {
 				width: 100px;
 				font-size: 18px;
 			}
-
+			
 	/* Main nav */
 	#admin-nav {
 		width: 1155px;
@@ -143,7 +143,7 @@ a:hover {
 			clear: none;
 			margin-right: 30px;
 		}
-
+		
 	ul#main-nav {
 		display: block;
 		clear: both;
@@ -197,7 +197,7 @@ a:hover {
 			ul#main-nav ul.sub-nav li > a:hover{
 				color: #FFF;
 			}
-
+			
 	ul#main-nav li a.event-link {
 		margin: 0;
 		color: #AAAAAA;
@@ -205,7 +205,7 @@ a:hover {
 		ul#main-nav li a.event-link:hover {
 			color: #FFF;
 		}
-
+			
 /* Scenario Select Control */
 .scenario-button {
 	cursor: pointer;
@@ -293,11 +293,11 @@ a:hover {
 		color: black;
 		position: absolute;
 	}
-
+	
 	#mannequin.tele-sim {
 		width: 250px;
 	}
-
+	
 #telesim-0 {
 	height: 200px;
 	width: 239px;
@@ -325,7 +325,7 @@ a:hover {
 	font-size: 24px;
 	color: black;
 	background-color: #66ff66;
-
+	
 }
 	.repeat-wrapper.disabled::after {
 		content: "/";
@@ -372,7 +372,7 @@ div.telesim-right video {
 		float: right;
 	}
 
-
+	
 	.vs-trace {
 		cursor: pointer;
 	}
@@ -386,7 +386,7 @@ div.telesim-right video {
 		top: 145px;
 		left: 0px;
 	}
-
+	
 	div.control-rate {
 		float: left;
 		margin: 100px 0 0 40px;
@@ -396,9 +396,9 @@ div.telesim-right video {
 		h2.control-title  {
 			margin: 0px 0 10px 0px;
 		}
-
-
-
+		
+		
+	
 /* events */
 #event-monitor {
 	height: 168px;
@@ -411,16 +411,16 @@ div.telesim-right video {
 	#event-monitor table {
 		width: 100%;
 		overflow: scroll;
-
+		
 	}
 		#event-monitor tr, #event-monitor td{
 			max-height: 20px;
 		}
-
+		
 		#event-monitor tr:nth-child(odd) {
 			background-color: #CCCCCC;
 		}
-
+		
 #comment-box {
 	margin: 10px 0 0 6px;
 	padding: 0 10px 0 10px;
@@ -443,7 +443,7 @@ div.telesim-right video {
 			background-color: #b31b1b;
 			border: 1px solid #b31b1b;
 		}
-
+		
 /* event library */
 #event-library {
 	height: 200px;
@@ -501,7 +501,7 @@ div.telesim-right video {
 			position: relative;
 			margin-bottom: 5px;
 		}
-
+		
 	img.event-check {
 		display: none;
 		position: absolute;
@@ -516,7 +516,7 @@ div.telesim-right video {
 			top: 2px;
 			left: -40px;
 		}
-
+	
 	p.error_login {
 		display: none;
 		color: #B31B1B;
@@ -527,24 +527,24 @@ div.telesim-right video {
 	.float_left, .float-left {
 		float: left;
 	}
-
+	
 	.float-right {
 		float: right;
 	}
-
+	
 	.clear-none {
 		clear: none;
 	}
-
+			
 	.full_width {
 		width: 100%;
 	}
-
+	
 	.clearer {
 		clear: both;
-	}
-
-
+	}	
+	
+	
 .bold {
 	font-weight: bold;
 }
@@ -587,7 +587,7 @@ div.telesim-right video {
 		#switch-resp-now {
 			margin-left: 25px;
 		}
-
+		
 #patient-info {
 	width: 600px;
 	background-color: white;
@@ -619,7 +619,7 @@ div.telesim-right video {
 		#patient-info td:first-child {
 			width: 120px;
 		}
-
+		
 /* burger transform */
 .burger {
   display: inline-block;
@@ -702,3 +702,4 @@ ul#main-nav li.logout.start-comps {
 ul#main-nav li.logout.manual-breath {
 	right: 200px;
 }
+

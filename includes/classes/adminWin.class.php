@@ -1,6 +1,6 @@
 <?php
 /*
-sim-ii:
+sim-ii: 
 
 Copyright (C) 2019  VetSim, Cornell University College of Veterinary Medicine Ithaca, NY
 
@@ -20,11 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 
 // Dummy admin class, used for Windows 10 Support
 	class adminClass {
-
+				
 		function __construct() {
 
 		}
-
+		
 		// salt for encoding passwords
 		public static function generateSalt() {
 			$salt = "";
@@ -33,18 +33,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 			}
 			return $salt;
 		}
-
+				
 		// get admin record for login
 		static public function isUserLoginValid($userEmail, $passWord) {
 			return ( TRUE );
 		}
-
+		
 		// get users rows
 		static public function getAllUserRows() {
 			$rows[0] = adminClass::getUserRow(1 );
 			return $rows;
 		}
-
+		
 		// get users row
 		static public function getUserRow($userID) {
 			if ( $userID == 1 )
@@ -63,7 +63,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				return FALSE;
 			}
 		}
-
+		
 		// is admin logged in
 		static public function isUserLoggedIn() {
 			if(isset($_SESSION['User']['isUserLoggedIn']) == TRUE && $_SESSION['User']['isUserLoggedIn'] == TRUE && self::getUserNameFromSession() !== FALSE) {
@@ -72,7 +72,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				return FALSE;
 			}
 		}
-
+		
 		// admin session variables
 		static public function addUserToSession($userRow) {
 			$_SESSION['User']['UserFirstName'] = $userRow['UserFirstName'];
@@ -81,13 +81,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 			$_SESSION['User']['isUserLoggedIn'] = TRUE;
 			return;
 		}
-
+		
 		static public function removeUserFromSession() {
 			unset($_SESSION['User']);
 
 			return;
 		}
-
+		
 		static public function getUserNameFromSession() {
 			if(isset($_SESSION['User']['UserID']) === TRUE && dbClass::isIndex($_SESSION['User']['UserID']) === TRUE) {
 				return ( "" );
@@ -95,7 +95,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 				return FALSE;
 			}
 		}
-
+		
 		static public function getUserRowFromSession() {
 			return ( adminClass::getUserRow(1 ) );
 		}

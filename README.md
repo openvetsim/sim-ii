@@ -1,7 +1,108 @@
 # sim-ii
 Open VetSim Instructor Interface
 
-sim-ii: Copyright (C) 2019  VetSim, Cornell University College of Veterinary Medicine Ithaca, NY
+sim-ii: Copyright (C) 2019-2022  VetSim, Cornell University College of Veterinary Medicine Ithaca, NY
+
+---
+
+## Release 2.39 Change Notes
+
+Release 2.39 completes the jQuery-UI 1.13.2 slider refactoring across all remaining modals, gates unavailable sound options in the UI, adds CPR keyboard shortcuts, improves error diagnostics throughout the AJAX layer, removes the scenario file upload UI in favor of folder-based installation, and fixes a truncated `phpDefinesToJs.php`.
+
+### Slider Refactoring — All Remaining Modals
+
+Completed the jQuery-UI 1.13.2 slider compatibility fix (started in 2.38) for all modals that were not yet updated. The combined `<input>` slider element is split into a separate `<div class="control-slider-1">` widget and `<input class="strip-value new">` display field in:
+- `ajax/ajaxGetHeartRhythmContent.php`
+- `ajax/ajaxGetHeartSoundContent.php` (volume slider)
+- `ajax/ajaxGetLungSoundContent.php` (volume slider)
+- `ajax/ajaxGetNBPControlContent.php` — all three controls (systolic, diastolic, linked-hr); new `nibp` CSS class added to slider divs
+- `ajax/ajaxGetPulseStrengthControlContent.php` (sensitivity slider)
+- `ajax/ajaxGetVocalsControlContent.php` (volume slider)
+
+### Sound Option Gating
+
+Only supported sounds are now enabled in the UI; unsupported options are rendered with the `disabled` attribute:
+
+- **Heart sounds** (`ajaxGetHeartSoundContent.php`): Only `normal` and `systolic_murmur` are enabled; all other options are disabled.
+- **Lung sounds** (`ajaxGetLungSoundContent.php`): `Stridor` and `Stertor` are disabled; all other lung sounds remain enabled.
+
+### CPR Keyboard Shortcuts
+
+`scripts/hotkeys.js` adds two new keyboard shortcuts for CPR control:
+- `<` — starts CPR (clicks the CPR link when the button shows "Start")
+- `>` — stops CPR (clicks the CPR link when the button does not show "Start")
+
+### Touch Sensitivity Section Hidden
+
+The touch sensitivity section in the pulse strength modal (`ajaxGetPulseStrengthControlContent.php`) is now hidden via `style="display: none;"` on both the divider and the control div.
+
+### Hotkey Duplication Detection
+
+`ajax/ajaxGetEventsList.php` now detects and reports duplicate hotkey definitions:
+- Returns `hotLinkDup: 'true'` in the AJAX response when a duplicate predefined hotkey (`b` or `c`) is encountered
+- `js/events.js` displays an alert: *"Predefined hotkeys (b) or (c) cannot be redefined. Hotkey definition has been ignored"*
+- Hotkey array now includes `title` field alongside `hotkey` and `id`
+- Validation improved: four separate checks with `reason` codes (`"missing arg"`, `"no array returned"`, `"eventsArray is Type..."`, `"eventsArray count is ..."`)
+- `console.log("hotkey:", key.hotkey, key.id)` added for debugging
+
+### Improved AJAX Error Diagnostics
+
+Additional fields added to failure response payloads:
+- `ajaxGetEventsLog.php`: `fileName`, `logRecordCount`, `arrayCount` exposed in failure responses
+- `ajaxGetScenario.php`: `cause` field added to five failure blocks (`"scenarioProfileArray failed"`, `"scenarioHeaderArray failed"`, `"getScenarioEventsArray failed"`, `"getScenarioMediaArray failed"`, `"getScenarioVocalsArray failed"`)
+- `ajaxGetEventsList.php`: `reason` field added to all validation failure responses
+
+### Scenario Upload UI Removed
+
+`ajax/ajaxGetScenarioTableContent.php`: The file upload form for adding scenarios is replaced with an instruction message:
+> *"Please add scenarios by unzipping *.zip scenario files into the scenario folder. The scenario folder can be found using the icon on your desktop."*
+
+The old upload form is preserved as commented-out HTML.
+
+### phpDefinesToJs.php Fix
+
+- Adds `var ETCO2_OK = 0;` constant (new in 2.39)
+- Restores missing closing `</script>` tag — the Dev file was truncated and missing its final two lines
+
+### Version Bump
+
+- `js/modal.js` `aboutModal()` function updated: `Release 2.38` → `Release 2.39`
+
+### New Assets
+
+| File | Description |
+|------|-------------|
+| `images/K9logo.png` | Canine logo image |
+| `scripts/jquery/3.6.0/jquery.min.js` | jQuery 3.6.0 (retained alongside 3.6.4) |
+| `scripts/jquery-ui/1.13.2/AUTHORS.txt` | jQuery-UI attribution |
+| `scripts/jquery-ui/1.13.2/LICENSE.txt` | jQuery-UI license |
+| `scripts/jquery-ui/1.13.2/index.html` | jQuery-UI package index |
+| `scripts/jquery-ui/1.13.2/package.json` | jQuery-UI package manifest |
+| `scripts/jquery-ui/1.13.2/jquery-ui.structure.css` | jQuery-UI structure stylesheet |
+| `scripts/jquery-ui/1.13.2/jquery-ui.theme.css` | jQuery-UI theme stylesheet |
+| `scripts/jquery-ui/1.13.2/images/` | jQuery-UI icon images (11 files) |
+
+### Modified Files (2.39)
+
+| File | Change |
+|------|--------|
+| `ajax/ajaxGetEventsList.php` | Hotkey dup detection, validation reason codes, title in hotkey array |
+| `ajax/ajaxGetEventsLog.php` | Diagnostic fields in failure responses |
+| `ajax/ajaxGetHeartRhythmContent.php` | Slider div/input separation |
+| `ajax/ajaxGetHeartSoundContent.php` | Sound option gating + slider separation |
+| `ajax/ajaxGetLungSoundContent.php` | Sound option gating + slider separation |
+| `ajax/ajaxGetNBPControlContent.php` | Slider separation, new `nibp` CSS class |
+| `ajax/ajaxGetPulseStrengthControlContent.php` | Sensitivity section hidden, slider separation |
+| `ajax/ajaxGetScenario.php` | Cause field in failure responses |
+| `ajax/ajaxGetScenarioTableContent.php` | Upload form replaced with instructions |
+| `ajax/ajaxGetVocalsControlContent.php` | Slider div/input separation |
+| `includes/phpDefinesToJs.php` | Adds ETCO2_OK, restores closing tag |
+| `js/events.js` | Hotkey dup alert, console.log for hotkeys |
+| `js/modal.js` | Version bump 2.38 → 2.39 (+37 lines) |
+| `js/simmgr.js` | +15 lines (functional changes) |
+| `js/controls.js` | Functional updates |
+| `scripts/hotkeys.js` | New `<`/`>` CPR keyboard shortcuts |
+| `ii.php` | +46 lines (UI/functional updates) |
 
 ---
 

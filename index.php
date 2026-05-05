@@ -1,6 +1,6 @@
 <?php
 /*
-sim-ii:
+sim-ii: 
 
 Copyright (C) 2019  VetSim, Cornell University College of Veterinary Medicine Ithaca, NY
 
@@ -18,12 +18,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>
 */
 	// index.php: sim-ii entry page, user login
-
+	
 	require_once('init.php');
 
 	define("SERVER_ACTIVE_SCENARIOS", SERVER_SCENARIOS );
 	define("BROWSER_ACTIVE_SCENARIOS", BROWSER_SCENARIOS );
-
+	
 	if ( key_exists('NO_DB', $_SESSION ) )
 	{
 		header('location: /sim-ii/ii.php');
@@ -36,7 +36,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 	$_SESSION['User']['UserLastName'] = "";
 	$_SESSION['User']['UserID'] = 1;
 	$_SESSION['User']['isUserLoggedIn'] = TRUE;
-
+	
 	$_SESSION['NO_DB'] = TRUE;
 	//header('location: /sim-ii/ii.php');
 	//exit();
@@ -45,24 +45,24 @@ else
 {
 	// delete session data
 	adminClass::removeUserfromSession();
-
+	
 	// check admin login
 	$loginErrorFlag = 0;
 	if(isset($_POST['submit'])) {
 //FB::log($_POST);
-
+		
 		if ( isset($_POST['userID']) && ( $_POST['userID'] == 5 ) )
 		{
 			// Demo User
 			$userID = '5';
-			if(($userRow = adminClass::getUserRow($userID)) !== FALSE)
+			if(($userRow = adminClass::getUserRow($userID)) !== FALSE) 
 			{
 				adminClass::addUserToSession($userRow);
 				$sessionID = session_id();
-
+				
 				// Demo Scenario Directory Support
 				$dest = SERVER_DEMO_SCENARIOS.$sessionID;
-
+				
 				// Clear and refresh, if indicated
 				if ( isset($_POST['clearScenarios'] ) && $_POST['clearScenarios'] == 'clear' )
 				{
@@ -87,7 +87,7 @@ else
 						rmdir($dest );
 					}
 				}
-
+				
 				// Create a scenarios directory, if needed
 				$stat = @stat($dest );
 				if ( !$stat )
@@ -106,7 +106,7 @@ else
 						RecursiveIteratorIterator::SELF_FIRST);
 					foreach ( $iterator as $item )
 					{
-						if ( $item->isDir())
+						if ( $item->isDir()) 
 						{
 							$path = $iterator->getSubPathName();
 							$pos = strpos($path, ".git");
@@ -117,16 +117,16 @@ else
 								{
 									echo "<pre>";
 									$err = error_get_last();
-
+									
 									printf("Pos: %s\nErr: %s\nItem: %s\nDest: %s\n</pre>\n",
-											$pos,
+											$pos, 
 											print_r($err, TRUE ),
 											print_r($item, TRUE ),
 											print_r($dest, TRUE ) );
 									die('mkdir fails' );
 								}
 							}
-						}
+						} 
 						else
 						{
 							$path = $iterator->getSubPathName();
@@ -138,9 +138,9 @@ else
 								{
 									echo "<pre>";
 									$err = error_get_last();
-
+									
 									printf("Pos: %s\nErr: %s\nItem: %s\nDest: %s\n</pre>\n",
-											$pos,
+											$pos, 
 											print_r($err, TRUE ),
 											print_r($item, TRUE ),
 											print_r($dest, TRUE ) );
@@ -172,7 +172,7 @@ else
 <html>
 	<head>
 		<?php require_once(SERVER_INCLUDES . "header.php"); ?>
-
+		
 		<script type="text/javascript">
 			document.cookie = "TestCookie=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=;";
 			document.cookie = "simIIUserID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=;";
@@ -181,7 +181,7 @@ else
 				if(loginErrorFlag == 1) {
 					$('p.error_login').toggle();
 				}
-
+				
 				// focus on username
 				$('input[name=UserEmail]').focus();
 				/* $('#demo_submit').click(function(event){
@@ -207,7 +207,7 @@ else
 					</fieldset>
 					<button id="login_submit" name="submit" class="admin-btn red-button">Submit</button>
 					<p class="error_login">Incorrect username or password.  Please try again.</p>
-
+					
 				</form>
 			</div>
 			<div class="clearer"></div>
@@ -220,6 +220,6 @@ else
 			<pre>
 			<?php print_r($_SERVER ); print_r($_SESSION );?>
 			</pre>
-		</div>
+		</div>	
 	</body>
 </html>

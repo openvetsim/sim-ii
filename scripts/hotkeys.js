@@ -22,6 +22,7 @@ var hotkeys =
 	catchKeys : function (e)
 	{
 //		var str = String.fromCharCode(e.keyCode);
+		var cprString = $( '.cpr-link' ).html();
 		var str = e.key;
 		if ( str == 'b' )
 		{
@@ -30,8 +31,11 @@ var hotkeys =
 		else if ( str == 'c' )
 		{
 			$('.cpr-link')[0].click();
-		}
-		else if ( this.table.hasOwnProperty(str ) )
+		} else if( str == '<' && cprString.indexOf('Start') != -1 ) {
+			$('.cpr-link')[0].click();
+		} else if( str == '>' && cprString.indexOf('Start') == -1 ) {
+			$('.cpr-link')[0].click();
+		} else if ( this.table.hasOwnProperty(str ) )
 		{
 			this.table[str]();
 		}

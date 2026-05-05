@@ -61,11 +61,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 	$content = '
 		<h2 id="user-table-title">Manage Scenarios</h2>
 		
-		<h2 id="scenario-add">Add / Update Scenario (.zip archive only)</h2>
+		<h2 id="scenario-add" style="float: none; margin: 10px 0 10px;">Please add scenarios by unzipping *.zip scenario files into the scenario folder.<br />The scenario folder can be found using the icon on your desktop.</h2>
+		<!-- <h2 id="scenario-add">Add / Update Scenario (.zip archive only)</h2>
 		<form class="clearer" id="scenario-select" method="post" action="ii.php" enctype="multipart/form-data">
 			<input name="scenario-file-select" id="scenario-file-select" type="file" value="" accept=".zip">
 			<input name="scenario-submit" type="submit" id="scenario-submit" style="visibility: hidden;">
-		</form>
+		</form> -->
 		
 		<table id="user-table" class="scenario">
 			<tr>
