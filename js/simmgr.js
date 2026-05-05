@@ -635,98 +635,75 @@ console.log('defib: here');
 						// End Local Display Only
 					}
 				}
-				
 				/************ media **************/
-				if(typeof(response.media) != "undefined" ) {
-					// filename
-					if(typeof(response.media.filename) != "undefined") {
+				if (typeof(response.media) !== "undefined") {
+					if (typeof(response.media.filename) !== "undefined") {
 						controls.media.fileName = response.media.filename;
 					}
-					if(typeof(response.media.play) !== 'undefined' && profile.isVitalsMonitor)
-					{
-						if ( ( response.media.play == 1 ) && ( simmgr.mediaPlayStarted == 0 ) )
-						{
 
-							// Start new media display. Base action on file type
-							var fileName = controls.media.fileName;
-							var fileExt = fileName.split('.')[fileName.split('.').length - 1].toLowerCase();
-							switch ( fileExt )
-							{
-								// Image files - List from https://www.library.cornell.edu/preservation/tutorial/presentation/table7-1.html
-								case 'jpg': case 'jpeg': case 'jif': case 'jfif':
-								case 'png':	case 'gif':	case 'tif': case 'tiff':
-								case 'jp2': case 'jpx': case 'j2k': case 'j2c':
-								case 'fpx':	case 'pcd':	case 'pdf':
-									
-									// Create a window the full size of the image. Scale down to fit in screen (if larger)
-									$('#media-video').remove();
-									$('#media-overlay').remove();
-									$('body').append("<img id='media-overlay' src='"+ BROWSER_SCENARIOS + scenario.currentScenarioFileName + '/media/' + controls.media.fileName + "'>" );
-									$('#media-overlay').on('load', function() {
-										var margintop = 0;
-										var marginleft = 0;
-										var iHeight = $('#media-overlay').height();
-										var bHeight = $('body').height();
-										if (iHeight < bHeight) {
-											margintop = (bHeight - iHeight) / 2;
-										}
-										var iWidth = $('#media-overlay').width();
-										var bWidth = $('body').width();
-										if (iWidth < bWidth) {
-											marginleft = (bWidth - iWidth) / 2;
-										}
-										$('#media-overlay').css({'margin-left': marginleft + 'px', 'margin-top' : margintop + 'px' } );
+					if (typeof(response.media.play) !== 'undefined' && profile.isVitalsMonitor) {
+						if ((response.media.play == 1) && (simmgr.mediaPlayStarted == 0)) {
+							const fileName = controls.media.fileName;
+							const fileExt = fileName.toLowerCase().split('.').pop();
 
-//										$('#media-overlay').css({
-//											'margin-left': '100px',
-//											'margin-top': '10px',
-//											'max-height': 'none',
-//											'max-width': 'none',
-//											'height': ($('#vsm').height() - 50) + 'px'
-//										});
-									});
-									$('#media-overlay').draggable();
-									break;
-								
-								// Video file
-								
-								case 'mp4': case 'webm': case 'ogg':
-									$('#media-video').remove();
-									$('#media-overlay').remove();
-									var vcontrol = "controls autoplay";
-									var vheight;
-									var vwidth;
-									if ( simmgr.isLocalDisplay() ) {
-										vwidth=1280;
-										vheight=960;
-									}
-									else {
-										vwidth=640;
-										vheight=480;
-									}
-									$('body').append("<video id='media-overlay' width='"+vwidth+"' height='"+vheight+"' "+vcontrol+" ><source src='"
-											+ BROWSER_SCENARIOS + scenario.currentScenarioFileName + '/media/' + controls.media.fileName +
-											"' type='video/"+fileExt+"'>Browser does not support this video tag ("+fileExt+")</video>");
-									var margintop = ($(window).height() - (vheight+200) ) / 2;
-									if ( margintop < 0 ) {
-										margintop = 0;
-									}
-									var marginleft = ($(window).width() - vwidth ) / 2;
-									$('#media-overlay').css({'margin-left': marginleft, 'margin-top' : margintop, 'cursor' : 'pointer' } );
-									$('#media-overlay').draggable();
-									break;
-							
-							}
-							simmgr.mediaPlayStarted = 1;
-						}
-						else if ( ( response.media.play == 0 ) && ( simmgr.mediaPlayStarted == 1 ) )
-						{
+							// Clear previous media overlays
 							$('#media-overlay').remove();
 							$('#media-video').remove();
-							simmgr.mediaPlayStarted = 0;
+
+							switch (fileExt) {
+								// PDFs
+								case 'pdf':
+									$('body').append(`
+										<div id="media-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;">
+											<embed src="${BROWSER_SCENARIOS}${scenario.currentScenarioFileName}/media/${fileName}" 
+												   type="application/pdf" 
+												   width="94%" height="92%" 
+												   style="border:4px solid #fff; box-shadow:0 0 40px rgba(255,255,255,0.3);">
+											<button onclick="simmgr.clearMediaOverlay()" 
+													style="margin-top:15px;padding:12px 32px;font-size:16px;background:#f85149;color:white;border:none;border-radius:6px;cursor:pointer;">
+												Close
+											</button>
+										</div>
+									`);
+									break;
+
+								// Images
+								case 'jpg': case 'jpeg': case 'png': case 'gif': case 'webp':
+									$('body').append(`
+										<img id="media-overlay" src="${BROWSER_SCENARIOS}${scenario.currentScenarioFileName}/media/${fileName}" 
+											 style="max-width:94%; max-height:92%; border:4px solid #fff; box-shadow:0 0 30px rgba(0,0,0,0.8);">
+									`);
+									$('#media-overlay').draggable();
+									break;
+
+								// Videos
+								case 'mp4': case 'webm': case 'ogg':
+									$('body').append(`
+										<video id="media-overlay" width="1280" height="720" controls autoplay>
+											<source src="${BROWSER_SCENARIOS}${scenario.currentScenarioFileName}/media/${fileName}" type="video/${fileExt}">
+										</video>
+									`);
+									break;
+
+								// Other formats (Word, PowerPoint, etc.)
+								default:
+									$('body').append(`
+										<div id="media-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:9999;">
+											<iframe src="${BROWSER_SCENARIOS}${scenario.currentScenarioFileName}/media/${fileName}" 
+													width="100%" height="100%" style="border:none;"></iframe>
+										</div>
+									`);
+									break;
+							}
+
+							simmgr.mediaPlayStarted = 1;
+						}
+						else if ((response.media.play == 0) && (simmgr.mediaPlayStarted == 1)) {
+							simmgr.clearMediaOverlay();
 						}
 					}
 				}
+
 				/************ respiration **************/
 				if(typeof(response.respiration) != "undefined" ) {
 					// awRR
@@ -1231,6 +1208,17 @@ console.log("New scenario state RUNNING");
 				}
 			}
 		});			
+	},
+	
+	/**
+	 * Clears the current media overlay and resets media state
+	 */
+	clearMediaOverlay : function() {
+		$('#media-overlay').remove();
+		$('#media-video').remove();
+		simmgr.mediaPlayStarted = 0;
+		
+		simmgr.sendChange({ 'set:media:play': 0 });
 	},
 	
 	// After audio play, clear the play controller (II only). Allow a 2 second lag
