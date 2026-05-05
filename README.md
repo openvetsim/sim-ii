@@ -5,6 +5,21 @@ sim-ii: Copyright (C) 2019-2022  VetSim, Cornell University College of Veterinar
 
 ---
 
+## Release 2.42 Change Notes
+
+Release 2.42 is a targeted bug fix plus version bump.
+
+### Bug Fix: Empty Hotkey Strings (`ajax/ajaxGetEventsList.php`)
+
+Events with a `hotkey` field set to an empty string (`""`) were incorrectly triggering the duplicate hotkey detection added in 2.39. A guard is now applied before the `checkHotkey()` call: if `$event['hotkey']` exists but has zero length, it is `unset()` so it is treated as having no hotkey at all.
+
+### Version Bump (`js/modal.js`)
+
+- `Release 2.41` → `Release 2.42`
+- `Instructor Interface Release 2.41-WVS` → `Instructor Interface Release 2.42-WVS`
+
+---
+
 ## Release 2.41 Change Notes
 
 Release 2.41 adds dynamic controller firmware version fetching via a new Windows executable and AJAX endpoint, and bumps version strings throughout.

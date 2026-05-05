@@ -112,6 +112,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>
 
 			foreach($eventArray as $event) {
 				// are we trying to redefine the reserved hot links
+				 if (isset($event['hotkey']) && strlen($event['hotkey']) == 0 )
+				{
+					unset($event['hotkey'] );
+				}
+				
 				if( isset($event['hotkey']) && !checkHotkey($event['hotkey']) ) {
 						$returnVal['hotLinkDup'] = 'true';
 				}
