@@ -1,7 +1,7 @@
 # sim-ii
 Open VetSim Instructor Interface
 
-sim-ii: Copyright (C) 2019-2022  VetSim, Cornell University College of Veterinary Medicine Ithaca, NY
+sim-ii: Copyright (C) 2019-2026  VetSim, Cornell University College of Veterinary Medicine Ithaca, NY
 
 ---
 
